@@ -58,7 +58,7 @@
 	{% if application %}
 		{% if panels %}
 			<div class="row2" id = "outer_panel2" style ="position:relative; overflow:hidden;">
-				<table id="panel_container2" style="line-height: 110%;overflow:auto;">
+				<table id="panel_container" style="line-height: 110%;overflow:auto;">
 					<tr>
 					{% for panel in panels %}
 						<th class = "panel" id="panel_row" style ="position:relative;">
@@ -76,7 +76,6 @@
 			</div>
 			<div class="row2" id="explanation_row2">
 					<div id = "explanation" style="line-height: 104%;padding:2px;font-size:15px;">To start the example click on the Start button. You can move through the steps by clicking of the arrows that will appear on screen or using the left and right arrows on the keyboard.</div>
-				
 			</div>
 		{% else %}
 			<strong>Application is empty.</strong>

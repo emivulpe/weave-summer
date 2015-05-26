@@ -6,10 +6,10 @@ The functions in this script deal with resizing of panels.
 $(function($) {
     $(".resizable").resizable();
     $("#dialog").draggable();
-    $("#panel_container").height($("#interface").height() * 0.7);
-    $("#explanation_container").height($("#interface").height() * 0.3);
+    //$("#panel_container").height($("#interface").height() * 0.7);
+   // $("#explanation_container").height($("#interface").height() * 0.3);
 });
-
+/*
 $("#explanation_container").bind('mouseup', function(e) {
     $("#panel_container").height($("#interface").height() - $("#explanation_container").height());
 });
@@ -26,8 +26,8 @@ $("#explanation_container").resizable({
         n: document.getElementById("north"),
     }
 });
-
-$("#panel_container2").colResizable({
+*/
+$("#panel_container").colResizable({
     liveDrag: true,
     gripInnerHtml: "<div class='grip'></div>",
     draggingClass: "dragging"

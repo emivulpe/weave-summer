@@ -58,10 +58,10 @@
 	{% if application %}
 		{% if panels %}
 			<div class="row2" id = "outer_panel2" style ="position:relative; overflow:hidden;">
-				<table id="panel_container" style="line-height: 110%;overflow:auto;height:100%">
+				<table id="panel_container2" style="line-height: 110%;overflow:auto;height:100%">
 					<tr>
 					{% for panel in panels %}
-						<th class = "panel">
+						<th class = "panel" id="panel_row" style ="position:relative;">
 							<div class="panel" style="font-size:0;float: left;word-wrap:break-word;padding:6px 0px 6px 0px;overflow:auto;">
 							{% for fragment in panel.getFragments %}
 								{% autoescape off %}
