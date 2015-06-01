@@ -4,6 +4,7 @@
 $(window).resize(function() {
     var navHeight = $("#navigation_bar").height();
     $("#interface").css("padding-top", navHeight + 5);
+	
 });
 
 // Deal with filtering when the user is typing in the name of the example
