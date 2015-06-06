@@ -11,6 +11,7 @@
 		{% block links %}{% endblock %}
 		<title>WEAVE- {% block title %}Worked Examples Viewer{% endblock %}</title>
 		<style>{% block style %}{% endblock %}</style>
+		{% block other %} {% endblock %} 
 	</head>
 
 	<body>
@@ -38,7 +39,7 @@
 					{% block examples %} {% endblock %}
 				</ul>
 				<ul class="nav nav-center">
-					<li style="font-size: 16pt; font-weight: bold; position: relative; top: 5px;">{% block app_name %} {% endblock %}</li>
+					<li id = "example_name" style="font-size: 16pt; font-weight: bold; position: relative; top: 5px;">{% block app_name %} {% endblock %}</li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					{% block reset_registration %} {% endblock %}

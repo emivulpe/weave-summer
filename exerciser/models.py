@@ -257,3 +257,26 @@ class QuestionRecord(models.Model):
 	session_id = models.CharField(max_length=100, blank=True, null=True)
 	answer = models.ForeignKey(Option, blank=True, null=True, unique = False)
 	answer_text=models.TextField()
+	
+	
+class Example (models.Model):
+	name = models.CharField(primary_key = True, max_length=100)
+	number_of_panels = models.IntegerField()
+
+class HTMLStep(models.Model):
+	example = models.ForeignKey(Example, unique = False)
+	html = models.TextField()
+	step_number = models.IntegerField()
+	panel_id = models.CharField(max_length=100) # This will be the id of the html panel where the html will be shown/is taken from
+	
+	def __unicode__(self):
+		return " ".join((self.example.name ," step number: ", str(self.step_number)," panel id: ", self.panel_id," html: ", self.html))
+
+class HTMLExplanation(models.Model):
+	example = models.ForeignKey(Example, unique = False)
+	html = models.TextField()
+	step_number = models.IntegerField()
+
+	def __unicode__(self):
+		return " ".join((self.example.name ," text: ",self.html))
+

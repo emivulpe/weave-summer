@@ -1,0 +1,101 @@
+{% extends 'exerciser/base.html' %}
+{% load static %}
+{% block links %}
+    <link href="  {% static 'css/jquery.splitter.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block app_name %}{{ example_name }}{% endblock %}
+{% block style %}
+#spliter2 .a {
+  background-color: #2d2d2d;
+}
+
+#foo {
+  background-color: #E92727;
+}
+
+#b {
+  background-color: #73A4EF;
+}
+
+{% endblock %}
+{% block app_controls %}
+<!-- buttons to control transitions between steps -->
+	<li><a id="btn_prev" href="#" style="top: 2px; visibility:hidden;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
+	<li><a id="btn_next" href="#" style=" top: 2px;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+	<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	
+	
+{% endblock %}
+
+
+{% block body_block %}
+
+<div id="widget">
+  <div id="foo"  style = "height:100%;">
+  	<!-- the number of panels needs to be taken from what the user selected previously -->
+			<div class="row2" id = "outer_panel2" style ="position:relative; overflow-y:auto;overflow-x:hidden; height:70%;">
+				<table id="panel_container" style=" line-height: 110%;overflow:auto;height:100%">
+
+					<tr>
+					{% for panel in panels %}
+						<th class = "panel">
+							<div style = "height:100%; width: 100%;">
+								<textarea id = "area{{ forloop.counter }}" style = "height:100%; width: 100%;">
+									Some Initial Content was in this textarea
+								</textarea>
+							</div>
+						</th>
+					{% endfor %}
+					</tr>		
+				</table>
+			</div>
+			<div class="row2" id="explanation_row2" style = "height:30%;">
+				<!--<div id = "explanation" style="line-height: 104%;padding:2px;font-size:15px;">To start the example click on the Start button. You can move through the steps by clicking of the arrows that will appear on screen or using the left and right arrows on the keyboard.</div> -->
+				<textarea id = "explanation_area" style="width: 100%; height: 100%;">
+					Some Initial Content was in this textarea
+				</textarea>
+
+			</div>
+
+   </div> <!-- end of #foo -->
+
+</div> <!-- end of #widget -->
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+<!-- Scripts for the text editor -->
+<script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
+<script type="text/javascript">
+	bkLib.onDomLoaded(function() {
+		$('textarea[id^="area"]').each(function(index) {
+			console.log($(this).attr("id"));
+			new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance($(this).attr("id"));	
+		});
+		new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance("explanation_area");	
+	});
+</script>
+<!-- End of scripts for the text editor -->
+<!--<script type="text/javascript" src="{% static 'js/change.js' %}"></script>-->
+<script type="text/javascript" src="{% static 'js/authorChange.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/colResizable-1.4.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.splitter-0.15.0.js' %}"></script>
+
+<script type="text/javascript">
+	jQuery(function($) {
+		$('#widget').width("100%").height("100%");//.split({ position:'100%'});
+		$('#foo').split({orientation:'horizontal'});
+
+  		$(window).resize(function() {
+		    var navHeight = $("#navigation_bar").height();
+		    $("#foo").height("100%");
+		});
+	});
+ </script>
+
+
+<script type="text/javascript" src="{% static 'js/applications.js' %}"></script>
+{% endblock %}

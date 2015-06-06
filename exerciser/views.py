@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear
+from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation
 import json 
 import simplejson 
 import datetime
@@ -19,6 +19,7 @@ from django.contrib.auth.models import User
 from chartit import DataPool, Chart
 from django.db.models import Avg
 from django.db.models import Count, Max, Sum
+
 
 
 
@@ -1042,3 +1043,147 @@ def user_logout(request):
 
 	# Take the user back to the homepage.
 	return HttpResponseRedirect('/weave/teacher_interface')
+
+
+@requires_csrf_token
+def author_interface(request):
+	"""
+	A function to load the main page for the author interface.
+	"""
+	# Request the context of the request.
+	# The context contains information such as the client's machine details, for example.
+	context = RequestContext(request)
+
+	
+	# Return a rendered response to send to the client.
+	# We make use of the shortcut function to make our lives easier.
+	# Note that the first parameter is the template we wish to use.
+	return render_to_response('exerciser/author_interface.html', {}, context)
+
+
+@requires_csrf_token
+def example_creator(request):
+	"""
+	A function to load the main page for the example creator page.
+	"""
+	# Request the context of the request.
+	# The context contains information such as the client's machine details, for example.
+	context = RequestContext(request)
+	panels = int(request.GET.get('panels'))
+	example_name = request.GET.get('example_name')
+	print example_name
+	
+	# Return a rendered response to send to the client.
+	# We make use of the shortcut function to make our lives easier.
+	# Note that the first parameter is the template we wish to use.
+
+
+	# Ensure panels corresponds to something meaningful
+	return render_to_response('exerciser/example_creator.html', {'panels':range(0,panels), 'example_name' : example_name}, context)
+
+	# A method to create a new html explanation
+@requires_csrf_token
+def create_example(request):
+	try:
+		example_name = request.POST['example_name']
+		number_of_panels = request.POST['number_of_panels']
+	except KeyError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	
+	example = Example.objects.filter(name=example_name)
+	if len(example) != 0:
+		# such example already exists so to avoid overwriting of it ask the user for another name
+		return HttpResponse(simplejson.dumps({'disallowed': True}), content_type="application/json")
+	else: 
+		example = Example(name = example_name, number_of_panels = number_of_panels)
+		example.save()
+	return HttpResponse("{}",content_type = "application/json")
+
+
+	# A method to create a new html explanation
+@requires_csrf_token
+def save_explanation(request):
+	print "in save explanation"
+	try:
+		html = request.POST['html']
+		example_name = request.POST['example_name']
+		step_number = request.POST['step_number']
+	except KeyError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+		
+	try:
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
+		
+	html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
+	html_explanation.html = html
+	html_explanation.save() #Save the changes
+	return HttpResponse("{}",content_type = "application/json")
+
+	# A method to create a new html step
+@requires_csrf_token
+def save_step(request):
+	print "in save step"
+
+	try:
+		html = request.POST['html']
+		example_name = request.POST['example_name']
+		step_number = request.POST['step_number']
+		panel_id = request.POST['panel_id']
+	except KeyError:
+		print "key error"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+		
+	try:
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		print "index error"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+		
+	html_step = HTMLStep.objects.get_or_create(example = example, step_number = step_number, panel_id = panel_id)[0]
+	html_step.html = html
+	html_step.save() #Save the changes
+	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
+
+
+def get_next_step(request):
+
+	context = RequestContext(request)
+	# Get the requested example and step number
+	try:
+		example_name = request.GET['example_name']
+		step_number = int(request.GET['step_number'])
+	except KeyError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+
+	try:
+		example = Example.objects.filter(name = example_name)[0]
+	except IndexError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+
+
+	html_steps = HTMLStep.objects.filter(example = example, step_number = step_number)
+	html_explanation = HTMLExplanation.objects.filter(example = example, step_number = step_number)
+	step_entry= {}
+	number_of_panels = example.number_of_panels
+	# Add the panel and the html for the panel in format panel_id:html- this will be directly used in the js
+	for i in range (number_of_panels):
+		panel_id = "area" + str(i+1)
+		panel_entry = html_steps.filter(panel_id = panel_id)
+		if len(panel_entry) > 0:
+			# there has been a text saved for this panel so return the first one
+			step_entry[panel_id] = panel_entry[0].html
+		else:
+			# there was no previously inserted text for this panel so return empty string
+			step_entry[panel_id] = ""
+	# Add the html for the explanation if it existed else add an empty string
+	if len(html_explanation) > 0:
+		step_entry["explanation_area"] = html_explanation[0].html
+	else:
+		step_entry["explanation_area"] = ""
+
+
+	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")

@@ -26,4 +26,22 @@
 .ui-dialog {
     margin:50px;
 
+}.navbar-header {
+	float: left;
+	padding: 15px;
+	text-align: center;
+}
+
+.navbar-brand {
+	float: none;
+}
+
+.nav.nav-center {
+	text-align:center;
+	top: 20px;
+	transform: translate(-50%, -50%);
+	position: absolute;
+	left: 50%;
+	margin-right: -50%;
+	float:left;
 }

@@ -1,0 +1,6 @@
+Potential problems:
+
+
+1. author_interface.html - When going back from example_creator.html the example name in the textbox stays the same. However, the program is checking if such an example with this name exists and if it does it doesn't allow the user to proceed. This is so because it is possible the first time the user to overwrite somebody else's example if they enter the name of an existing example- this should not happen! This means that the page should expire and the user should not be able to go back to it once they have clicked on the Create the Example button- maybe inform the user of this and ask them if they are sure?
+
+2. MERGE BASE!!!!

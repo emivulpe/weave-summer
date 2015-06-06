@@ -1,0 +1,104 @@
+<?xml version="1.0" ?>
+<applications>
+  <application name="ClockExample" layout="0" appID ="00000000-0000-0000-0000-00000000029b">
+    <panels>
+      <panel number ="0" type ="2" content = "ClockDocument"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="HorizontalLines" layout="0" appID ="00000000-0000-0000-0000-00000000003b">
+    <panels>
+      <panel number ="0" type ="2" content = "HorizontalLinesDocument"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="RandomLine" layout="0" appID ="00000000-0000-0000-0000-000000000061">
+    <panels>
+      <panel number ="0" type ="2" content = "RandomLineDocument"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="pentagonToShape" layout="1" appID ="00000000-0000-0000-0000-0000000000a9">
+    <panels>
+      <panel number ="0" type ="2" content = "pentagonDocument"/>
+      <panel number ="1" type ="2" content = "regularShapeDocument"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="ListProcessingFunctions" layout="0" appID ="b44bbbd8-6ed3-448f-ab0b-290ba2ccc217">
+    <panels>
+      <panel number ="0" type ="2" content = "listProcessingFunctionsDoc"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="PasswordChecker" layout="1" appID ="30e08289-e908-4f51-a785-55946c6a9b81">
+    <panels>
+      <panel number ="0" type ="2" content = "passwordCheckerProblem"/>
+      <panel number ="1" type ="2" content = "passwordCheckerCode"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="JustAMinute" layout="1" appID ="df6346d2-f337-4a53-94f7-53d355ffebe0">
+    <panels>
+      <panel number ="0" type ="2" content = "JustAMinuteProblem"/>
+      <panel number ="1" type ="2" content = "JustAMinuteCode"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="FindErrors" layout="8" appID ="3155f000-7388-4412-9ca5-6e2776507b56">
+    <panels>
+      <panel number ="0" type ="2" content = "FindErrorsStrategies"/>
+      <panel number ="1" type ="2" content = "FindErrorsAnswers"/>
+      <panel number ="2" type ="2" content = "FindErrorsProblem"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="LinearSearchDoorEntryHaggis" layout="1" appID ="2780c110-5e6a-4cfd-bca7-2564588b01b6">
+    <panels>
+      <panel number ="0" type ="2" content = "LinearSearchDoorEntryProblem"/>
+      <panel number ="1" type ="2" content = "LinearSearchDoorEntrySolutionHaggis"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="LinearSearchDoorEntryPython" layout="1" appID ="2780c110-5e6a-4cfd-bca7-2564588b01b7">
+    <panels>
+      <panel number ="0" type ="2" content = "LinearSearchDoorEntryProblem"/>
+      <panel number ="1" type ="2" content = "LinearSearchDoorEntrySolutionPython"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="countEntriesPython" layout="1" appID ="83d837e8-51f4-477f-9d0a-45ec0e8277fe">
+    <panels>
+      <panel number ="0" type ="2" content = "countEntriesProblemPython"/>
+      <panel number ="1" type ="2" content = "countEntriesSolutionPython"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="countEntriesHaggis" layout="1" appID ="2b070480-5718-47c5-8806-b2c89ffbd560">
+    <panels>
+      <panel number ="0" type ="2" content = "countEntriesProblemHaggis"/>
+      <panel number ="1" type ="2" content = "countEntriesSolutionHaggis"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+  <application name="mostFrequentVisitorPython" layout="1" appID ="28eb12e4-decd-46ec-b748-3096a1e378e4">
+    <panels>
+      <panel number ="0" type ="2" content = "mostFrequentVisitorProblemSpecDoodles"/>
+      <panel number ="1" type ="2" content = "mostFrequentVisitorSolutionPython"/>
+    </panels>
+    <relations>
+    </relations>
+  </application>
+</applications>

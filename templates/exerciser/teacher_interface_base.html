@@ -18,6 +18,7 @@
 
 	<body>
 
+
 	<nav id="teacher_navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -33,14 +34,18 @@
 					<ul class="nav navbar-nav navbar-left">
 						<li>
 							<a class="navbar-brand" href="/weave/teacher_interface/">
-							<i class="fa fa-home fa-lg landing-icon fa"></i><span class="landing-text">Home</span>
+							<i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text">Home</span>
 							</a>
 						</li>
 					</ul>
+					<ul class="nav nav-center">
+						<li id = "example_name" style="font-size: 16pt; font-weight: bold; position: relative; top: 5px;">{% block app_name %} {% endblock %}</li>
+					</ul>
 					{% if user.is_authenticated %}
 					<ul class="nav navbar-nav navbar-right">
+						{% block app_controls %} {% endblock %}
 						<li>
-							<a href="/weave/logout/"><i class="fa fa-lock fa-lg landing-icon fa-2x"></i><class="landing-text">Logout</span></a>
+							<a href="/weave/logout/"><i class="fa fa-lock fa-lg landing-icon fa-2x"></i><class="landing-text">&nbspLogout</span></a>
 						</li>
 						
 					</ul>
@@ -53,7 +58,7 @@
 	</nav>
 
 	<header id="content_container"class="intro">
-		<div class="intro-body">
+		<div class="intro-body" style = "height: 100%;">
 		{% block body_block %}{% endblock %}
 		</div>
 	</header>

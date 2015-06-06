@@ -1,0 +1,791 @@
+<?xml version="1.0" ?>
+<documents>
+<document name = "ClockDocument" type = "mathType" kind = "Textual" FixOrder = "true" ID = "00000000-0000-0000-0000-000000000003">
+    <text type ="title" value = "Problem : Write a program to place the numbers 1 to 12 as if they were on a clock face.;" order="0" ID = "00000000-0000-0000-0000-000000000007" />
+    <text type ="number" value = "-------------------------------------------------------------------------------------------------------------------------------------------;" order="1" ID = "00000000-0000-0000-0000-000000000008" />
+    <text type ="number" value = ";" order="2" ID = "00000000-0000-0000-0000-000000000009" />
+    <text type ="number" value = "# Write a program to place the numbers 1 to 12 as  ;" order="3" ID = "00000000-0000-0000-0000-00000000000a" />
+    <text type ="text" value = "# if they were on a clock face. ;" order="4" ID = "00000000-0000-0000-0000-00000000000b" />
+    <text type ="text" value = "# Quintin Cutts 8 - 11 - 2013 ;" order="5" ID = "00000000-0000-0000-0000-00000000000c" />
+    <text type ="text" value = " ;" order="6" ID = "00000000-0000-0000-0000-00000000000d" />
+    <text type ="symbol" value = "from Canvas import * ;" order="7" ID = "00000000-0000-0000-0000-00000000000e" />
+    <text type ="text" value = " ;" order="8" ID = "00000000-0000-0000-0000-00000000000f" />
+    <text type ="symbol" value = "hour = 1 ;" order="9" ID = "00000000-0000-0000-0000-000000000010" />
+    <text type ="symbol" value = "angle = 150 ;" order="10" ID = "00000000-0000-0000-0000-000000000011" />
+    <text type ="symbol" value = "radius = 80 ;" order="11" ID = "00000000-0000-0000-0000-000000000012" />
+    <text type ="symbol" value = "x_centre = 100 ;" order="12" ID = "00000000-0000-0000-0000-000000000013" />
+    <text type ="symbol" value = "y_centre = 100 ;" order="13" ID = "00000000-0000-0000-0000-000000000014" />
+    <text type ="text" value = " ;" order="14" ID = "00000000-0000-0000-0000-000000000015" />
+    <text type ="symbol" value = "while hour &lt;= 12: ;" order="15" ID = "00000000-0000-0000-0000-000000000016" />
+    <text type ="symbol" value = "    num_x,  num_y = end_point( x_centre, y_centre, radius, angle ) ;" order="16" ID = "00000000-0000-0000-0000-000000000017" />
+    <text type ="symbol" value = "    create_text( num_x, num_y, text=str( hour ) ) ;" order="17" ID = "00000000-0000-0000-0000-000000000018" />
+    <text type ="symbol" value = "    angle = angle + 30 ;" order="18" ID = "00000000-0000-0000-0000-000000000019" />
+    <text type ="symbol" value = "    print hour ;" order="19" ID = "00000000-0000-0000-0000-00000000001a" />
+    <text type ="symbol" value = "    hour = hour + 1 ;" order="20" ID = "00000000-0000-0000-0000-00000000001b" />
+    <text type ="text" value = " ;" order="21" ID = "00000000-0000-0000-0000-00000000001c" />
+    <text type ="symbol" value = "create_oval( 10,10,190,190 ) ;" order="22" ID = "00000000-0000-0000-0000-00000000001e" />
+    <text type ="text" value = " ;" order="23" ID = "00000000-0000-0000-0000-00000000001f" />
+    <text type ="symbol" value = "complete();" order="24" ID = "00000000-0000-0000-0000-000000000020" />
+</document>
+<document name = "HorizontalLinesDocument" type = "mathType" kind = "Textual" FixOrder = "true" ID = "00000000-0000-0000-0000-000000000021">
+    <text type ="title" value = "Problem:  Draw 10 parallel horizontal lines, each 100 long, starting at (10,10) and spaced 10 apart, going downwards.;" order="0" ID = "00000000-0000-0000-0000-000000000026" />
+    <text type ="number" value = "----------------------------------;" order="1" ID = "00000000-0000-0000-0000-000000000027" />
+    <text type ="number" value = ";" order="2" ID = "00000000-0000-0000-0000-000000000028" />
+    <text type ="text" value = "# Write a program to draw 10 parallel horizontal lines,;" order="3" ID = "00000000-0000-0000-0000-000000000029" />
+    <text type ="text" value = "# each 100 long, spaced 10 apart.  First line starts at (10,10);" order="4" ID = "00000000-0000-0000-0000-00000000002a" />
+    <text type ="text" value = "# Quintin 8 - 11 - 13;" order="5" ID = "00000000-0000-0000-0000-00000000002b" />
+    <text type ="number" value = ";" order="6" ID = "00000000-0000-0000-0000-00000000002c" />
+    <text type ="symbol" value = "from Canvas import *;" order="7" ID = "00000000-0000-0000-0000-00000000002d" />
+    <text type ="number" value = ";" order="8" ID = "00000000-0000-0000-0000-00000000002e" />
+    <text type ="symbol" value = "y = ??;" order="9" ID = "00000000-0000-0000-0000-00000000002f" />
+    <text type ="symbol" value = "y = 10   # This is the value changing on each loop;" order="10" ID = "00000000-0000-0000-0000-000000000030" />
+    <text type ="number" value = ";" order="11" ID = "00000000-0000-0000-0000-000000000031" />
+    <text type ="symbol" value = "while y &lt;= ??:;" order="12" ID = "00000000-0000-0000-0000-000000000032" />
+    <text type ="symbol" value = "while y &lt;= 100:;" order="13" ID = "00000000-0000-0000-0000-000000000033" />
+    <text type ="symbol" value = "    create_line( x1, y1, x2, y2 );" order="14" ID = "00000000-0000-0000-0000-000000000034" />
+    <text type ="symbol" value = "    create_line( 10, y1, 110, y2 );" order="15" ID = "00000000-0000-0000-0000-000000000035" />
+    <text type ="symbol" value = "    create_line( 10, y, 110, y );" order="16" ID = "00000000-0000-0000-0000-000000000036" />
+    <text type ="symbol" value = "    y = y + ??;" order="17" ID = "00000000-0000-0000-0000-000000000037" />
+    <text type ="symbol" value = "    y = y + 10;" order="18" ID = "00000000-0000-0000-0000-000000000038" />
+    <text type ="number" value = ";" order="19" ID = "00000000-0000-0000-0000-000000000039" />
+    <text type ="symbol" value = "complete()" order="20" ID = "00000000-0000-0000-0000-00000000003a" />
+</document>
+<document name = "listProcessingFunctionsDoc" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "bbf25061-8d47-4314-a373-4b0a9bc729a3">
+    <text type ="Title" value = "The Problem;" order="0" ID = "00000000-0000-0000-0000-0000000000bb" />
+    <text type ="Normal" value = ";" order="1" ID = "00000000-0000-0000-0000-0000000000bc" />
+    <text type ="Normal" value = "Write two functions.;" order="2" ID = "00000000-0000-0000-0000-0000000000bd" />
+    <text type ="Normal" value = "They should both take a list of words and they should both check each word" order="3" ID = "00000000-0000-0000-0000-0000000000be" />
+    <text type ="Normal" value = " to see if the first letter is upper or lower case. ;" order="4" ID = "00000000-0000-0000-0000-0000000000bf" />
+    <text type ="Normal" value = "For any word that has a lowercase first letter, the first letter should be converted to upper case.;" order="5" ID = "00000000-0000-0000-0000-0000000000c0" />
+    <text type ="Normal" value = "The first function should create and return a new list containing all the words, and the ;" order="6" ID = "00000000-0000-0000-0000-0000000000c1" />
+    <text type ="Normal" value = "second function should change words in place in the list - it does not need to return anything.;" order="7" ID = "00000000-0000-0000-0000-0000000000c2" />
+    <text type ="Normal" value = ";" order="8" ID = "00000000-0000-0000-0000-0000000000c3" />
+    <text type ="Title" value = "The Plan;" order="9" ID = "00000000-0000-0000-0000-0000000000c4" />
+    <text type ="Normal" value = ";" order="10" ID = "00000000-0000-0000-0000-0000000000c5" />
+    <text type ="Normal" value = "This is a rough plan for the body of the functions;" order="11" ID = "00000000-0000-0000-0000-0000000000c6" />
+    <text type ="Normal" value = ";" order="12" ID = "00000000-0000-0000-0000-0000000000c7" />
+    <text type ="Normal" value = "for each word in the list;" order="13" ID = "00000000-0000-0000-0000-0000000000c8" />
+    <text type ="Normal" value = "     if the word does not start with a capital letter;" order="14" ID = "00000000-0000-0000-0000-0000000000c9" />
+    <text type ="Normal" value = "          change it so that it does start with a capital;" order="15" ID = "00000000-0000-0000-0000-0000000000ca" />
+    <text type ="Normal" value = ";" order="16" ID = "00000000-0000-0000-0000-0000000000cb" />
+    <text type ="Normal" value = ";" order="17" ID = "00000000-0000-0000-0000-0000000000cc" />
+    <text type ="Title" value = "The Program;" order="18" ID = "00000000-0000-0000-0000-0000000000cd" />
+    <text type ="Normal" value = ";" order="19" ID = "00000000-0000-0000-0000-0000000000ce" />
+    <text type ="Code" value = "from string import *;" order="20" ID = "00000000-0000-0000-0000-0000000000cf" />
+    <text type ="Normal" value = ";" order="21" ID = "00000000-0000-0000-0000-0000000000d0" />
+    <text type ="Comment" value = "# function to create and return a list containing all;" order="22" ID = "00000000-0000-0000-0000-0000000000d1" />
+    <text type ="Comment" value = "# words in supplied list, ensuring all have capitalised;" order="23" ID = "00000000-0000-0000-0000-0000000000d2" />
+    <text type ="Comment" value = "# first letters.;" order="24" ID = "00000000-0000-0000-0000-0000000000d3" />
+    <text type ="Code" value = "def capitaliseNew( words ):;" order="25" ID = "00000000-0000-0000-0000-0000000000d4" />
+    <text type ="Code" value = "    newWords = [];" order="26" ID = "00000000-0000-0000-0000-0000000000d5" />
+    <text type ="Normal" value = ";" order="27" ID = "00000000-0000-0000-0000-0000000000d6" />
+    <text type ="Code" value = "    for word in words:;" order="28" ID = "00000000-0000-0000-0000-0000000000d7" />
+    <text type ="Code" value = "        if word[ 0 ] in lowercase:;" order="29" ID = "00000000-0000-0000-0000-0000000000d8" />
+    <text type ="Code" value = "            newWords += [upper( word[ 0 ] ) + word[ 1: ]];" order="30" ID = "00000000-0000-0000-0000-0000000000d9" />
+    <text type ="Code" value = "        else:;" order="31" ID = "00000000-0000-0000-0000-0000000000da" />
+    <text type ="Code" value = "            newWords += [word];" order="32" ID = "00000000-0000-0000-0000-0000000000db" />
+    <text type ="Normal" value = ";" order="33" ID = "00000000-0000-0000-0000-0000000000dc" />
+    <text type ="Code" value = "    return newWords;" order="34" ID = "00000000-0000-0000-0000-0000000000dd" />
+    <text type ="Normal" value = ";" order="35" ID = "00000000-0000-0000-0000-0000000000de" />
+    <text type ="Comment" value = "# function to capitalise first letter of all words in;" order="36" ID = "00000000-0000-0000-0000-0000000000df" />
+    <text type ="Comment" value = "# list supplied as parameter;" order="37" ID = "00000000-0000-0000-0000-0000000000e0" />
+    <text type ="Code" value = "def capitaliseInPlace( words ):;" order="38" ID = "00000000-0000-0000-0000-0000000000e1" />
+    <text type ="Code" value = "    for wordIndex in range( len( words ) ):;" order="39" ID = "00000000-0000-0000-0000-0000000000e2" />
+    <text type ="Code" value = "        word = words[ wordIndex ];" order="40" ID = "00000000-0000-0000-0000-0000000000e3" />
+    <text type ="Code" value = "        if word[ 0 ] in lowercase:;" order="41" ID = "00000000-0000-0000-0000-0000000000e4" />
+    <text type ="Code" value = "            words[ wordIndex ] = upper( word[ 0 ] ) + word[ 1: ];" order="42" ID = "00000000-0000-0000-0000-0000000000e5" />
+    <text type ="Normal" value = ";" order="43" ID = "00000000-0000-0000-0000-0000000000e6" />
+    <text type ="Normal" value = ";" order="44" ID = "00000000-0000-0000-0000-0000000000e7" />
+    <text type ="Comment" value = "# Testing code;" order="45" ID = "00000000-0000-0000-0000-0000000000e8" />
+    <text type ="Code" value = "w = [ &quot;fred&quot;, &quot;Bob&quot;, &quot;harry&quot; ];" order="46" ID = "00000000-0000-0000-0000-0000000000e9" />
+    <text type ="Normal" value = ";" order="47" ID = "00000000-0000-0000-0000-0000000000ea" />
+    <text type ="Code" value = "print capitaliseNew( w );" order="48" ID = "00000000-0000-0000-0000-0000000000ec" />
+    <text type ="Code" value = "print w;" order="49" ID = "00000000-0000-0000-0000-0000000000ed" />
+    <text type ="Code" value = "capitaliseInPlace( w );" order="50" ID = "00000000-0000-0000-0000-0000000000ee" />
+    <text type ="Code" value = "print w;" order="51" ID = "00000000-0000-0000-0000-0000000000ef" />
+    <text type ="Normal" value = ";" order="52" ID = "00000000-0000-0000-0000-0000000000f0" />
+</document>
+<document name = "pentagonDocument" type = "mathType" kind = "Textual" FixOrder = "true" ID = "00000000-0000-0000-0000-000000000061">
+    <text type ="text" value = "# Draw a regular pentagon.;" order="0" ID = "00000000-0000-0000-0000-00000000006c" />
+    <text type ="text" value = "# Quintin - 8-11-13;" order="1" ID = "00000000-0000-0000-0000-00000000006d" />
+    <text type ="number" value = ";" order="2" ID = "00000000-0000-0000-0000-00000000006e" />
+    <text type ="symbol" value = "from Canvas import *;" order="3" ID = "00000000-0000-0000-0000-00000000006f" />
+    <text type ="number" value = ";" order="4" ID = "00000000-0000-0000-0000-000000000070" />
+    <text type ="symbol" value = "lineCount = 0;" order="5" ID = "00000000-0000-0000-0000-000000000071" />
+    <text type ="symbol" value = "startX = 100;" order="6" ID = "00000000-0000-0000-0000-000000000072" />
+    <text type ="symbol" value = "startY = 100;" order="7" ID = "00000000-0000-0000-0000-000000000073" />
+    <text type ="symbol" value = "angle = 90;" order="8" ID = "00000000-0000-0000-0000-000000000074" />
+    <text type ="symbol" value = "sideLength = 50;" order="9" ID = "00000000-0000-0000-0000-000000000075" />
+    <text type ="number" value = ";" order="10" ID = "00000000-0000-0000-0000-000000000076" />
+    <text type ="symbol" value = "while lineCount &lt; 5:;" order="11" ID = "00000000-0000-0000-0000-000000000077" />
+    <text type ="text" value = "    # Generate the characteristics of the new line;" order="12" ID = "00000000-0000-0000-0000-000000000078" />
+    <text type ="symbol" value = "    endX, endY = end_point( startX, startY, sideLength, angle );" order="13" ID = "00000000-0000-0000-0000-000000000079" />
+    <text type ="number" value = ";" order="14" ID = "00000000-0000-0000-0000-00000000007a" />
+    <text type ="text" value = "    # and draw it;" order="15" ID = "00000000-0000-0000-0000-00000000007b" />
+    <text type ="symbol" value = "    create_line( startX, startY, endX, endY );" order="16" ID = "00000000-0000-0000-0000-00000000007c" />
+    <text type ="number" value = ";" order="17" ID = "00000000-0000-0000-0000-00000000007d" />
+    <text type ="text" value = "    # Now get ready for next line;" order="18" ID = "00000000-0000-0000-0000-00000000007e" />
+    <text type ="symbol" value = "    startX = endX;" order="19" ID = "00000000-0000-0000-0000-00000000007f" />
+    <text type ="symbol" value = "    startY = endY;" order="20" ID = "00000000-0000-0000-0000-000000000080" />
+    <text type ="symbol" value = "    angle += 72;" order="21" ID = "00000000-0000-0000-0000-000000000081" />
+    <text type ="symbol" value = "    lineCount += 1;" order="22" ID = "00000000-0000-0000-0000-000000000082" />
+    <text type ="number" value = ";" order="23" ID = "00000000-0000-0000-0000-000000000083" />
+    <text type ="symbol" value = "complete()" order="24" ID = "00000000-0000-0000-0000-000000000084" />
+</document>
+<document name = "RandomLineDocument" type = "mathType" kind = "Textual" FixOrder = "true" ID = "00000000-0000-0000-0000-00000000003b">
+    <text type ="title" value = "Write a program to draw a random segmented line.  More precisely, the line should start at (100, 100) and consist of 10 straight segments, connected so that the end of the first line joins up with the start of the second, and so on, to form one long line.  The length and orientation of each segment should be chosen at random, between the limits 0-50 and 0-359 respectively.;" order="0" ID = "00000000-0000-0000-0000-000000000043" />
+    <text type ="text" value = "------------------------------------------------------------;" order="1" ID = "00000000-0000-0000-0000-000000000044" />
+    <text type ="text" value = ";" order="2" ID = "00000000-0000-0000-0000-000000000045" />
+    <text type ="text" value = "# Draw a random segmented lines.  10 segments, end of one joined to;" order="3" ID = "00000000-0000-0000-0000-000000000046" />
+    <text type ="text" value = "# start of the next, each a random length (between 0-50) and orientation.;" order="4" ID = "00000000-0000-0000-0000-000000000047" />
+    <text type ="text" value = "# The line should start at (100,100).;" order="5" ID = "00000000-0000-0000-0000-000000000048" />
+    <text type ="text" value = "# Quintin - 8-11-13;" order="6" ID = "00000000-0000-0000-0000-000000000049" />
+    <text type ="number" value = ";" order="7" ID = "00000000-0000-0000-0000-00000000004a" />
+    <text type ="symbol" value = "from Canvas import *;" order="8" ID = "00000000-0000-0000-0000-00000000004b" />
+    <text type ="symbol" value = "from random import *;" order="9" ID = "00000000-0000-0000-0000-00000000004c" />
+    <text type ="number" value = ";" order="10" ID = "00000000-0000-0000-0000-00000000004d" />
+    <text type ="symbol" value = "lineCount = 0;" order="11" ID = "00000000-0000-0000-0000-00000000004e" />
+    <text type ="symbol" value = "startX = 100;" order="12" ID = "00000000-0000-0000-0000-00000000004f" />
+    <text type ="symbol" value = "startY = 100;" order="13" ID = "00000000-0000-0000-0000-000000000050" />
+    <text type ="number" value = ";" order="14" ID = "00000000-0000-0000-0000-000000000051" />
+    <text type ="symbol" value = "while lineCount &lt; 10:;" order="15" ID = "00000000-0000-0000-0000-000000000052" />
+    <text type ="text" value = "    # Generate the characteristics of the new line;" order="16" ID = "00000000-0000-0000-0000-000000000053" />
+    <text type ="symbol" value = "    newLength = randint( 0, 50 );" order="17" ID = "00000000-0000-0000-0000-000000000054" />
+    <text type ="symbol" value = "    newAngle = randint( 0, 359 );" order="18" ID = "00000000-0000-0000-0000-000000000055" />
+    <text type ="symbol" value = "    endX, endY = end_point( startX, startY, newLength, newAngle );" order="19" ID = "00000000-0000-0000-0000-000000000056" />
+    <text type ="number" value = ";" order="20" ID = "00000000-0000-0000-0000-000000000057" />
+    <text type ="text" value = "    # and draw it;" order="21" ID = "00000000-0000-0000-0000-000000000058" />
+    <text type ="symbol" value = "    create_line( startX, startY, endX, endY );" order="22" ID = "00000000-0000-0000-0000-000000000059" />
+    <text type ="number" value = ";" order="23" ID = "00000000-0000-0000-0000-00000000005a" />
+    <text type ="text" value = "    # Now get ready for next line;" order="24" ID = "00000000-0000-0000-0000-00000000005b" />
+    <text type ="symbol" value = "    startX = endX;" order="25" ID = "00000000-0000-0000-0000-00000000005c" />
+    <text type ="symbol" value = "    startY = endY;" order="26" ID = "00000000-0000-0000-0000-00000000005d" />
+    <text type ="symbol" value = "    lineCount += 1;" order="27" ID = "00000000-0000-0000-0000-00000000005e" />
+    <text type ="number" value = ";" order="28" ID = "00000000-0000-0000-0000-00000000005f" />
+    <text type ="symbol" value = "complete();" order="29" ID = "00000000-0000-0000-0000-000000000060" />
+</document>
+<document name = "regularShapeDocument" type = "mathType" kind = "Textual" FixOrder = "true" ID = "00000000-0000-0000-0000-000000000085">
+    <text type ="text" value = "# Function to draw a regular shape, given starting point,;" order="0" ID = "00000000-0000-0000-0000-000000000087" />
+    <text type ="text" value = "# number of sides and side length.;" order="1" ID = "00000000-0000-0000-0000-000000000088" />
+    <text type ="text" value = "# Quintin - 8-11-13;" order="2" ID = "00000000-0000-0000-0000-000000000089" />
+    <text type ="number" value = ";" order="3" ID = "00000000-0000-0000-0000-00000000008a" />
+    <text type ="symbol" value = "from Canvas import *;" order="4" ID = "00000000-0000-0000-0000-00000000008b" />
+    <text type ="number" value = ";" order="5" ID = "00000000-0000-0000-0000-00000000008c" />
+    <text type ="symbol" value = "def shape(" order="6" ID = "00000000-0000-0000-0000-00000000008d" />
+    <text type ="symbol" value = "startX, startY," order="7" ID = "00000000-0000-0000-0000-00000000008e" />
+    <text type ="symbol" value = "numberOfSides," order="8" ID = "00000000-0000-0000-0000-00000000008f" />
+    <text type ="symbol" value = "sideLength" order="9" ID = "00000000-0000-0000-0000-000000000090" />
+    <text type ="symbol" value = "): ;" order="10" ID = "00000000-0000-0000-0000-000000000091" />
+    <text type ="symbol" value = "    lineCount = 0;" order="11" ID = "00000000-0000-0000-0000-000000000092" />
+    <text type ="symbol" value = "    angle = 90;" order="12" ID = "00000000-0000-0000-0000-000000000093" />
+    <text type ="symbol" value = "    angleInc = 360.0 / numberOfSides;" order="13" ID = "00000000-0000-0000-0000-000000000094" />
+    <text type ="number" value = ";" order="14" ID = "00000000-0000-0000-0000-000000000095" />
+    <text type ="symbol" value = "    while lineCount &lt; numberOfSides:;" order="15" ID = "00000000-0000-0000-0000-000000000096" />
+    <text type ="text" value = "        # Generate the characteristics of the new line;" order="16" ID = "00000000-0000-0000-0000-000000000097" />
+    <text type ="symbol" value = "        endX, endY = end_point( startX, startY, sideLength, angle );" order="17" ID = "00000000-0000-0000-0000-000000000098" />
+    <text type ="number" value = ";" order="18" ID = "00000000-0000-0000-0000-000000000099" />
+    <text type ="text" value = "        # and draw it;" order="19" ID = "00000000-0000-0000-0000-00000000009a" />
+    <text type ="symbol" value = "        create_line( startX, startY, endX, endY );" order="20" ID = "00000000-0000-0000-0000-00000000009b" />
+    <text type ="number" value = ";" order="21" ID = "00000000-0000-0000-0000-00000000009c" />
+    <text type ="text" value = "        # Now get ready for next line;" order="22" ID = "00000000-0000-0000-0000-00000000009d" />
+    <text type ="symbol" value = "        startX = endX;" order="23" ID = "00000000-0000-0000-0000-00000000009e" />
+    <text type ="symbol" value = "        startY = endY;" order="24" ID = "00000000-0000-0000-0000-00000000009f" />
+    <text type ="symbol" value = "        angle += 360 / numberOfSides;" order="25" ID = "00000000-0000-0000-0000-0000000000a0" />
+    <text type ="symbol" value = "        angle += angleInc;" order="26" ID = "00000000-0000-0000-0000-0000000000a1" />
+    <text type ="symbol" value = "        lineCount += 1;" order="27" ID = "00000000-0000-0000-0000-0000000000a2" />
+    <text type ="number" value = ";" order="28" ID = "00000000-0000-0000-0000-0000000000a3" />
+    <text type ="symbol" value = "shape( 30,30,3,30 );" order="29" ID = "00000000-0000-0000-0000-0000000000a4" />
+    <text type ="symbol" value = "shape( 100, 180, 23, 20 );" order="30" ID = "00000000-0000-0000-0000-0000000000a5" />
+    <text type ="symbol" value = "shape( 20,60,4,55 );" order="31" ID = "00000000-0000-0000-0000-0000000000a6" />
+    <text type ="number" value = ";" order="32" ID = "00000000-0000-0000-0000-0000000000a7" />
+    <text type ="symbol" value = "complete()" order="33" ID = "00000000-0000-0000-0000-0000000000a8" />
+</document>
+<document name = "passwordCheckerProblem" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "e163f781-4304-43c9-af15-1cebe9c12c47">
+    <text type ="Normal" value = "Be sure to read what is in the bottom pane of the window on every step.;" order="0" ID = "df8d741e-0836-4207-b61d-db70af613f4d" />
+    <text type ="Normal" value = "Write a function " order="1" ID = "a1af0502-fe09-4477-b1d6-f68a39549090" />
+    <text type ="Normal" value = "to check whether a password conforms to a set of rules ? as might be used when you register with a website.  The function should " order="2" ID = "3bbcb38e-51c7-4a24-bb7c-2745869c29a8" />
+    <text type ="Normal" value = "take as parameter the password as a string" order="3" ID = "dd97e3d5-bd80-456f-85c4-390807d776c0" />
+    <text type ="Normal" value = ", and " order="4" ID = "08ea462d-677b-457d-bdc7-389b55dac287" />
+    <text type ="Normal" value = "return True or False depending on whether the password is well-formed or not, respectively" order="5" ID = "4212c9d4-83b0-41cc-b391-84620897ddbb" />
+    <text type ="Normal" value = ".  The rules for a valid password are as follows:;" order="6" ID = "b575be7a-9897-4fcf-84cb-f46f85541929" />
+    <text type ="Normal" value = ";" order="7" ID = "eb4dd807-96e7-438f-aa22-61ec7b00c86b" />
+    <text type ="Normal" value = "    - Must have at least 6 characters;" order="8" ID = "e5d838ae-e262-4d7e-bc64-3ffe6f6b3cf5" />
+    <text type ="Normal" value = "    - Must contain at least one digit, one lower case letter and one upper case letter;" order="9" ID = "483fc110-6b31-46f5-97de-7679b124bc2c" />
+    <text type ="Normal" value = ";" order="10" ID = "e314aecb-6250-41cf-82de-dfeb6715277d" />
+    <text type ="Normal" value = "The following are some sample passwords and the expected output from the checker function:;" order="11" ID = "8b1b8242-1c34-47f1-81d5-4a490adbd909" />
+    <text type ="Normal" value = ";" order="12" ID = "64c810fb-de7f-4249-80af-84d2db905cf2" />
+    <text type ="Code" value = "    aA4bc           False;" order="13" ID = "4dda133e-365e-42c3-912e-9aaefc986308" />
+    <text type ="Code" value = "    a4Abcd          True;" order="14" ID = "2ec0e98e-3205-4268-a03a-627faa1b1a3d" />
+    <text type ="Code" value = "    aaa4aaa         False;" order="15" ID = "80536748-f4c9-49d2-bbc1-8ace568778bb" />
+    <text type ="Code" value = "    aAaAaA          False;" order="16" ID = "ef4f4a13-dec3-4405-9505-f17a94ee246e" />
+</document>
+<document name = "passwordCheckerCode" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "91dbbcbb-7a79-4eae-9db4-4ea8aab829fc">
+    <text type ="Comment" value = "# Function to check if a password is well-formed, that is;" order="0" ID = "fa744140-0cc9-4a16-82d8-4b687ddaad31" />
+    <text type ="Comment" value = "# contains at least 6 characters with at least one of each of;" order="1" ID = "c90c1f82-72a3-4057-ae96-47c4fd291c73" />
+    <text type ="Comment" value = "# a digit, a lowercase letter and an uppercase letter.;" order="2" ID = "db82dea9-c878-47e5-b021-95844a059365" />
+    <text type ="Normal" value = ";" order="3" ID = "d54ce2ac-1147-41e6-806d-00a0a8207fe0" />
+    <text type ="Comment" value = "# Quintin;" order="4" ID = "54ad033b-f258-44de-a0bf-a3dc0e0946c9" />
+    <text type ="Normal" value = ";" order="5" ID = "4bd30e2f-632e-4f28-b0a8-400a132637a7" />
+    <text type ="Code" value = "from string import *;" order="6" ID = "c9c60dc4-6b83-4169-ba05-96e0cb40f019" />
+    <text type ="Normal" value = ";" order="7" ID = "10bedb8f-ed4b-4beb-a0d0-575ca0913e7f" />
+    <text type ="Code" value = "minLength = 6;" order="8" ID = "7f3a1d9f-743e-4b27-84db-66f7884deb7d" />
+    <text type ="Normal" value = ";" order="9" ID = "1273e89b-4d13-46d9-8385-7b29d88639f0" />
+    <text type ="Code" value = "def checkPassword( password ):;" order="10" ID = "1f95ea6c-3f8a-44ae-a9c1-a3c605f2ca40" />
+    <text type ="Comment" value = "    # Check if the length is ok;" order="11" ID = "034abfa6-cbf0-4608-84c1-82c66a482c81" />
+    <text type ="Code" value = "    if len( password ) &gt;= minLength:;" order="12" ID = "0caf0abd-790d-4528-a7f0-70b3698e8789" />
+    <text type ="Code" value = "        lengthOK = True;" order="13" ID = "4656298b-0b54-48a4-8427-e4fc5be0747a" />
+    <text type ="Code" value = "    else:;" order="14" ID = "757a02ad-ad3c-4d02-9c6e-770ab3eb8eb6" />
+    <text type ="Code" value = "        lengthOK = False;" order="15" ID = "34f13d9e-2d18-4132-a9d3-ab9d9e4239d6" />
+    <text type ="Code" value = "    lengthOK = len( password) &gt;= minLength   " order="16" ID = "911453ff-d5b5-4794-b5a0-a563cd4caefb" />
+    <text type ="Comment" value = "# Test on whether length is ok;" order="17" ID = "9eabf1fe-2980-4285-8f9f-07959c186278" />
+    <text type ="Normal" value = "    ;" order="18" ID = "7d90fa78-0e7a-4141-817b-dfbd955c7356" />
+    <text type ="Code" value = "    hasLowerLetter = False    " order="19" ID = "5d59fcde-09aa-4f87-beeb-013d0e1f4a13" />
+    <text type ="Comment" value = "# Initially, assume no lowercase letters;" order="20" ID = "cdaa73e0-79f6-4177-aaa0-8ef72b131f7f" />
+    <text type ="Code" value = "    hasUpperLetter = False    " order="21" ID = "4cf27d4b-a22e-4508-9598-0953a3c22f9e" />
+    <text type ="Comment" value = "# ... same for uppercase letters;" order="22" ID = "6f409e4f-0a74-42e3-a7f7-dcf81041e981" />
+    <text type ="Code" value = "    hasDigit = False          " order="23" ID = "94f1a8e1-4503-416a-8cc5-3299bfa3fd7b" />
+    <text type ="Comment" value = "# ... same for digits;" order="24" ID = "fd0ccb1e-fa4d-4be3-90d8-72d5ede408a4" />
+    <text type ="Normal" value = ";" order="25" ID = "b0d684ac-514f-4a0d-981c-e28577fa2c4c" />
+    <text type ="Comment" value = "    # Check each character in turn in the password;" order="26" ID = "0c798b06-9aec-45f4-b404-8865bd7ddc58" />
+    <text type ="Code" value = "    for char in password:;" order="27" ID = "581553cf-31cc-45d2-b0df-e9051757fd2f" />
+    <text type ="Code" value = "        if char in lowercase:;" order="28" ID = "d3e55f5a-8822-4b5b-9e7e-ea7c5f2970c3" />
+    <text type ="Code" value = "            hasLowerLetter = True;" order="29" ID = "4b274763-e1e2-4f83-939c-d0fc8d2e8268" />
+    <text type ="Code" value = "        if char in uppercase:;" order="30" ID = "f164661c-40b8-43d4-9ad6-7900006a8309" />
+    <text type ="Code" value = "        elif char in uppercase:;" order="31" ID = "b4b44464-56c7-4fa9-b366-bd42b0fba05b" />
+    <text type ="Code" value = "            hasUpperLetter = True;" order="32" ID = "2c6294f6-b87c-441e-bc14-ebf7ece21e79" />
+    <text type ="Code" value = "        if char in digits:;" order="33" ID = "3789bdcd-139d-45fa-bf57-147ebf6f1a5e" />
+    <text type ="Code" value = "        elif char in digits:;" order="34" ID = "74f6faac-cf39-430a-9b96-57f4547ba5db" />
+    <text type ="Code" value = "            hasDigit = True;" order="35" ID = "f1359f08-4c1c-4768-83b7-8b28cda3de18" />
+    <text type ="Normal" value = ";" order="36" ID = "a969e7ab-669c-4104-8087-2d471d66b571" />
+    <text type ="Comment" value = "    # Combine our analysis into a single boolean value and return it;" order="37" ID = "f3b2bfab-23c6-445c-ab7f-3ea64bddce87" />
+    <text type ="Code" value = "    result = lengthOK and hasLowerLetter and hasUpperLetter and hasDigit;" order="38" ID = "2d68099c-a92e-4728-99ec-bab0d50f4c02" />
+    <text type ="Code" value = "    return ???;" order="39" ID = "9d55155c-7a13-4dfd-aee0-809bd79abda2" />
+    <text type ="Code" value = "    return result;" order="40" ID = "8fef0dae-fc6b-4ff4-8002-b72fabccbf88" />
+    <text type ="Code" value = "    return lengthOK and hasLowerLetter and hasUpperLetter and hasDigit;" order="41" ID = "3c854404-dfdc-462a-8d79-b2fa2da7b10d" />
+</document>
+<document name = "JustAMinuteProblem" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "494466e5-fe65-4eda-b3b0-2a090d109b97">
+    <text type ="Normal" value = "The Just A Minute program on BBC Radio 4 asks contestants to speak on a specific topic for one minute.  Among other conditions, they must not use any word more than once.  To help the game show hosts, the BBC has asked you to " order="0" ID = "a4167d3f-e668-4dff-b5f2-7631a8d8ec90" />
+    <text type ="Normal" value = "write a complete program " order="1" ID = "a91ba6ec-cdc4-45b7-ab92-2984163d825b" />
+    <text type ="Normal" value = "that " order="2" ID = "5646e7d9-74b3-4710-b93b-c2a34ece44cb" />
+    <text type ="Normal" value = "reads in a single line of text from the user" order="3" ID = "ba8449d6-081f-4bc6-80f1-61d0c789287d" />
+    <text type ="Normal" value = ", representing whatever the contestant said, and " order="4" ID = "dc20dc25-d913-4946-926b-1f1d69023026" />
+    <text type ="Normal" value = "writing out any words that appear more than once in the text.;" order="5" ID = "92918989-f06b-459a-8c77-d09d047ec9fe" />
+    <text type ="Normal" value = ";" order="6" ID = "45f368bd-936a-47ad-a2bf-0b4a009959c8" />
+    <text type ="Normal" value = "For example, if the contestant said, on the topic The Ides of March:;" order="7" ID = "92bc824e-0bff-4a57-b9b7-81bf02365e64" />
+    <text type ="Normal" value = ";" order="8" ID = "e70c71d3-aa05-4d77-9e87-8cdac2b421ff" />
+    <text type ="Code" value = "The Ides of March are well known historically as the date on which Julius Caesar was assassinated by Brutus and others.  To be precise, the day of the year in question is the 15th of March.  JC should have known better as Shakespeare?s soothsayer apparently warned him of the danger, saying Beware the Ides of March.;" order="9" ID = "db1449fc-475c-4fbb-bf06-ac423816cc61" />
+    <text type ="Normal" value = ";" order="10" ID = "1fa6d30d-76e2-481a-9add-baed94dafa00" />
+    <text type ="Normal" value = "the programme should write out the following: ;" order="11" ID = "8833628c-5fdf-4fd1-b279-92e930e45ba1" />
+    <text type ="Normal" value = ";" order="12" ID = "02602b18-b319-47e1-8222-87d2044e078b" />
+    <text type ="Code" value = "known 2;" order="13" ID = "7862fbc6-6a32-4fa3-b6e0-b79c63b52cd4" />
+    <text type ="Code" value = "as 2;" order="14" ID = "9cdd113f-3fed-46f0-bafd-ffda5c6a85e1" />
+    <text type ="Code" value = "ides 2;" order="15" ID = "0b91ad00-3864-43fc-b871-ee2cea6a7b6f" />
+    <text type ="Code" value = "march 3;" order="16" ID = "64777699-1e30-4c7a-88c8-91cd07a4aac0" />
+    <text type ="Code" value = "of 5;" order="17" ID = "3db23e68-d9c4-4eee-89a0-34329090d426" />
+    <text type ="Code" value = "the 7;" order="18" ID = "e8846dc1-ff20-4562-a5ec-953bb8adef78" />
+    <text type ="Normal" value = ";" order="19" ID = "567d7a16-7e39-46be-a299-2855945de883" />
+    <text type ="Normal" value = "Note that the order in which the words appear in the output is not important and that upper and lower case are treated the same - see how 'The' and 'the' are treated the same in the example above.;" order="20" ID = "957ba26f-60b0-4f54-bc64-8cc892656b1a" />
+</document>
+<document name = "JustAMinuteCode" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "c66bcd1e-2d28-4527-9988-7536066ebfa7">
+    <text type ="Comment" value = "# Checker suitable for a game such as Just a Minute;" order="0" ID = "bc4e37c7-e72e-4054-90de-eb8d7ca7d664" />
+    <text type ="Comment" value = "# Checks for repeated words in a sentence;" order="1" ID = "aa421fb2-d55a-438e-a97f-b9c1282b063c" />
+    <text type ="Normal" value = ";" order="2" ID = "6699d052-d528-400b-8659-a2d63f3267d8" />
+    <text type ="Comment" value = "# Quintin;" order="3" ID = "ebd507fc-d355-4da4-9c5d-d75008e72793" />
+    <text type ="Normal" value = ";" order="4" ID = "36248888-6653-4836-8f2b-16a7603738c8" />
+    <text type ="Code" value = "from string import *;" order="5" ID = "eeacb02d-45e3-4104-a58d-c90475728255" />
+    <text type ="Normal" value = ";" order="6" ID = "967be561-82c5-4e7e-b764-3feebc7a4ed2" />
+    <text type ="Code" value = "text = raw_input( &quot;Please enter the text to be checked: &quot; );" order="7" ID = "84129754-ae3c-4563-9ab0-367d1fe6b3f4" />
+    <text type ="Normal" value = ";" order="8" ID = "7027d6ca-4ab3-473c-bf17-b7259e98b4c8" />
+    <text type ="Comment" value = "# Turn the raw text into a list of words;" order="9" ID = "db1883eb-3acd-4b07-b957-018249d0deca" />
+    <text type ="Code" value = "text = lower( text );" order="10" ID = "80a39fb8-9f65-4ad6-a4b1-2af8e722e0ed" />
+    <text type ="Code" value = "textNoPunctuation = &quot;&quot;;" order="11" ID = "d48a8cd9-3136-4cee-b8a0-603654009834" />
+    <text type ="Code" value = "for char in text:;" order="12" ID = "33f26e8c-6519-4019-98bb-83dc62daa6b5" />
+    <text type ="Code" value = "    if char not in punctuation:;" order="13" ID = "91b0eed7-9b46-4850-b46c-239d9408354b" />
+    <text type ="Code" value = "        textNoPunctuation = textNoPunctuation + char;" order="14" ID = "ce4e1218-d095-400d-9457-2d95662f50af" />
+    <text type ="Normal" value = ";" order="15" ID = "ba2c8f3c-6e7e-4824-975a-c7e75df54c54" />
+    <text type ="Code" value = "words = split( textNoPunctuation );" order="16" ID = "009052d4-ce74-451b-8fff-727ff7140784" />
+    <text type ="Normal" value = ";" order="17" ID = "6de81795-5d38-4346-a0d1-1f5a563e9baa" />
+    <text type ="Comment" value = "# Scan over the word list, keeping a count of each word seen;" order="18" ID = "50413c99-8ead-4c5a-b527-00883e483044" />
+    <text type ="Code" value = "wordCounts = {}" order="19" ID = "aba86bd6-dcfa-4dcc-befe-5ca643d87913" />
+    <text type ="Comment" value = "          # Use a dictionary to keep the word counts;" order="20" ID = "85c5eb5f-1a23-4b0c-b251-5fe20d232516" />
+    <text type ="Normal" value = ";" order="21" ID = "a126dd90-d9d8-49ae-802a-eabfcfe79294" />
+    <text type ="Code" value = "for word in words:;" order="22" ID = "52989258-b1b3-493d-a614-e4a605ed7288" />
+    <text type ="Code" value = "    if word in wordCounts:;" order="23" ID = "1158f88e-3568-4106-90cd-7ea80d8485dc" />
+    <text type ="Code" value = "        wordCounts[ word ] = wordCounts[ word ] + 1;" order="24" ID = "82d5bebf-a6ab-485a-8497-baf412fb083c" />
+    <text type ="Code" value = "    else:;" order="25" ID = "d5b3629d-a7fe-45e2-bb76-e0dd6e713bc7" />
+    <text type ="Code" value = "        wordCounts[ word ] = 1" order="26" ID = "bc41cc6b-7836-4df6-8228-aef928850e7b" />
+    <text type ="Comment" value = "    # Create a new entry for this word, not seen before;" order="27" ID = "0cd4ab6e-9ae6-4042-82d1-ff4f850472b4" />
+    <text type ="Normal" value = ";" order="28" ID = "49ee0209-7e1f-440f-8a31-842883a6a341" />
+    <text type ="Comment" value = "# Now print out the results;" order="29" ID = "1538e203-dfe1-46fc-a660-fa478cdcf37c" />
+    <text type ="Code" value = "for word in wordCounts:;" order="30" ID = "6eb19e36-a30f-4acb-8f3b-5e67f79f5290" />
+    <text type ="Code" value = "    print word, wordCounts[ word ];" order="31" ID = "d34dd60f-b655-41ce-9f1e-e0e060f74646" />
+    <text type ="Code" value = "    count = wordCounts[ word ];" order="32" ID = "353a564c-c0ba-4e58-9338-f694b684ce3b" />
+    <text type ="Code" value = "    if count &gt; 1:" order="33" ID = "191aa7ce-ae2e-4afb-bf0e-f4885d745670" />
+    <text type ="Comment" value = "                # Only write out words seen more than once;" order="34" ID = "fdc29718-d8f4-4687-be55-cdf39da3864d" />
+    <text type ="Code" value = "        print word, count;" order="35" ID = "547a3d8f-7017-4c29-8dfd-cb611b6646c7" />
+</document>
+<document name = "FindErrorsProblem" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "7675219b-c3e5-4f40-a5a7-c58721ea4940">
+    <text type ="Title" value = "The Problem;" order="0" ID = "b009d1f3-1174-4f48-bfec-036983029651" />
+    <text type ="Normal" value = ";" order="1" ID = "f54fa9c5-49f8-4ed0-b082-0677ccd43134" />
+    <text type ="Normal" value = "In the Lab Exam before Christmas, you had to write code to remove stop words from sentences.  The following function, remove_stop_words, is designed to take as parameter a list of words and then return a copy of the list with any occurrences of the stop words given in stop_word_list removed.  ;" order="2" ID = "82c97c73-9c0f-483a-8f8b-2819659f6d60" />
+    <text type ="Normal" value = ";" order="3" ID = "29152e7c-6f34-4bbd-99b3-69eadd73f9c5" />
+    <text type ="Normal" value = "The function contains four errors.  Identify each error precisely, explaining both the problem and how you would fix it.  Use the comment numbers to refer to particular lines.;" order="4" ID = "4ecc8a31-9884-4e9f-9c87-a754c55b1a09" />
+    <text type ="Normal" value = ";" order="5" ID = "21c1fd36-6115-4467-b202-d1a2f5975e13" />
+    <text type ="Comment" value = "# Example stop word list only, obviously too short;" order="6" ID = "8e0c841d-f030-4f74-9ad4-5f6f35600d11" />
+    <text type ="Code" value = "stop_word_list " order="7" ID = "05ffb0a2-109e-463c-9700-907bcdcaddcb" />
+    <text type ="Code" value = "= [ &quot;this&quot;, &quot;that&quot;, &quot;a&quot;, &quot;the&quot; ]    #1;" order="8" ID = "407d9887-7321-4d12-a0ff-7127fe242db6" />
+    <text type ="Normal" value = ";" order="9" ID = "2c7ffd6e-4d15-4e49-afcb-635e235c172c" />
+    <text type ="Code" value = "def remove_stop_words( " order="10" ID = "815450f5-4c11-42c5-8a90-e274d98ea3cb" />
+    <text type ="Code" value = "old_words" order="11" ID = "cee2c68f-02d9-41a1-8e56-8e2b6bf85e3d" />
+    <text type ="Code" value = " ):                #2;" order="12" ID = "c95ddcb0-55cc-46d3-9006-4f31da9f9020" />
+    <text type ="Code" value = "    for " order="13" ID = "a5254f2e-edb7-4351-b168-6c14343e9b5e" />
+    <text type ="Code" value = "i" order="14" ID = "c948d703-f028-40a7-b107-8b78fd7f2dd1" />
+    <text type ="Code" value = " in " order="15" ID = "d4623a4b-be82-47f2-a106-ce8498d2b8f6" />
+    <text type ="Code" value = "old_words" order="16" ID = "284e9c8e-0ecd-4a90-868f-8498c756f919" />
+    <text type ="Code" value = ":                            #3;" order="17" ID = "4b0bc7cc-6e8e-4ad2-a362-d7fac202c9fb" />
+    <text type ="Code" value = "        if " order="18" ID = "4fb5fa51-bd75-4b77-ae71-81c1fbb84ed0" />
+    <text type ="Code" value = "i" order="19" ID = "81baff36-9a12-44f1-8d8a-0925a0d7cff2" />
+    <text type ="Code" value = " in " order="20" ID = "0e1b4c1a-ac77-41c6-ba13-d9175fcc8c72" />
+    <text type ="Code" value = "stop_word_list" order="21" ID = "3462831a-ce02-4d14-a408-6c5eab8e5d06" />
+    <text type ="Code" value = ":                    #4;" order="22" ID = "95dd9aa1-de65-4ad8-b7a8-ffcddeeba6b6" />
+    <text type ="Code" value = "            words" order="23" ID = "47e3f720-176f-473c-8a3c-d2ee7f7bdb03" />
+    <text type ="Code" value = " = " order="24" ID = "85cfaebb-d86a-469d-9059-21946e1526af" />
+    <text type ="Code" value = "words" order="25" ID = "c9096dfd-9ad5-4e70-98a8-f1f82ee4bc99" />
+    <text type ="Code" value = " + " order="26" ID = "2b6d8930-eb11-45b1-9537-f6a37d939f56" />
+    <text type ="Code" value = "i" order="27" ID = "bf28b6a9-c4bd-428a-8c75-ac4bd418bce5" />
+    <text type ="Code" value = "                      #5;" order="28" ID = "23676344-6355-4f12-a14e-ebb02f4b2105" />
+    <text type ="Normal" value = ";" order="29" ID = "a2aaf471-c676-4a7a-97a5-fe4598e25285" />
+    <text type ="Code" value = "        return " order="30" ID = "de5378ab-4d5f-4c8a-9d0e-209ceedab3be" />
+    <text type ="Code" value = "words" order="31" ID = "2194069b-1a6f-4e0d-adc8-2657e0edf58e" />
+    <text type ="Code" value = "                               #6;" order="32" ID = "5033f9c7-040b-45e8-8971-c6e41685e788" />
+</document>
+<document name = "FindErrorsStrategies" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "7d4ddd29-50ae-4ff0-bf4b-b17c2e2bf798">
+    <text type ="Title" value = "Strategies;" order="0" ID = "252cbcbf-08f4-4cd6-9c34-eb83e19d93c2" />
+    <text type ="Normal" value = ";" order="1" ID = "b14badaa-1082-47de-b8ba-f889923edd62" />
+    <text type ="Normal" value = "1.  Do your best to understand how the code is meant to be working.  This is usually explained to a greater or lesser extent in the problem itself.  As you do this, you may well encounter problems.  If not, then look at the rest of the points.;" order="2" ID = "524a54fb-3fd1-4ff4-81a0-574a6c01b97f" />
+    <text type ="Normal" value = ";" order="3" ID = "d6c93ec4-8ea6-41f9-af9d-0877e1aef60e" />
+    <text type ="Normal" value = "2.  Are all the variables initialised properly?  That is, is any variable used BEFORE it has first been given a value?;" order="4" ID = "c9fe05c8-d9b8-47f0-b4ab-595b61fb367c" />
+    <text type ="Normal" value = ";" order="5" ID = "d860b599-a3f0-4b1a-9946-91cf9c3432bc" />
+    <text type ="Normal" value = "3.  In loops, check that the loop will &quot;go round&quot; the right number of times.  Take care to check on the initialisation, test for completion of the loop, and update, of any stepper/counter variable;" order="6" ID = "65f6ec75-2224-4cf2-955a-fddb927a1a5e" />
+    <text type ="Normal" value = ";" order="7" ID = "597b7931-8f5a-47d7-b75c-538ab5073208" />
+    <text type ="Normal" value = "4.  Check tests in if statements and while loops.  Are you sure the test is the correct one?  Compound Boolean expressions, where you are using more than one ?and? or ?or? operator, can often be used incorrectly.;" order="8" ID = "aad5e936-76ad-45f1-9734-fdab176d156d" />
+    <text type ="Normal" value = ";" order="9" ID = "ba6453ea-edca-4626-9702-156f966c94b3" />
+    <text type ="Normal" value = "5.  In Python, indentation is important.  Is every statement at the correct indentation level?  It is easy to miss this, so look carefully.;" order="10" ID = "cd376025-8d81-47d3-9535-93c9b7afbe41" />
+    <text type ="Normal" value = ";" order="11" ID = "dd55cb3b-d20c-4988-bbdc-cf275b1bda2e" />
+    <text type ="Normal" value = "6.  Are the computations required by the problem being performed correctly?  This isn't just arithmetic operations - are all the boolean and string and list and dictionary operations correct?;" order="12" ID = "c8f58e36-a198-4d6e-8b8a-275f386d8877" />
+</document>
+<document name = "FindErrorsAnswers" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "9811008c-0838-41a5-9827-4e3893d1ebcf">
+    <text type ="Title" value = "The Errors;" order="0" ID = "b24c5147-f718-4e94-b756-7bfcdc50d22f" />
+    <text type ="Normal" value = ";" order="1" ID = "3e757fa6-a75e-40b1-abee-6efc1fd43f3d" />
+    <text type ="Normal" value = "1.  The variable words is not initialised.  It is a gatherer variable, and should be initialised to the empty list.  To fix it, between line 2 and 3, at one indentation level in, add ;" order="2" ID = "b91c1334-a102-4562-82b7-5633de9ab760" />
+    <text type ="Normal" value = ";" order="3" ID = "458d5ef2-d634-4e2c-a0cc-8e7055a07d3d" />
+    <text type ="Code" value = "    words = [];" order="4" ID = "e1855524-6213-4c39-ad7c-ac2413e9e282" />
+    <text type ="Normal" value = ";" order="5" ID = "bc18176c-cd07-4691-8215-a333149fe5de" />
+    <text type ="Normal" value = "2.  The test in the if statement in Line 4 is wrong.  We should be testing for whether the current word we?re looking at is NOT in the stopword list ? only then do we add it to our new list.  Change the line to:;" order="6" ID = "cb66ffea-f216-4899-ae82-05e397e51b52" />
+    <text type ="Normal" value = ";" order="7" ID = "ddc47a91-58b3-4246-b733-eb18f71c7167" />
+    <text type ="Code" value = "    if i not in stop_word_list:;" order="8" ID = "9a05271d-e74e-4740-88ff-20b572581a25" />
+    <text type ="Normal" value = ";" order="9" ID = "e7800769-fb10-46b7-b9c3-49c107b6accd" />
+    <text type ="Normal" value = "3.  The return statement is not indented correctly.  Just now the function will return the first time a valid word is found.  It should be moved out to the same indentation as the for loop header - that is, it should only be executed once the for loop is finished.;" order="10" ID = "dfe03ce9-a931-4d5f-a219-a753295b1aa0" />
+    <text type ="Normal" value = ";" order="11" ID = "afcfa1d6-5b74-4fac-a8cf-8b3e1f867a6f" />
+    <text type ="Normal" value = "4.  The update to the words variable on line 5 is incorrect.  A word is being added to a list, but only lists can be added to lists.  The line should read:;" order="12" ID = "033c8bfc-6efb-403a-b9bb-0afdd81eaf2f" />
+    <text type ="Normal" value = ";" order="13" ID = "49b5f917-dd3d-4ddd-b705-dffce314958f" />
+    <text type ="Code" value = "    words = words + [i];" order="14" ID = "4d7e52db-0605-4c56-b3be-f4b221da4ca6" />
+</document>
+<document name = "LinearSearchDoorEntryProblem" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "153fb61a-c567-4f51-9ed8-4f0a6fb74769">
+    <text type ="Title" value = "Linear search problem;" order="0" ID = "3be074c0-7ea6-475e-8fac-8e438dfc02c7" />
+    <text type ="Normal" value = ";" order="1" ID = "c2d95124-8838-4046-8957-1294ceb3c5e7" />
+    <text type ="Normal" value = "A door entry system is monitoring access to a building.  Every time sometime tries to enter the building by swiping their id card, the door entry system will call a subprogram " order="2" ID = "1391319c-43b9-4876-9479-3549ddf6e10d" />
+    <text type ="Normal" value = "taking the id from the card as parameter " order="3" ID = "b8e753a4-a395-42ae-a910-ab0ea2725a0b" />
+    <text type ="Normal" value = "and " order="4" ID = "d87a149e-7497-44e0-b4cf-bcedf69d2190" />
+    <text type ="Normal" value = "returning a Boolean value " order="5" ID = "3253ec36-cf3a-44d3-b7da-1dabd8fe32f8" />
+    <text type ="Normal" value = "according to " order="6" ID = "a37dbbcd-801c-47d1-8c0b-de4d8ca613a0" />
+    <text type ="Normal" value = "whether the person should be permitted to enter.;" order="7" ID = "2315e73f-7c36-4bb5-ac9e-4faa0d3dff13" />
+    <text type ="Normal" value = ";" order="8" ID = "3c76e122-bf76-438a-a68e-b0366f022ec6" />
+    <text type ="Normal" value = "Assume the subprogram can access a global variable containing an existing array of authorised users' ids.;" order="9" ID = "2d12fb1e-cc65-4dc4-9729-196db7c90518" />
+    <text type ="Normal" value = ";" order="10" ID = "a724344e-7554-4315-806d-0de3f8848c22" />
+    <text type ="Normal" value = "a) Write a general specification for the subprogram.;" order="11" ID = "1732516d-9662-4345-976a-504f330786e8" />
+    <text type ="Normal" value = "b) Write the subprogram itself in a language of your choice.;" order="12" ID = "a24f2002-681d-42d0-93a5-4ccae14704b0" />
+    <text type ="Normal" value = ";" order="13" ID = "3c91e2bd-1e60-45d6-8b49-3462a0d0fce2" />
+    <text type ="Normal" value = "--------------------------------------;" order="14" ID = "c06a58ed-937b-4b95-8e2c-98d4504e0f2c" />
+    <text type ="Normal" value = ";" order="15" ID = "b506b49b-3ee8-4ead-8ae8-ce84b6f9e913" />
+    <text type ="Normal" value = "General Spec;" order="16" ID = "25799b2c-8c2c-4733-b01e-e484a75530ba" />
+    <text type ="Normal" value = ";" order="17" ID = "7a622485-23c5-4c62-8e1c-c37c7e84899f" />
+    <text type ="Normal" value = "Subprogram : " order="18" ID = "e4c17d11-5e1e-4469-83a4-70b226862de3" />
+    <text type ="Normal" value = "function" order="19" ID = "4315d97c-b4fb-445e-a16d-1fbc1d482491" />
+    <text type ="Normal" value = ";" order="20" ID = "4315d97c-b4fb-445e-a16d-1fbc1d482492" />
+    <text type ="Normal" value = "Name  : " order="21" ID = "37890d7a-5861-40e1-8e1a-06e1ef300025" />
+    <text type ="Normal" value = "permitEntry" order="22" ID = "42ded215-ca23-453e-a59f-9e848a70d40e" />
+    <text type ="Normal" value = ";" order="23" ID = "42ded215-ca23-453e-a59f-9e848a70d40f" />
+    <text type ="Normal" value = "Data in / Parameters : " order="24" ID = "adadaa64-8cbe-47a3-9ed4-dcd8fe740a79" />
+    <text type ="Normal" value = "the person id" order="25" ID = "5456cd67-48fe-4651-b285-5dc114b70287" />
+    <text type ="Normal" value = " - assume this is a string, since no information given" order="26" ID = "23bf322e-fcff-411b-b0e3-76a700621aa4" />
+    <text type ="Normal" value = ";" order="27" ID = "23bf322e-fcff-411b-b0e3-76a700621aa5" />
+    <text type ="Normal" value = "Return value(s) : " order="28" ID = "7c970691-9a48-46e1-b41d-9a54af3a817a" />
+    <text type ="Normal" value = "a Boolean value, " order="29" ID = "5f03a03e-3d2e-45e9-8def-8f173ffdd0a8" />
+    <text type ="Normal" value = "true if the supplied id is authorised to enter" order="30" ID = "457b69f4-ecad-4419-937b-9b10620ced7a" />
+    <text type ="Normal" value = ";" order="31" ID = "457b69f4-ecad-4419-937b-9b10620ced7b" />
+    <text type ="Normal" value = "Action  : " order="32" ID = "8415c4fc-505f-4764-8357-e234f7fb682f" />
+    <text type ="Normal" value = "search through the authorised users' array to see if the supplied" order="33" ID = "9de6a86e-bf35-4511-90f2-07f1f3663d9c" />
+    <text type ="Normal" value = ";" order="34" ID = "9de6a86e-bf35-4511-90f2-07f1f3663d9d" />
+    <text type ="Normal" value = "    id is  present or not;" order="35" ID = "b5289b05-2fe3-404b-b14c-93c52e0604fd" />
+    <text type ="Normal" value = "Assume  : " order="36" ID = "7752f95f-3953-474a-95ed-820378b75503" />
+    <text type ="Normal" value = "an array of strings of authorised users, called authUsers" order="37" ID = "9070cad6-8d8c-4d7e-a431-cbdccd94dbca" />
+    <text type ="Normal" value = ";" order="38" ID = "9070cad6-8d8c-4d7e-a431-cbdccd94dbcb" />
+</document>
+<document name = "LinearSearchDoorEntrySolutionHaggis" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "a776e10e-f362-4d73-8d98-f616d68821ed">
+    <text type ="Comment" value = "# Function to check whether a given id is in an array ;" order="0" ID = "c7f011b5-5147-4ef5-afad-ed70a699c730" />
+    <text type ="Comment" value = "# of ids;" order="1" ID = "fc08a62d-8732-4395-a328-fa383bb6d289" />
+    <text type ="Code" value = ";" order="2" ID = "8880d222-d7b4-4229-9720-1ad5409aa967" />
+    <text type ="Code" value = "SET authUsers TO &lt;array of STRING&gt;;" order="3" ID = "747dc5fa-ef28-42fb-8f86-aa45604e97a1" />
+    <text type ="Code" value = ";" order="4" ID = "45ad8790-91a0-4fbd-8607-478e18419436" />
+    <text type ="Code" value = "FUNCTION permitEntry( STRING personId ) RETURNS BOOLEAN;" order="5" ID = "0cfc24c8-f252-4ac7-93fa-8ad8e8f549bd" />
+    <text type ="Code" value = "    SET found TO false;" order="6" ID = "63ca33e1-8656-456a-ac96-353d9bb4265b" />
+    <text type ="Code" value = "    SET idPos TO 0;" order="7" ID = "d3c93dae-df49-4aab-8e1a-bc9bb4d3255b" />
+    <text type ="Code" value = ";" order="8" ID = "ce3ffff4-23b2-4e3b-8df9-f502cb802a8f" />
+    <text type ="Code" value = "    WHILE " order="9" ID = "97202177-298e-42e9-8414-1934825269a1" />
+    <text type ="Code" value = "&lt;test to continue looping&gt;" order="10" ID = "b4641ac6-8151-48df-b4df-8a9a2cf8669c" />
+    <text type ="Code" value = "NOT found AND " order="11" ID = "d7d17de5-7a80-4e28-9d27-fb295e25401d" />
+    <text type ="Code" value = "idPos &lt; length( authUsers ) " order="12" ID = "e5c0832a-5627-4c1f-afc4-b8dfab7fe162" />
+    <text type ="Code" value = " DO;" order="13" ID = "2f37f866-9e2f-450c-9029-b24ac4f079b0" />
+    <text type ="Code" value = "        IF personId = authUsers[ idPos ] THEN;" order="14" ID = "3df37dd8-ecf6-4e5c-9f62-136545c151c4" />
+    <text type ="Code" value = "            &lt;action to take when we find a match&gt;;" order="15" ID = "e8953fae-ff83-4405-ae89-e52f436e7b42" />
+    <text type ="Code" value = "            SET found TO true;" order="16" ID = "6af29113-bd87-4305-b2ed-a80950c07bc7" />
+    <text type ="Code" value = "        END IF;" order="17" ID = "f1930345-458b-40cd-874d-3f5d395cf919" />
+    <text type ="Code" value = ";" order="18" ID = "ab039eb1-a694-499d-85fd-9778c6c022cf" />
+    <text type ="Code" value = "        SET idPos TO idPos + 1;" order="19" ID = "04bd5927-b305-458c-9295-c404abc9ce60" />
+    <text type ="Code" value = "    END WHILE;" order="20" ID = "bdccf551-b530-4547-81c4-56b9f549861a" />
+    <text type ="Code" value = ";" order="21" ID = "5a8088bb-fb0f-479e-b2e3-4714e0cb2fac" />
+    <text type ="Code" value = "    RETURN found;" order="22" ID = "2708f83a-7a8f-4f66-9c46-e9f1516afc69" />
+    <text type ="Code" value = "END FUNCTION;" order="23" ID = "70e6b18b-6e83-4e1d-bd41-27c846fb73d3" />
+</document>
+<document name = "LinearSearchDoorEntrySolutionPython" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "4f263d37-b4fe-46c6-9aba-33005add6afe">
+    <text type ="Comment" value = "# Function to determine if user supplied as parameter;" order="0" ID = "7f3159bc-8518-4026-a059-e7e4e028bd94" />
+    <text type ="Comment" value = "# is authorised to enter;" order="1" ID = "9d0f0d4e-be4d-40e5-a75e-389e59cce5a3" />
+    <text type ="Normal" value = ";" order="2" ID = "e79f51f2-05b1-47b1-9f8a-12ac756f97c1" />
+    <text type ="Comment" value = "# This is an example array of ids for authorised users, for testing;" order="3" ID = "b64436c3-09eb-494a-b55c-08da2b501689" />
+    <text type ="Code" value = "authUsers = [ &quot;a241&quot;, &quot;z742&quot;, &quot;j123&quot;, &quot;k754&quot;];" order="4" ID = "b6363ecb-3b38-430c-aa3e-6cc25f62191d" />
+    <text type ="Normal" value = ";" order="5" ID = "832966e4-2c13-4d84-b6c8-a837453b84d5" />
+    <text type ="Code" value = "def permitEntry( personId ):;" order="6" ID = "ebfaf0bc-7cd2-47d9-83c5-4919769ca87b" />
+    <text type ="Code" value = "    found = False;" order="7" ID = "e4f65d58-4daa-4cab-ab7c-fb2e80e25021" />
+    <text type ="Code" value = "    idPos = 0;" order="8" ID = "37d35100-ab85-4f26-80e8-fb3f11b3ad36" />
+    <text type ="Normal" value = ";" order="9" ID = "eb367a6f-5593-46da-8b68-1e6d1ecd00ea" />
+    <text type ="Comment" value = "    # Use linear search to see if 'personId' is in 'authUsers';" order="10" ID = "e42dd4f5-092e-4b17-b3d1-2f2f9da27bf6" />
+    <text type ="Code" value = "    while " order="11" ID = "a449848c-d4db-4c3c-8c7d-cb2a42a74ee4" />
+    <text type ="Comment" value = "# test to continue looping;" order="12" ID = "5c0c4993-c158-4b8f-b6a5-bfc6251a6f3a" />
+    <text type ="Code" value = "not found and " order="13" ID = "aeb968ed-0ca2-428d-8f59-45a39f134105" />
+    <text type ="Code" value = "idPos &lt; len( authUsers )" order="14" ID = "c4ac8a93-48d2-4362-be3d-d655201794d8" />
+    <text type ="Code" value = " :;" order="15" ID = "1fd910ab-44de-49df-8f2c-74e89c9d0da3" />
+    <text type ="Code" value = "        if personId == authUsers[ idPos ]:;" order="16" ID = "0cdfb40a-4984-468c-96cc-db2405abe00c" />
+    <text type ="Comment" value = "            # Action to take when we find a match;" order="17" ID = "72f5fdde-f2d6-4231-9b89-4835b8799378" />
+    <text type ="Code" value = "            found = True;" order="18" ID = "99d233cb-1c60-41f2-9046-e5572118dbcf" />
+    <text type ="Normal" value = "    ;" order="19" ID = "90584dbc-1f9c-4f16-9853-d6657beb2c9c" />
+    <text type ="Code" value = "        idPos = idPos + 1;" order="20" ID = "0b0d0fdc-c081-4cf5-a57b-5fcf84e5fad8" />
+    <text type ="Normal" value = ";" order="21" ID = "fcab335b-eff6-4488-9e76-9d8d62bd6948" />
+    <text type ="Code" value = "    return found;" order="22" ID = "c884ae88-bcc4-4deb-9c13-a7ea0f19fbfd" />
+</document>
+<document name = "countEntriesProblemPython" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "dfab10a4-b789-408d-bda7-538f3a0ff556">
+    <text type ="Normal" value = "The Door Entry problem has been extended.  The system now keeps track of all attempts to access the building, in an array called " order="0" ID = "5f9ecedb-bf01-41df-9ac2-b0e11ff8bb7a" />
+    <text type ="Normal" value = "attempts" order="1" ID = "51371577-6038-4bac-a31b-4a30ca1a6359" />
+    <text type ="Normal" value = ".  Each entry in this array is a " order="2" ID = "c0d12ff9-93bc-4b4c-8460-36743005d394" />
+    <text type ="Normal" value = "dictionary that has a &quot;user&quot; field, this is the user id of the person who tried to enter, and a &quot;success&quot; field, this is a Boolean indicating whether the attempt to enter was successful or not" order="3" ID = "6cfccf08-8b6c-452c-be42-6fc87308ddcc" />
+    <text type ="Normal" value = ".  An example dictionary for a successful entry by the user with id &quot;k342&quot; is:;" order="4" ID = "360649d3-6dab-42f2-bf83-687429694682" />
+    <text type ="Normal" value = ";" order="5" ID = "a39d08fb-7b0f-4538-be33-e2f1458b6501" />
+    <text type ="Normal" value = "     { &quot;user&quot; : &quot;k342&quot;, &quot;success&quot; : True };" order="6" ID = "55583b14-3498-459d-91b7-0ba878b5fa22" />
+    <text type ="Normal" value = ";" order="7" ID = "0ae37ebb-f3a8-4015-ac37-ff2bc97aac55" />
+    <text type ="Normal" value = "Your task is to " order="8" ID = "38c191b6-09db-4c9c-8930-370b48b3d4f2" />
+    <text type ="Normal" value = "write a function " order="9" ID = "4e3ce72e-1ca3-40e9-9ba5-dbfcf1571d4e" />
+    <text type ="Normal" value = "which takes the " order="10" ID = "dac58879-cad0-4a72-84ae-da407a549f58" />
+    <text type ="Normal" value = "id of a user as parameter" order="11" ID = "78b1be41-72df-4e4f-abde-430c7980f84b" />
+    <text type ="Normal" value = " and " order="12" ID = "9c55bf45-1b6b-4298-bf5a-a40fbe5fc503" />
+    <text type ="Normal" value = "returns the number of times that user has successfully entered " order="13" ID = "e14bf73c-7f90-4aab-94c0-cf10c479376f" />
+    <text type ="Normal" value = "the building.;" order="14" ID = "4b18f2b2-9ab2-486e-be65-702c5b02bf1a" />
+    <text type ="Normal" value = ";" order="15" ID = "ac3fb508-0d16-4be7-8274-08022f5c2bc6" />
+    <text type ="Normal" value = "Once again, you should:;" order="16" ID = "d01eafee-3308-48b4-8175-c2667c539e50" />
+    <text type ="Normal" value = ";" order="17" ID = "5e779845-f1a0-4202-8986-7c2c54e3cfa5" />
+    <text type ="Normal" value = "a) Write a general specification for the subprogram.;" order="18" ID = "6a6acb3a-ed51-4fe5-add9-d01209cef01e" />
+    <text type ="Normal" value = "b) Write the subprogram itself in Python.;" order="19" ID = "e0427a92-7a7f-406c-afb4-c095183b98f9" />
+    <text type ="Normal" value = ";" order="20" ID = "4d68e949-bde6-4502-a2e7-cc1f9736bfb7" />
+    <text type ="Normal" value = "--------------------------------------------------------------------;" order="21" ID = "8dbeda3d-ef83-4fb0-8bd5-7cc6f0fcc3ae" />
+    <text type ="Normal" value = ";" order="22" ID = "c0a9bf7f-bba9-4e6c-8593-8f9f3db6943a" />
+    <text type ="Normal" value = "General Spec;" order="23" ID = "64133529-8151-47cd-b818-1d139a6b5cda" />
+    <text type ="Normal" value = ";" order="24" ID = "dd54bb22-5d92-450d-898a-64b3fa100661" />
+    <text type ="Normal" value = "Subprogram : " order="25" ID = "3eed24ac-7005-43e5-9e0c-cf1984f577c5" />
+    <text type ="Normal" value = "function" order="26" ID = "05b138cc-9b0d-4e2f-a44d-7a43e8feb116" />
+    <text type ="Normal" value = ";" order="27" ID = "0c6e7677-a44e-4590-881f-8a274a8f3c11" />
+    <text type ="Normal" value = "Name  : " order="28" ID = "441ea585-f828-4216-aae7-b04f96ffe16e" />
+    <text type ="Normal" value = "countEntries" order="29" ID = "aa9acab6-13df-4fe8-82d3-c378cb704795" />
+    <text type ="Normal" value = ";" order="30" ID = "2cc5bb21-b4f8-4bb6-86d5-4e388754d2cd" />
+    <text type ="Normal" value = "Parameters : " order="31" ID = "ce33ddcf-0d4b-4865-85a4-1d4c0aac6e19" />
+    <text type ="Normal" value = "the person id - as before, this is a string" order="32" ID = "0729ee4b-2f76-4e59-8e8b-f92c1456c3ae" />
+    <text type ="Normal" value = ";" order="33" ID = "22f1f50d-8523-4ffe-8103-1182b1775cd3" />
+    <text type ="Normal" value = "Return value : " order="34" ID = "e9c0eec5-3491-4848-8b78-10e71b468ece" />
+    <text type ="Normal" value = "an integer, the count of successful entries for the supplied user" order="35" ID = "753da267-1a0b-4764-9599-dc086a99e7c1" />
+    <text type ="Normal" value = ";" order="36" ID = "ea207b53-c10f-440a-9700-80bbd7c6ae5a" />
+    <text type ="Normal" value = "Action  : " order="37" ID = "262b19dc-87c8-42d7-b57a-c9037ddcb027" />
+    <text type ="Normal" value = "search through the attempts array counting occurrences of dictionaries with the supplied user as the user, and noting a successful entry. " order="38" ID = "c2db7f1b-a83f-4c72-a6df-1aa7e2d1285f" />
+    <text type ="Normal" value = ";" order="39" ID = "d6325e40-4771-4c81-8246-50536d6318cd" />
+    <text type ="Normal" value = "Assume : " order="40" ID = "5255c13b-0ca5-46d7-b34d-559dc5c9aa02" />
+    <text type ="Normal" value = "all given in the question this time" order="41" ID = "44fafac2-fe03-456b-b15a-3bd3ed30e85e" />
+</document>
+<document name = "countEntriesSolutionPython" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "06ca2dfc-43ef-46a5-b1ef-c7a4e8b56d35">
+    <text type ="Normal" value = ";" order="0" ID = "fb939432-16d4-49d0-8af8-3889332d0c30" />
+    <text type ="Comment" value = "# This is an example array of entry attempts, useful for testing;" order="1" ID = "47be811c-5bdb-4445-a04a-8c8fcbd74231" />
+    <text type ="Code" value = "attempts = [ { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : False },;" order="2" ID = "c4bd5f28-2f29-47f1-8ddc-92a6c601c24d" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;x742&quot;, &quot;success&quot; : False },;" order="3" ID = "f143ae92-d7c4-44fe-8dc7-ba5306918187" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : True },;" order="4" ID = "4b2744fb-ed22-40d3-a986-ba706825a79f" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;j123&quot;, &quot;success&quot; : False },;" order="5" ID = "b766580f-b208-4232-8ac1-afdf5d6dfc8f" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;k754&quot;, &quot;success&quot; : True },;" order="6" ID = "eefa9fcf-b1b4-43b8-81f8-ec89253059ca" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : True },;" order="7" ID = "279ee530-a5da-4635-acd8-39e94706c698" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;j123&quot;, &quot;success&quot; : True },;" order="8" ID = "a8e737f5-79e6-4e90-86f4-044c0b2d1d64" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : True } ];" order="9" ID = "f8e52f30-8a47-4fc8-bd21-9227f90e5863" />
+    <text type ="Normal" value = ";" order="10" ID = "72d2b3e8-a269-415f-8f7b-69dd488976a2" />
+    <text type ="Comment" value = "# Function to count number of successful entries by the supplied user;" order="11" ID = "821c9d9e-fe80-4027-b08e-1dd99da47977" />
+    <text type ="Code" value = "def countEntries( personId ):;" order="12" ID = "f03c0a13-aa8d-42c8-97f0-bef2353a263f" />
+    <text type ="Code" value = "    successes = 0;" order="13" ID = "a751d86d-5765-4cd4-acb7-d172b043694f" />
+    <text type ="Normal" value = ";" order="14" ID = "22a955f9-37b3-443c-b355-813a3416962a" />
+    <text type ="Code" value = "    # Use typical count occurrences template to count successful entries;" order="15" ID = "120507cc-a322-492d-9bc0-c164c3127819" />
+    <text type ="Code" value = "    for attempt in attempts:;" order="16" ID = "3c9adc27-1dae-44c7-948d-884b35b65587" />
+    <text type ="Comment" value = "        # Should we count this attempt?;" order="17" ID = "5b1c6636-b0e0-4424-916b-58d84457a7af" />
+    <text type ="Code" value = "        if " order="18" ID = "9257f5e2-096e-4eab-9f2a-161a8d7512ee" />
+    <text type ="Comment" value = "# Test to decide whether to count this one;" order="19" ID = "21c0a1fc-eb13-4ffc-b4df-c7c0cb7e119d" />
+    <text type ="Code" value = "attempt[ &quot;user&quot; ] == personId and attempt[ &quot;success&quot; ]:;" order="20" ID = "34ea7d84-34d9-4a00-90d2-b831c7a18f00" />
+    <text type ="Code" value = "            successes = successes + 1;" order="21" ID = "21faa0a1-2210-4e4c-a502-7712823b696e" />
+    <text type ="Normal" value = "            ;" order="22" ID = "ec17d325-99f1-4a53-9960-9866e5d5c546" />
+    <text type ="Code" value = "    return successes;" order="23" ID = "e71d92a0-a6b9-4200-92d9-aa904441650c" />
+</document>
+<document name = "countEntriesProblemHaggis" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "0d54b107-16cc-4460-b185-2f0615d79594">
+    <text type ="Normal" value = "The Door Entry problem has been extended.  The system now keeps track of all attempts to access the building, in an " order="0" ID = "c96e6624-139f-4101-979f-06ab1d6848df" />
+    <text type ="Normal" value = "array called attempts" order="1" ID = "1f1b5f4c-0df2-4f99-afbc-26942b2bd1ac" />
+    <text type ="Normal" value = ".  Each entry in this array is a " order="2" ID = "4b481b7c-238c-4dfd-acff-52a5fe76d51d" />
+    <text type ="Normal" value = "value of a record type that has a &quot;user&quot; field, this is the user id of the person who tried to enter, and a &quot;success&quot; field, this is a Boolean indicating whether the attempt to enter was successful or not" order="3" ID = "f731a14d-3ece-43ba-a75e-a489741c4fe1" />
+    <text type ="Normal" value = ".  The record type is defined as follows:;" order="4" ID = "4c5aad49-70b3-4dae-92eb-115b74f18265" />
+    <text type ="Normal" value = ";" order="5" ID = "c504a458-b42e-4769-9cc7-a16483e887f0" />
+    <text type ="Code" value = "     RECORD Attempt IS { STRING user, BOOLEAN success };" order="6" ID = "5c30f968-e962-4088-bfa9-2847fdbd3e41" />
+    <text type ="Normal" value = ";" order="7" ID = "c0752815-8c18-4fb2-97bc-85f57cdd15e9" />
+    <text type ="Normal" value = "Your task is to " order="8" ID = "ace1aa1f-d704-4a08-a76f-8e0bd8f21e79" />
+    <text type ="Normal" value = "write a function " order="9" ID = "4ea87e0b-8441-481f-b430-59d9688b92fa" />
+    <text type ="Normal" value = "which takes the " order="10" ID = "bb08fc3f-2242-4355-9ae5-02bc06f718cd" />
+    <text type ="Normal" value = "id of a user as parameter" order="11" ID = "d2329d74-46ff-42ab-b2d7-c080cd562952" />
+    <text type ="Normal" value = " and " order="12" ID = "a73d1e7d-d15b-4d26-ab42-d0d36db0992d" />
+    <text type ="Normal" value = "returns the number of times that user has successfully entered " order="13" ID = "5f90a96b-8504-401a-8639-d816e8102129" />
+    <text type ="Normal" value = "the building.;" order="14" ID = "8f682f13-1269-4e69-88ae-8a6c044981c6" />
+    <text type ="Normal" value = ";" order="15" ID = "803ace06-821a-4d57-a5da-a6787bb28ece" />
+    <text type ="Normal" value = "Once again, you should:;" order="16" ID = "b6a42451-41bb-4f5e-b7b7-a0d6e8507210" />
+    <text type ="Normal" value = ";" order="17" ID = "46a15e3b-203e-4a2c-bc9e-4241f6cb3f90" />
+    <text type ="Normal" value = "a) Write a general specification for the subprogram.;" order="18" ID = "d1fb58bc-ca33-483f-bf2d-b2bc22f6063f" />
+    <text type ="Normal" value = "b) Write the subprogram itself in Python.;" order="19" ID = "87c399ab-bb23-47c1-8148-28fa0f3cccbb" />
+    <text type ="Normal" value = ";" order="20" ID = "159985c6-b161-4fd7-a3db-8021aa78ecb9" />
+    <text type ="Normal" value = "--------------------------------------------------------------------;" order="21" ID = "73182dd5-33a7-49d4-90ef-9b51aafd7a0d" />
+    <text type ="Normal" value = ";" order="22" ID = "cd1ba3f2-29ab-415c-b528-e87a1f46e628" />
+    <text type ="Normal" value = "General Spec;" order="23" ID = "af771764-6e4c-4dee-ace2-d59ac2920992" />
+    <text type ="Normal" value = ";" order="24" ID = "23bf2c5b-ba86-4a23-be17-060c3eb2e9a5" />
+    <text type ="Normal" value = "Subprogram : " order="25" ID = "9ec143ea-2964-48b6-b4bc-8aa2905df4b0" />
+    <text type ="Normal" value = "function" order="26" ID = "c6bb7b8d-cbd3-455c-b508-272c06579e83" />
+    <text type ="Normal" value = ";" order="27" ID = "e71c6e84-ba07-4bf7-b92b-a55aedb36f03" />
+    <text type ="Normal" value = "Name  : " order="28" ID = "4ea9be10-be6b-4ad6-80ae-2794e7822c41" />
+    <text type ="Normal" value = "countEntries" order="29" ID = "6da00fc3-ab8d-4bc5-9a12-df804ad38a21" />
+    <text type ="Normal" value = ";" order="30" ID = "1cbd0d28-3659-44f2-a302-9037016fb23e" />
+    <text type ="Normal" value = "Parameters : " order="31" ID = "f6f5510f-4fc9-4105-b9d9-ddbe01d48e5f" />
+    <text type ="Normal" value = "the person id - as before, this is a string" order="32" ID = "f6a4c303-dd73-44a3-9c9d-b0dd55dab5cf" />
+    <text type ="Normal" value = ";" order="33" ID = "0dc7df4d-3f63-47f7-8f97-21f914f39d65" />
+    <text type ="Normal" value = "Return value : " order="34" ID = "8a7c74ee-bb9e-4c60-86b3-307f54dd49f3" />
+    <text type ="Normal" value = "an integer, the count of successful entries for the supplied user" order="35" ID = "6a52cc0e-7ee2-4429-bf1f-5a70dbb67fe0" />
+    <text type ="Normal" value = ";" order="36" ID = "76477321-d3ca-496b-8720-9c2143cc342e" />
+    <text type ="Normal" value = "Action  : " order="37" ID = "81031dfc-fa2a-4cf6-af28-18c234360303" />
+    <text type ="Normal" value = "search through the attempts array counting occurrences of dictionaries with the supplied user as the user, and noting a successful entry. " order="38" ID = "74ae9308-bd6b-4122-bb63-ccb69b7e92d8" />
+    <text type ="Normal" value = ";" order="39" ID = "95e2d42d-b28b-44c9-87f4-e8a91f6fc31f" />
+    <text type ="Normal" value = "Assume : " order="40" ID = "b3790e31-f714-483e-8dcb-3ed2fb0a6dfe" />
+    <text type ="Normal" value = "all given in the question this time;" order="41" ID = "0c2008a4-5e22-4503-872f-dc7a138033c8" />
+</document>
+<document name = "countEntriesSolutionHaggis" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "520c0ac6-fb40-4b47-b76f-ff75086c7b2a">
+    <text type ="Normal" value = ";" order="0" ID = "d41568d7-8d46-4db4-8604-56f825f6fd68" />
+    <text type ="Code" value = "RECORD Attempt IS { STRING user, BOOLEAN success };" order="1" ID = "52813565-e121-4fa6-a1f9-faf937b9b9f1" />
+    <text type ="Normal" value = ";" order="2" ID = "5d08c43a-c4b9-4257-a6c9-94c5a378b323" />
+    <text type ="Comment" value = "# This is an example array of entry attempts, useful for testing;" order="3" ID = "18fc4ad2-4656-44e7-84a2-6afc753ed921" />
+    <text type ="Code" value = "SET attempts TO [ ;" order="4" ID = "a360140e-da1e-4060-a559-05f01b0fb853" />
+    <text type ="Code" value = "    Attempt( &quot;a241&quot;, false ),;" order="5" ID = "d7ff6d77-8330-445d-963e-f342bf2a4880" />
+    <text type ="Code" value = "    Attempt( &quot;x742&quot;, false ),;" order="6" ID = "38585852-d6ec-4a68-9b7b-371d8eee72aa" />
+    <text type ="Code" value = "    Attempt( &quot;a241&quot;, true ),;" order="7" ID = "40f541e6-7e87-44d3-865d-e0a4fe6a70f0" />
+    <text type ="Code" value = "    Attempt( &quot;j123&quot;, false ),;" order="8" ID = "7ad321de-5e86-4eb4-99a6-ef1a197fe501" />
+    <text type ="Code" value = "    Attempt( &quot;k754&quot;, true ),;" order="9" ID = "4b9a3424-4768-4abc-b8d7-a0a749b4a6c5" />
+    <text type ="Code" value = "    Attempt( &quot;a241&quot;, true ),;" order="10" ID = "f51b8d33-620a-43cf-8e22-acd55066125e" />
+    <text type ="Code" value = "    Attempt( &quot;j123&quot;, true ),;" order="11" ID = "cd15ab12-6cba-4c4f-910d-80712d2d0a9b" />
+    <text type ="Code" value = "    Attempt( &quot;a241&quot;, true ) ];" order="12" ID = "c7a196e1-a2fe-4772-978b-68fde1841065" />
+    <text type ="Code" value = ";" order="13" ID = "4e4d6bf3-3ba7-4d30-ba5a-36d1cb4d1289" />
+    <text type ="Comment" value = "# Function to count number of successful entries by the supplied user;" order="14" ID = "ee087544-c91f-4b0c-98b8-0f2493ba8760" />
+    <text type ="Code" value = "FUNCTION countEntries( STRING personId ) RETURNS INTEGER;" order="15" ID = "bb3cf5ae-3335-4a17-ab66-ba5b6622f461" />
+    <text type ="Code" value = "    SET successes TO 0;" order="16" ID = "4cb78b18-42a6-4b6a-b042-135c9b9f9284" />
+    <text type ="Normal" value = ";" order="17" ID = "3b92b908-1fa9-4776-8338-16529b01c8cc" />
+    <text type ="Code" value = "    # Use typical count occurrences template to count successful entries;" order="18" ID = "bf1f9405-1b53-4bba-8809-ffc433433e3a" />
+    <text type ="Code" value = "    FOR EACH attempt FROM attempts DO;" order="19" ID = "78d7e84e-de8b-4660-aa85-1e7c4e27007e" />
+    <text type ="Comment" value = "        &lt;Count this attempt if appropriate&gt;;" order="20" ID = "bf5d61ef-6b83-469b-b213-434202b3d7fe" />
+    <text type ="Code" value = "        IF " order="21" ID = "8dd3a4b4-d56f-4fe2-a4f1-e9fff1f63f4c" />
+    <text type ="Comment" value = "&lt;Test to decide whether to count this one&gt; " order="22" ID = "c9f72a11-161a-4e12-85e6-a201d7b7d958" />
+    <text type ="Code" value = "attempt.user = personId AND attempt.success " order="23" ID = "8fe25c71-5ca2-4be5-8ab0-aae1b720e5cf" />
+    <text type ="Code" value = "THEN;" order="24" ID = "87ea5b21-1c70-446a-ae41-9f14804fe71e" />
+    <text type ="Code" value = "            SET successes TO successes + 1;" order="25" ID = "8b8a788e-7b50-4d0c-95ec-eebf2306d884" />
+    <text type ="Code" value = "        END IF;" order="26" ID = "0402b408-716c-436f-9548-ac656eb4b41d" />
+    <text type ="Code" value = "    END FOR EACH;" order="27" ID = "8c124517-0547-407e-9054-c594157ce171" />
+    <text type ="Normal" value = "            ;" order="28" ID = "c6d5e155-e969-4f1f-82f9-d8515303d8db" />
+    <text type ="Code" value = "    RETURN successes;" order="29" ID = "073045a9-b2b0-42bb-b825-dea76b225287" />
+    <text type ="Code" value = "END FUNCTION;" order="30" ID = "b118a84b-0f0c-438e-876a-13c1d8874164" />
+</document>
+<document name = "mostFrequentVisitorProblemSpecDoodles" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "85abf2ec-02c1-4c94-9b56-3f0684ae288f">
+    <text type ="Title" value = "Finding the top visitor to the building;" order="0" ID = "639c67de-722a-41f1-b845-475ac40d73c9" />
+    <text type ="Normal" value = ";" order="1" ID = "77ce9dc0-548c-4228-9ac6-db04f7fe34ef" />
+    <text type ="Normal" value = "(It is assumed that the earlier doorEntry and countEntries worked examples have already been reviewed, as this example further extends the door entry system.);" order="2" ID = "7b2773cd-541c-422f-8a28-6bc60d36a41d" />
+    <text type ="Normal" value = ";" order="3" ID = "48274efc-fac4-45f7-9895-df667b08c844" />
+    <text type ="Normal" value = "The management team for the building is keen to find out which authorised user has entered the building most often.  " order="4" ID = "0fd03b8e-35f0-4e32-a711-668a7f16d274" />
+    <text type ="Normal" value = "You are to write a subprogram that " order="5" ID = "be7467d2-cc46-4ee6-a392-c7c231a26031" />
+    <text type ="Normal" value = "calculates which user is the most frequent visitor.  ;" order="6" ID = "eae5a87d-03ee-49f5-bfd4-fbf3762b527e" />
+    <text type ="Normal" value = ";" order="7" ID = "13718724-8bba-4fb2-895c-5ffd9cf6048e" />
+    <text type ="Normal" value = "You can assume you have access to both the authUsers and attempts arrays from the earlier worked examples, as global variables, and also the countEntries function.;" order="8" ID = "ceaab970-c780-42e9-9415-a38347e4bbbe" />
+    <text type ="Normal" value = ";" order="9" ID = "4ae21ce3-874c-467d-8e7b-a4a39d76a182" />
+    <text type ="Normal" value = "As before, first write the specification of the subprogram, and then the subprogram itself.;" order="10" ID = "df645062-3c21-4308-b06f-c02de8efda1d" />
+    <text type ="Normal" value = ";" order="11" ID = "17c4af47-2b1e-4dc9-b43c-f7eb826f9aec" />
+    <text type ="Normal" value = "-------------------------------------------------------------------;" order="12" ID = "55a74715-caf7-4854-ace9-b29b113b5782" />
+    <text type ="Normal" value = ";" order="13" ID = "e9b1e467-eba4-43be-bb0b-2d123be9f667" />
+    <text type ="Title" value = "General Spec;" order="14" ID = "a76b7854-0fb5-401e-9641-6edf1c34c8e5" />
+    <text type ="Normal" value = ";" order="15" ID = "050a4801-856d-41fd-b6b4-2c55e015af3d" />
+    <text type ="Normal" value = "Subprogram : " order="16" ID = "f707c1cf-dbc2-49c1-beb9-3a92269bfeca" />
+    <text type ="Normal" value = "function" order="17" ID = "6bdf1068-1a71-4c84-afa4-5d11f08f9557" />
+    <text type ="Normal" value = ";" order="18" ID = "d89c918d-c29e-4ec2-bcd8-ec92537494b9" />
+    <text type ="Normal" value = "Name  : " order="19" ID = "974967db-80f3-498b-a8ca-2246c526ef87" />
+    <text type ="Normal" value = "mostFrequentVisitor" order="20" ID = "64f33fb9-b75d-4277-9159-c73ff0c27d15" />
+    <text type ="Normal" value = ";" order="21" ID = "b86c9d40-e881-4762-b94b-e4987ba86459" />
+    <text type ="Normal" value = "Parameters : " order="22" ID = "f392dd1d-13b6-407f-abd9-2aa1f2c8014b" />
+    <text type ="Normal" value = "no parameters" order="23" ID = "a8321fe6-33e1-4ee5-8d25-6ce6b722de77" />
+    <text type ="Normal" value = ";" order="24" ID = "fd4f3864-fa34-459a-8622-cbd688353a0e" />
+    <text type ="Normal" value = "Return value : " order="25" ID = "1877cc8b-c522-4489-823e-77559d41993e" />
+    <text type ="Normal" value = "a string, the id of the user who has visited most often" order="26" ID = "3d99eb20-2af1-4b91-9fbc-1723343ee5b8" />
+    <text type ="Normal" value = ";" order="27" ID = "88ea6913-e5ed-469a-89d5-de443a2caeb1" />
+    <text type ="Normal" value = "Action  : " order="28" ID = "493f56e4-a392-4e6b-a33c-0f5d9cfb83e3" />
+    <text type ="Normal" value = "for each authorised user, count how many times they've entered, and return the largest of these counts" order="29" ID = "a39d9456-c6dd-4bd5-9530-17228e87f247" />
+    <text type ="Normal" value = ";" order="30" ID = "8071766d-c165-4cd7-a887-09cb27d157db" />
+    <text type ="Normal" value = "Assume : ;" order="31" ID = "c0dffc19-ddf5-45ee-9fea-db2d9a275c8a" />
+    <text type ="Normal" value = "(1) We should return the most frequent visitor. ;" order="32" ID = "f758263d-d784-43d9-97c1-e0fbf8c9e4a0" />
+    <text type ="Normal" value = "(2) Users are not deleted from the authUsers array once added.;" order="33" ID = "639518eb-9953-4e92-96d0-23838e28ce96" />
+    <text type ="Normal" value = "(3) If more than one user has the same maximum number of visits, then return just one of them;" order="34" ID = "f98abd12-4404-4c67-b8aa-7718f1135e99" />
+    <text type ="Normal" value = ";" order="35" ID = "5ac82765-ce11-4062-b092-4344908e67ee" />
+    <text type ="Normal" value = "" order="36" ID = "1b692a16-10fe-4759-aaff-5efc126a9eb3" />
+    <text type ="Normal" value = "-------------------------------------------------------------------;" order="37" ID = "ab695811-2d50-42ee-8d77-bcba0c60bb32" />
+    <text type ="Normal" value = ";" order="38" ID = "fb4f7997-f78c-4400-8419-819dee6611f3" />
+    <text type ="Title" value = "Doodling about this problem - the &quot;thinking it through&quot; phase;" order="39" ID = "5d64adc0-a9bf-49d3-b764-4b87104a53b8" />
+    <text type ="Normal" value = ";" order="40" ID = "4aa3fd11-6b59-4c30-8c71-a232270a722a" />
+    <text type ="Normal" value = "A.  We are looking for the most frequent visitor;" order="41" ID = "823e94a9-58b6-465f-857e-78fcc574373e" />
+    <text type ="Normal" value = "B.  The visitor, by definition, must be in the authorised users array (assuming users are not deleted from this list - add that to the assumptions!), otherwise he/she wouldn't be able to visit at all!;" order="42" ID = "2e65dd5f-4f3b-482f-ad77-aaea51e44535" />
+    <text type ="Normal" value = "C.  So, for each user in the authUsers array, we can count up how many times they've entered, using the countEntries function from the early worked example.;" order="43" ID = "f8ed9c03-db81-4ba4-97d5-0c5c0d1e714a" />
+    <text type ="Normal" value = "D.  Our job is to find which of these counts is the largest.;" order="44" ID = "506b0bf0-0302-4ab5-b18c-075c7b2fe22f" />
+    <text type ="Normal" value = ";" order="45" ID = "eacee157-d1b0-4b6e-9588-1a85399cd569" />
+    <text type ="Normal" value = "PLAN;" order="46" ID = "9f2cb46e-059c-4b5a-b59d-8f5799c64880" />
+    <text type ="Normal" value = "1. Calculate an entry count for each authorised user" order="47" ID = "4d493e04-69a7-4cba-bb9a-cfb12d4379c1" />
+    <text type ="Normal" value = ", storing these in an array" order="48" ID = "88379e9c-54d9-45e2-953c-dc3f4acfd221" />
+    <text type ="Normal" value = ";" order="49" ID = "dda74733-7975-4514-9df9-016b7524b16f" />
+    <text type ="Normal" value = "2. Find the maximum value in the entry count array, and the user who 'generated' it;" order="50" ID = "c7b4f31e-2be5-4f24-af6c-2ec37296d176" />
+    <text type ="Normal" value = ";" order="51" ID = "677756d9-3082-4a28-9fca-03852025a7cb" />
+    <text type ="Normal" value = "Necessary insight:;" order="52" ID = "0b6ddcd3-6584-4d5e-ba3d-6a55fcd49290" />
+    <text type ="Normal" value = "We have two arrays now:;" order="53" ID = "19eb50ac-8ee1-4056-a505-1b593c5015d1" />
+    <text type ="Normal" value = "- the authorised user array;" order="54" ID = "7946945a-59ca-4cac-ab00-2952f6a6a0dc" />
+    <text type ="Normal" value = "- the array of entry counts;" order="55" ID = "236bb5c3-0120-45a2-a196-869644487674" />
+    <text type ="Normal" value = ";" order="56" ID = "4357bd0a-4f40-4897-ab6c-9eaabc1a97c6" />
+    <text type ="Normal" value = "Corresponding pairs of elements (e.g. element zero in each array) hold information about the same user - in authUsers it is the user id of an authorised user, in visitCounts, it is the count of visits by that same authorised user.;" order="57" ID = "e59292e8-114c-40bf-8e2c-973f3e49ad95" />
+    <text type ="Normal" value = ";" order="58" ID = "faa36424-2d60-4276-962b-527b4a6cf7d3" />
+    <text type ="Normal" value = "So, if we find the " order="59" ID = "be1780e9-9f6e-4fbe-b4b9-c6c9fb995bc3" />
+    <text type ="Normal" value = "position " order="60" ID = "abdc7d0a-e670-4d5e-805b-f93255a960cc" />
+    <text type ="Normal" value = "of the largest entry count in visitCounts, we can use that " order="61" ID = "f8ea4dac-5c05-4836-a25e-b37659efca7e" />
+    <text type ="Normal" value = "same position " order="62" ID = "6ce4566d-f229-4d20-a4c0-b74d7acbfd73" />
+    <text type ="Normal" value = "to get the corresponding user.;" order="63" ID = "14b44279-b6b8-4e60-a038-de17659826e8" />
+</document>
+<document name = "mostFrequentVisitorSolutionPython" type = "Programming Problem" kind = "Textual" FixOrder = "true" ID = "269b545c-9caf-4809-a2ab-4f9911b3fa7f">
+    <text type ="Comment" value = "# Program to determine the most frequent visitor to the building;" order="0" ID = "b1208e34-ac77-4cb4-b74d-0bba31bef44d" />
+    <text type ="Normal" value = ";" order="1" ID = "3e7bdd2e-d13a-40cb-a6f2-d14e0637ba4c" />
+    <text type ="Comment" value = "# This is an example array of ids for authorised users;" order="2" ID = "be09cf25-f9b3-404a-8223-c1fcb4846671" />
+    <text type ="Code" value = "authUsers = [ &quot;a241&quot;, &quot;z742&quot;, &quot;j123&quot;, &quot;k754&quot;];" order="3" ID = "25814a54-dcbe-46f2-9cc4-35e3b8edf10e" />
+    <text type ="Normal" value = ";" order="4" ID = "2082d230-87be-4c1f-8bfb-1aa83cc9c415" />
+    <text type ="Comment" value = "# This is an example array of entry attempts;" order="5" ID = "33154fb7-677d-4df5-adc7-449b41521781" />
+    <text type ="Code" value = "attempts = [ { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : False },;" order="6" ID = "c5d43c97-7419-40e1-8814-06398dac1d6a" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;x742&quot;, &quot;success&quot; : False },;" order="7" ID = "7df98f98-e23b-422e-806a-0551b4647893" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : True },;" order="8" ID = "f5934b1a-172f-4c11-83d8-83a0ad3e9a50" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;j123&quot;, &quot;success&quot; : False },;" order="9" ID = "1a1f369a-6b87-46c9-9c2a-6709df5b79fb" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;k754&quot;, &quot;success&quot; : True },;" order="10" ID = "f85ec26d-1741-4bdf-886b-b3179f241c8c" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : True },;" order="11" ID = "ad6efbee-eb27-4c00-abf3-ae544dba62b4" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;j123&quot;, &quot;success&quot; : True },;" order="12" ID = "7cc486d5-201f-4e4b-a68d-6e8b0d6baade" />
+    <text type ="Code" value = "             { &quot;user&quot; : &quot;a241&quot;, &quot;success&quot; : True } ];" order="13" ID = "22afafc6-cf15-41e5-812d-c7c1b3de0f5c" />
+    <text type ="Normal" value = ";" order="14" ID = "c14efba9-ec9f-493a-b805-5af6dd116173" />
+    <text type ="Comment" value = "# Function to determine if supplied user is authorised to enter;" order="15" ID = "4b02d170-8f54-4f51-8933-7256128beb45" />
+    <text type ="Code" value = "def countEntries( personId ):;" order="16" ID = "f629e021-f710-475e-9659-4fa51f076b89" />
+    <text type ="Code" value = "    successes = 0;" order="17" ID = "ab2b6490-a7d5-4cf4-abd2-32225b1e7a24" />
+    <text type ="Normal" value = ";" order="18" ID = "5b44e215-8a8e-4050-92cb-2c709faabad9" />
+    <text type ="Comment" value = "    # Use typical count occurrences template to count successful entries;" order="19" ID = "800b3a4f-051f-4635-9a8d-9047c43a5257" />
+    <text type ="Code" value = "    for attempt in attempts:;" order="20" ID = "5bddd016-bafa-45f1-9c4c-1625b2091c0d" />
+    <text type ="Code" value = "        if attempt[ &quot;user&quot; ] == personId and attempt[ &quot;success&quot; ]:;" order="21" ID = "5e54b859-c512-42d5-b67b-8f14ec4e10f2" />
+    <text type ="Code" value = "            successes = successes + 1;" order="22" ID = "811ed115-0a1a-4e39-8c88-950b12b36915" />
+    <text type ="Normal" value = "            ;" order="23" ID = "f7cff453-01b7-46ec-a65a-6172ebca922e" />
+    <text type ="Code" value = "    return successes;" order="24" ID = "164cd291-0c57-4fcf-8da2-228a70b60c2f" />
+    <text type ="Normal" value = ";" order="25" ID = "f17dd93f-3cab-4f7d-99b0-365d7126fddf" />
+    <text type ="Normal" value = "# Worked example will have three stages, showing three different versions of;" order="26" ID = "5fd01725-2d7d-4210-8ea9-5a018fec4fed" />
+    <text type ="Normal" value = "# a working function that solves the problem - first is easiest, second is shortest,;" order="27" ID = "765043e4-0e76-4ee0-988e-4089985d6aad" />
+    <text type ="Normal" value = "# third is most efficient.;" order="28" ID = "ea83fd68-2a12-460e-baff-591fdf473328" />
+    <text type ="Normal" value = ";" order="29" ID = "10cbc8af-9e91-4940-b843-5761295ec8ef" />
+    <text type ="Normal" value = ";" order="30" ID = "e28c9a4a-2283-46db-8504-52ddee5ae14d" />
+    <text type ="Code" value = "# Function to find the most frequent authorised visitor;" order="31" ID = "9b3c18da-5800-4409-b040-4cb452dafe01" />
+    <text type ="Code" value = "def mostFrequentVisitor():;" order="32" ID = "9772a050-4722-4a47-9669-8eac30b6d6ba" />
+    <text type ="Comment" value = "    # 1. Calculate an entry count for each authorised user, storing these in an array;" order="33" ID = "130b55fd-4ea2-4938-9216-d79433494692" />
+    <text type ="Comment" value = "    # Create a list of counts of visits for each user;" order="34" ID = "55618605-cf63-4af8-9fed-448f6e57b6fe" />
+    <text type ="Code" value = "    visitCounts = [];" order="35" ID = "390f7f99-faba-41f1-a1ea-59ae0b0544da" />
+    <text type ="Normal" value = ";" order="36" ID = "641b1988-7418-438d-b1ea-53c609bd5ff9" />
+    <text type ="Comment" value = "    # Now scan the authorised user list, calculating and;" order="37" ID = "be5d732e-88a8-4b4c-a799-18c488b5e585" />
+    <text type ="Comment" value = "    # storing the visit count for each user;" order="38" ID = "47e7717f-3431-4f32-af66-81f7f7fb10dc" />
+    <text type ="Code" value = "    for user in authUsers:;" order="39" ID = "cb5eba5d-f1a9-4aa8-89f6-3d8cc08c01ac" />
+    <text type ="Code" value = "        userCount = " order="40" ID = "eda05d1a-c3f9-46d6-9b15-6e52f7e0f040" />
+    <text type ="Code" value = "countEntries( user )" order="41" ID = "1688be04-9a01-4db5-ba57-d89b48bbdc4d" />
+    <text type ="Normal" value = ";" order="42" ID = "2a1dc14c-8a44-40e6-ac13-da020fab03cd" />
+    <text type ="Code" value = "        visitCounts = visitCounts + [ userCount ];" order="43" ID = "78ce74f8-5eaf-46f9-8260-a45c15652fcb" />
+    <text type ="Normal" value = ";" order="44" ID = "b8f9108e-e422-40da-8196-59284f5fbfb9" />
+    <text type ="Comment" value = "    # 2. Find the maximum value in the entry count array, and the user who 'generated' it;" order="45" ID = "f2903144-7d57-4088-b1d2-087c6bfaa11a" />
+    <text type ="Comment" value = "    # Find position in the list of the largest count (find max);" order="46" ID = "24a52751-1ed6-4c84-98bd-aac33909fea2" />
+    <text type ="Code" value = "    posOfMaxSoFar = 0;" order="47" ID = "514c7b00-1998-4fa0-9787-ae4a84a07139" />
+    <text type ="Code" value = "    for currentPos in range( 1,len( visitCounts ) ):;" order="48" ID = "68fa792c-c664-4e9c-bacb-bcd5ec20d639" />
+    <text type ="Code" value = "        if visitCounts[ posOfMaxSoFar ] &lt; visitCounts[ currentPos ]:;" order="49" ID = "5cf26ec0-3881-492a-8124-01df46da106a" />
+    <text type ="Code" value = "            posOfMaxSoFar = currentPos;" order="50" ID = "ff5e37e8-9b31-4704-9efc-1bf50872583e" />
+    <text type ="Normal" value = ";" order="51" ID = "59abdeb9-1903-4e08-a37f-d552707aa79a" />
+    <text type ="Comment" value = "    # Now return the user id that corresponds to the max count just found;" order="52" ID = "380bb914-a905-4c97-9f14-2aae0bf8cc63" />
+    <text type ="Code" value = "    return " order="53" ID = "185c1c4a-65d4-4087-96e7-24cb112bd6f8" />
+    <text type ="Code" value = "???" order="54" ID = "5fbba032-a9b0-4622-880e-97984f0b1663" />
+    <text type ="Code" value = "authUsers[ posOfMaxSoFar ]" order="55" ID = "dd059f20-257a-48a7-865d-e5e7f13ee87c" />
+    <text type ="Normal" value = ";" order="56" ID = "e8b5192d-0cac-4517-ab6e-fd6dea3349b9" />
+    <text type ="Normal" value = ";" order="57" ID = "0f11358d-ca24-4b12-a9c1-abf14af74cb6" />
+    <text type ="Normal" value = "        " order="58" ID = "8a905a3f-88fc-4593-83a2-aba74be39842" />
+    <text type ="Normal" value = "# Shorter function to find the most frequent authorised visitor" order="59" ID = "4857775d-8e82-48da-a956-a28d4904bf69" />
+    <text type ="Normal" value = "# This merges the two phases of the original plan" order="60" ID = "09a6b97e-92ca-44bb-83be-8cc5511b39c8" />
+    <text type ="Normal" value = "def mostFrequentVisitor1():" order="61" ID = "476dcdae-dac0-4d97-9c91-8aec67fd986d" />
+    <text type ="Normal" value = "    # Find position in the user list of the most frequent visitor (find max)" order="62" ID = "5e3f85f3-0cc0-40a8-b4d3-f17aef65f7eb" />
+    <text type ="Normal" value = "    posOfMaxSoFar = 0" order="63" ID = "97d2b2b6-be58-4ca8-bc67-48d2cc7ba851" />
+    <text type ="Normal" value = "    " order="64" ID = "d746e940-8a72-434e-8f83-eaf0762e1d28" />
+    <text type ="Normal" value = "    for currentPos in range( 1,len( authUsers ) ):" order="65" ID = "c9f66c30-7257-4de0-b415-728e802f3de9" />
+    <text type ="Normal" value = "        if countEntries( authUsers[ posOfMaxSoFar ] ) &lt; countEntries( authUsers[ currentPos ] ):" order="66" ID = "0acf0969-2ba0-4236-9c6b-78b71160030d" />
+    <text type ="Normal" value = "            posOfMaxSoFar = currentPos" order="67" ID = "2e24cdd7-622f-4607-9acb-2d57564813b5" />
+    <text type ="Normal" value = "" order="68" ID = "f613cd68-3f5b-4b66-9cc0-6510b6140951" />
+    <text type ="Normal" value = "    # Now return the user id that corresponds to the max count just found" order="69" ID = "86228dde-cdd5-48f4-b01f-44d1c6a60ce8" />
+    <text type ="Normal" value = "    return authUsers[ posOfMaxSoFar ]" order="70" ID = "324656d1-268d-4886-993d-cd00512fa712" />
+    <text type ="Normal" value = "" order="71" ID = "f47a79fd-7c38-4c26-8c11-257706778b76" />
+    <text type ="Normal" value = "" order="72" ID = "ec8cf15e-0785-48a1-8876-330a0a5dd05b" />
+    <text type ="Normal" value = "# Most efficient function to find the most frequent authorised visitor" order="73" ID = "35e5f9d5-a0d5-4a0e-b067-1782ad9c6903" />
+    <text type ="Normal" value = "# Prev. version calls countEntries function number-of-auth-users * 2 times." order="74" ID = "c0b947c0-68ee-45f1-b2d5-fabb735f29e8" />
+    <text type ="Normal" value = "# This version calls the function only number-of-auth-users times, by caching results" order="75" ID = "5c397bcc-d7fb-4cdd-82c2-6c6026870a65" />
+    <text type ="Normal" value = "# Again, this can be merged in." order="76" ID = "1987b29c-3f67-483d-bb1c-2d6f172b03f9" />
+    <text type ="Normal" value = "def mostFrequentVisitor2():" order="77" ID = "c445bbb9-7cde-45f9-8517-39affd6ff3b9" />
+    <text type ="Normal" value = "    # Find position in the user list of the most frequent visitor (find max)" order="78" ID = "cb1156be-129d-4447-aaf5-c23566c24024" />
+    <text type ="Normal" value = "    posOfMaxSoFar = 0" order="79" ID = "67dc27fa-14cf-4fd2-a8a4-9073973597f3" />
+    <text type ="Normal" value = "    maxCountSoFar = countEntries( authUsers[ posOfMaxSoFar ] )" order="80" ID = "ca2bec1a-c57f-4edc-945b-f453d935d20d" />
+    <text type ="Normal" value = "    " order="81" ID = "490f1d5a-34a6-43c1-ade0-89f09b84c9b8" />
+    <text type ="Normal" value = "    for currentPos in range( 1,len( authUsers ) ):" order="82" ID = "652170a3-fc16-4be7-b2b4-5237924c6bb6" />
+    <text type ="Normal" value = "        currentCount = countEntries( authUsers[ currentPos ] )" order="83" ID = "47c4a1da-82d5-42f6-b010-5538ae68e015" />
+    <text type ="Normal" value = "        if maxCountSoFar &lt; currentCount:" order="84" ID = "14f1986c-3b1e-45ee-96e6-2047c10bcbce" />
+    <text type ="Normal" value = "            posOfMaxSoFar = currentPos" order="85" ID = "68be31cb-aa74-452c-b5c9-9dd4922dd987" />
+    <text type ="Normal" value = "            maxCountSoFar = currentCount" order="86" ID = "336c549c-9ef5-4b11-84b3-cd8beaf5840c" />
+    <text type ="Normal" value = "" order="87" ID = "d72bfc43-c437-4416-b700-9873fa8c0c9d" />
+    <text type ="Normal" value = "    # Now return the user id that corresponds to the max count just found" order="88" ID = "5549404c-56cb-44e0-b0a3-c512210abbf3" />
+    <text type ="Normal" value = "    return authUsers[ posOfMaxSoFar ]" order="89" ID = "104bd9cd-71e8-46ba-b223-2c4764ca3fe1" />
+</document>
+</documents>

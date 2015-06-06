@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<doctypes>
+<documentType name = "mathType" kind = "Textual" ID = "00000000-0000-0000-0000-000000000001">
+  <fragmentType name ="number" kind = "Atomic Text">
+    <textstyle font = "Calibri" size = "14" bold ="false" italic = "false" underline = "false" background = "-1" foreground = "-16777216"/>
+  </fragmentType>
+  <fragmentType name ="symbol" kind = "Atomic Text">
+    <textstyle font = "Calibri" size = "16" bold ="true" italic = "false" underline = "false" background = "-1" foreground = "-13421569"/>
+  </fragmentType>
+  <fragmentType name ="text" kind = "Atomic Text">
+    <textstyle font = "Calibri" size = "14" bold ="false" italic = "false" underline = "false" background = "-1" foreground = "-16777216"/>
+  </fragmentType>
+  <fragmentType name ="focus" kind = "Atomic Text">
+    <textstyle font = "Calibri" size = "16" bold ="true" italic = "false" underline = "false" background = "-1" foreground = "-65536"/>
+  </fragmentType>
+  <fragmentType name ="title" kind = "Atomic Text">
+    <textstyle font = "Calibri" size = "20" bold ="true" italic = "false" underline = "false" background = "-1" foreground = "-16777063"/>
+  </fragmentType>
+  <fragmentType name ="comment" kind = "Atomic Text">
+    <textstyle font = "Calibri" size = "14" bold ="false" italic = "true" underline = "false" background = "-1" foreground = "-16777216"/>
+  </fragmentType>
+  <fragmentType name ="symbol ref" kind = "Atomic Text">
+    <textstyle font = "Calibri" size = "14" bold ="true" italic = "false" underline = "false" background = "-1" foreground = "-13421569"/>
+  </fragmentType>
+</documentType>
+<documentType name = "Programming Problem" kind = "Textual" ID = "130c3b98-4ae4-40ab-8d0c-7d5b07bd0047">
+  <fragmentType name ="Normal" kind = "Atomic Text">
+    <textstyle font = "Arial" size = "14" bold ="false" italic = "false" underline = "false" background = "-1" foreground = "-16777216"/>
+  </fragmentType>
+  <fragmentType name ="Code" kind = "Atomic Text">
+    <textstyle font = "Courier" size = "14" bold ="false" italic = "false" underline = "false" background = "-1" foreground = "-16777216"/>
+  </fragmentType>
+  <fragmentType name ="Comment" kind = "Atomic Text">
+    <textstyle font = "Courier" size = "14" bold ="false" italic = "true" underline = "false" background = "-1" foreground = "-16777216"/>
+  </fragmentType>
+  <fragmentType name ="Title" kind = "Atomic Text">
+    <textstyle font = "Arial" size = "16" bold ="true" italic = "false" underline = "false" background = "-1" foreground = "-16777216"/>
+  </fragmentType>
+</documentType>
+</doctypes>

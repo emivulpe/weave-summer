@@ -1,0 +1,145 @@
+{% extends 'exerciser/teacher_interface_base.html' %}
+{% load static %}
+{% block links %}
+    <link href="  {% static 'css/jquery.splitter.css' %}" rel="stylesheet"/> 
+    <link href="  {% static 'css/bootstrap-dialog.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block app_name %}
+<div class="row">
+  <div class="col-md-6">
+	<input id = "example_name" class="form-control" type="text" placeholder="ExampleName">
+  </div>
+  <div class="col-md-5">
+    <select id = "number_of_panels" class="form-control">
+		<option value="0" disabled selected>Panels</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+	</select>
+  </div>
+  
+</div>
+
+
+{% endblock %}
+{% block style %}
+
+{% endblock %}
+{% block app_controls %}
+
+	
+{% endblock %}
+
+
+{% block body_block %}
+
+<div class="row" style = "width:80%; margin-left: auto; margin-right: auto;">
+	<div class="col-md-1"><b>Problem:<b></div>
+	<div class="col-md-11">
+		<textarea id = "problem_specification_panel" style = "width: 100%;">Some Initial Content was in this textarea</textarea>
+	</div>
+</div>
+
+<div id = "plan_container" class="row" style = "width:80%; margin-left: auto; margin-right: auto; display:none; padding:0px;">
+	<div class="col-md-1"><b>Steps:<b></div>
+	<div class="col-md-11">	
+		<ul id = "steps" class="sortable list" style = "padding:0px;">
+			<!--<li><input class="form-control" type="text" placeholder="ExampleName1"></li>
+			<li><input class="form-control" type="text" placeholder="ExampleName2"></li>
+			<li><input class="form-control" type="text" placeholder="ExampleName3"></li>
+			<li><input class="form-control" type="text" placeholder="ExampleName4"></li>-->
+		</ul>
+	</div>
+</div>
+
+<div class="row" style = "width:80%; margin-left: auto; margin-right: auto;">
+ 	<div class="col-md-5 col-md-offset-1">
+ 		<button id = "plan_button" class="btn btn-default btn-lg" type="button">Create a plan</button>
+ 	</div>
+ 	<div class="col-md-6 text-right">
+ 		<button id = "example_button" class="btn btn-default btn-lg" type="submit">Create the example</button>
+ 	</div>
+</div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src=" {% static 'js/bootstrap-dialog.js' %}"></script>
+<!-- Scripts for the text editor -->
+<script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
+<script type="text/javascript">
+	bkLib.onDomLoaded(function() {
+		new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance("problem_specification_panel");	
+	});
+</script>
+<!-- End of scripts for the text editor -->
+<script> 
+	var csrftoken = getCookie('csrftoken');
+	$('#plan_button').click(function(){
+		$("#plan_container").show();
+		$("#steps").append('<li draggable = "true"><input class="form-control" type="text" placeholder="Step Text"></li>');
+		$('#steps').sortable('refresh');
+		$('#plan_button').html("Next step");
+	});
+	
+
+	$('#example_button').click(function(){
+
+		
+		if ($('#example_name').val() == ''){
+			BootstrapDialog.alert('Please enter the example name on the top of the page!');
+		}
+		else if( $('#number_of_panels').val() == null){
+			BootstrapDialog.alert('Please select the number of panels on the top of the page!');
+		}
+		else{
+			// create the example with the panels
+			var request = $.post("/weave/create_example/", {
+                'example_name': $('#example_name').val(),
+                'number_of_panels': $('#number_of_panels').val(),
+                'csrfmiddlewaretoken': csrftoken,
+            });
+            request.done(function(outcome) { // Extract a list of the relevant groups
+		        if ("error" in outcome) {
+		            BootstrapDialog.alert('Please enter a valid example name and a valid number of panels');
+		        } 
+		        else if ("disallowed" in outcome){
+		        	BootstrapDialog.alert('Please select a different name for your example because there is an example with your selected name!');
+		        }
+		        else {
+		        	// create the steps from the plan
+		        	$('#steps li').each(function(index, li) {
+			 			var stepText = $(li).find( "input" ).val();  
+			 		 	console.log(index + stepText);
+			 		 	var request = $.post("/weave/save_explanation/", {
+			 		 		'example_name' : $('#example_name').val(),
+			 		 		'step_number' : index,
+			 		 		'html' : stepText
+			 		 	});
+					});
+
+			 		// load the example creator page
+					window.location = '/weave/example_creator?panels=' + $('#number_of_panels').val() + '&example_name=' + $('#example_name').val();
+		        }
+            // ensure you can't go back because it will make a conflict with the example- might modify an existing one...
+       		});
+		}
+
+		//window.location = '/weave/example_creator?panels=3'
+		//alert("code to load the example creation page" + $('#number_of_panels').val());
+	});
+</script>
+
+<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.sortable.js' %}"></script>
+
+<script>
+    $('.sortable').sortable();
+</script>
+
+
+{% endblock %}
