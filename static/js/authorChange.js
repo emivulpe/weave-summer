@@ -13,22 +13,26 @@ function goToStep(direction) {
 	//save the html in a db (either replace the existing one if there is one or create a new one
 	//NOTE: there are multiple panels- ensure you say what html goes for which panel
 	
+    handleControlVisibility(direction);
 	
 	// Save the entries for each panel for the step
 	$('textarea[id^="area"]').each(function(index) {
 		console.log($(this).attr("id"));
+        var panelId = $(this).attr("id");
+        var panelArea = nicEditors.findEditor(panelId);
+        var panelContent = panelArea.getContent();
         $.post("/weave/save_step/", {
-            'html': $(this).html(),
+            'html': panelContent,
 			'csrfmiddlewaretoken': csrftoken,
 			'example_name': $("#example_name").text(),
 			'step_number': currentStep,
-			'panel_id' : $(this).attr("id"),
+			'panel_id' : panelId,
         });
 	});
-	
-	//Save the explanation for this step
+	var explanationArea = nicEditors.findEditor("explanation_area");	//Save the explanation for this step
+    var explanation = explanationArea.getContent();
 	$.post("/weave/save_explanation/", {
-		'html': $("#explanation_area").html(),
+		'html': explanation,
 		'csrfmiddlewaretoken': csrftoken,
 		'example_name': $("#example_name").text(),
 		'step_number':currentStep,
@@ -45,24 +49,38 @@ function goToStep(direction) {
         currentStep --;
     }
 
-        //get request to see if there is entry for that step
-        //if there is- fill the textarea with it
-        //else show an empty text area
+    //get request to see if there is entry for that step
+    //if there is- fill the textarea with it
+    //else show an empty text area
     var request = $.get('/weave/get_next_step/', {
         'example_name' : $("#example_name").text(),
         'step_number' : currentStep
     });
     request.done(function(data) {
-
         if (!("error" in data)) {
             for (var key in data) {
               if (data.hasOwnProperty(key)) {
+
                 console.log(key + 1);
                 console.log(data[key] + 2);
                 console.log($("#"+key).html() + 3);
                 var text_area = nicEditors.findEditor(key);
+
+                if (key == "explanation_area"){
+                    if(text_area.getContent().toLowerCase().substring(0,7) == "<b>step" || text_area.getContent().toLowerCase().substring(0,4) == "step"){
+                        // The step identification is already contained in the content of the explanation so don't add it again
+                        text_area.setContent(data[key]); 
+                    }
+                    else{
+                        text_area.setContent("<b>Step " + currentStep + ":</b> " + data[key]); 
+                    }
+                }
+                else{
+                    text_area.setContent(data[key]);
+                }
+
                 console.log(text_area + 4);
-                text_area.setContent(data[key]);
+                
               }
             }
         }
@@ -70,7 +88,16 @@ function goToStep(direction) {
 }
 
 
-
+function handleControlVisibility(direction){
+        // Ensure the correct arrows are shown
+    if (currentStep == 1 && direction == "back") {
+        $("#btn_prev").css('visibility', 'hidden');
+    } else {
+        $("#btn_prev").css('visibility', 'visible');
+        $("#btn_next").css('visibility', 'visible');
+    }
+    
+}
 
 // Reset an example- show only the relevant elements
 function doReset() {

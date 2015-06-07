@@ -1109,14 +1109,16 @@ def save_explanation(request):
 		example_name = request.POST['example_name']
 		step_number = request.POST['step_number']
 	except KeyError:
+		print "key error in save explanation"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 		
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
+		print "index error in save explanation"
 		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
-		
+	print "explanation html ", html
 	html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
 	html_explanation.html = html
 	html_explanation.save() #Save the changes
@@ -1133,16 +1135,18 @@ def save_step(request):
 		step_number = request.POST['step_number']
 		panel_id = request.POST['panel_id']
 	except KeyError:
-		print "key error"
+		print "key error in save step"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 		
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
-		print "index error"
+		print "index error in save step"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+	print "step html ", html
+	print "step number ",	step_number
+	print "panel_id ",  panel_id
 	html_step = HTMLStep.objects.get_or_create(example = example, step_number = step_number, panel_id = panel_id)[0]
 	html_step.html = html
 	html_step.save() #Save the changes
@@ -1150,18 +1154,20 @@ def save_step(request):
 
 
 def get_next_step(request):
-
+	print "in get next step"
 	context = RequestContext(request)
 	# Get the requested example and step number
 	try:
 		example_name = request.GET['example_name']
 		step_number = int(request.GET['step_number'])
 	except KeyError:
+		print "key error in get next step"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 	try:
 		example = Example.objects.filter(name = example_name)[0]
 	except IndexError:
+		print "index error in get next step"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 
@@ -1176,14 +1182,17 @@ def get_next_step(request):
 		if len(panel_entry) > 0:
 			# there has been a text saved for this panel so return the first one
 			step_entry[panel_id] = panel_entry[0].html
+			print "something in panel exists"
 		else:
 			# there was no previously inserted text for this panel so return empty string
 			step_entry[panel_id] = ""
+			print "nothing in panel exists"
 	# Add the html for the explanation if it existed else add an empty string
 	if len(html_explanation) > 0:
 		step_entry["explanation_area"] = html_explanation[0].html
+		print "explanation exists"
 	else:
 		step_entry["explanation_area"] = ""
-
+		print "no explanation exists"
 
 	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
