@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+</head>
+<body>
+
+
+<article>
+
+  <section id="editable" contenteditable="true">
+    <h2>Go ahead, edit away!</h2>
+    <p>Here's a typical paragraph element</p>
+    <ol>
+      <li>and now a list</li>
+      <li>with only</li>
+      <li>three items</li>
+    </ol>
+  </section>
+  <button id ="test">Test</button>
+</article>
+<script type="text/javascript" src="jquery-2.1.1.js"></script>
+<script>
+$('#test').click(function () {
+  alert($("#editable").html());
+});
+
+
+</script>
+
+</body>
+</html>
