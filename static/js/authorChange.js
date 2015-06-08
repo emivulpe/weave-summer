@@ -132,8 +132,8 @@ $('#btn_prev').click(function() {
 });
 
 // Reset the example on click of the reset button
-$('#btn_reset').click(function() {
-    doReset();
+$('#btn_done').click(function() {
+    alert("done");
 });
 
 

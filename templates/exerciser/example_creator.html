@@ -19,11 +19,19 @@
 }
 
 {% endblock %}
+{% block highlighting %}
+    <div id = "highlighting_control" class="radio-inline" style = "float:left;">
+    	<label class="radio-inline navbar-brand" style = "font-size:14px;"><input type="radio" name="highlighting_radio" value = "highlight" checked>Highlight &nbsp;</label>
+    	<label class="radio-inline navbar-brand" style = "font-size:14px;"><input type="radio" name="highlighting_radio" value = "unhighlight">Unhighlight</label>
+	</div>
+{% endblock %}
 {% block app_controls %}
+
 <!-- buttons to control transitions between steps -->
 	<li><a id="btn_prev" href="#" style="top: 2px; visibility:hidden;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
 	<li><a id="btn_next" href="#" style=" top: 2px;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	
+	<li><a id="btn_done" href="#" style="top: 2px;"><i class="fa fa-check fa-lg landing-icon fa"></i>&nbsp;Done</a></li>	
 	
 {% endblock %}
 
@@ -39,25 +47,26 @@
 					<tr>
 					{% for panel in panels %}
 						<th class = "panel">
-			                    <div id="editor{{ forloop.counter }}" contenteditable="true" style = "height: 100%;">
-			                        <p>Here's a typical paragraph element</p>
-			                        <ol>
-			                          <li>and now a list</li>
-			                          <li>with only</li>
-			                          <li>three items</li>
-			                        </ol>
-			                    </div>
+		                    <div id="editor{{ forloop.counter }}" contenteditable="true" style = "height: 100%;">
+		                        <p>Here's a typical paragraph element</p>
+		                        <ol>
+		                          <li>and now a list</li>
+		                          <li>with only</li>
+		                          <li>three items</li>
+		                        </ol>
+		                    </div>
 						</th>
 					{% endfor %}
 					</tr>		
 				</table>
 			</div>
-			<div class="row2" id="explanation_row2" style = "height:30%;">
-				<!--<div id = "explanation" style="line-height: 104%;padding:2px;font-size:15px;">To start the example click on the Start button. You can move through the steps by clicking of the arrows that will appear on screen or using the left and right arrows on the keyboard.</div> -->
-				<textarea id = "explanation_area" style="width: 100%; height: 100%;">
-					Some Initial Content was in this textarea
-				</textarea>
-
+			<div class="row2" id="explanation_area" contenteditable="true" style = "height:30%;">
+	            <p>Here's a typical paragraph element</p>
+	            <ol>
+	              <li>and now a list</li>
+	              <li>with only</li>
+	              <li>three items</li>
+	            </ol>
 			</div>
 
    </div> <!-- end of #foo -->
@@ -190,10 +199,13 @@
             	console.log("here");
             	$('[id^="editor"]').each(function(index) {
             		editor = document.getElementById($(this).attr('id'));
-            		highlighters[editor_counter] = new TextHighlighter(editor,{"color":"red"});
+            		highlighters[editor_counter] = new TextHighlighter(editor,{"color":"rgb(255, 255, 123)"});
             		editor_counter++;
             		//alert(eval ('hltr' + editable_counter)); //'=' new TextHighlighter($(this),{"color":"red"}));
             	})
+
+				var explanation_area = document.getElementById('explanation_area');
+            	var explanation_editor = new TextHighlighter(explanation_area,{"color":"rgb(255, 255, 123)"});
             	console.log("here" + highlighters.length);
                 var removeBtn = document.getElementById('remove');
 
@@ -208,4 +220,26 @@
 
         </script>
 <!-- End of scripts for the content editable -->
+
+
+
+<script type="text/javascript">
+// Script to control the highlighting/unhighlighting
+	$('input[type=radio][name=highlighting_radio]').on('change', function(){
+	    switch($(this).val()){
+	        case 'highlight' :
+	            for (var i = 0; i < highlighters.length; i++) {
+				    highlighters[i].setColor("rgb(255, 255, 123)");
+				}
+				explanation_editor.setColor("rgb(255, 255, 123)");
+	            break;
+	        case 'unhighlight' :
+	            for (var i = 0; i < highlighters.length; i++) {
+				    highlighters[i].setColor("rgb(255, 255, 255)");
+				}
+				explanation_editor.setColor("rgb(255, 255, 255)");
+	            break;
+	    }            
+	});
+</script>
 {% endblock %}
