@@ -68,7 +68,7 @@
 </div> <!-- end of #widget -->
 
 
-<div id="myModal" class="modal fade">
+<div id="question_modal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,9 +87,10 @@
 					<ul id = "options_list" class="list-group" style = "">
 						<li class="list-group-item option"><input class="form-control" type="text" placeholder="Option Text"></li>
 						<li class="list-group-item option"><input class="form-control" type="text" placeholder="Option Text"></li>
+
 					</ul>
 					<button id = "add_option_button" type="button" class="btn btn-default">Add option</button>
-					<i id = "trash" class="fa fa-trash-o fa-3x" style = "float:right; padding-left:70%;"></i>
+					<i class="fa fa-trash-o fa-3x trash" style = "float:right; padding-left:70%;"></i>
 				</div>
             </div>
             <div class="modal-footer">
@@ -99,6 +100,44 @@
     </div>
 </div>
 
+
+
+<div id="plan_modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Example plan</h4>
+            </div>
+            <div class="modal-body">
+
+            	<label for = "question_text">Problem:</label>
+                <textarea class="form-control" rows="5" id="question_text" style = "resize:none; margin-bottom:8px;"></textarea>
+				
+
+				<div id = "steps_container" style = "display:none;">
+					<label for = "question_text">Steps:</label>
+					<ul id = "steps_list" class="list-group" style = "">
+					</ul>
+				</div>
+
+
+
+				<div class="row">
+				 	<div class="col-md-6">
+				 		<button id = "plan_button" class="btn btn-default btn-lg" type="button" style = "align:left;">Create a plan</button>
+				 	</div>
+				 	<div class="col-md-6 text-right">
+				 		<i class="fa fa-trash-o fa-3x trash" style = "float:right; padding-left:70%;"></i>
+				 	</div>
+				</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -123,11 +162,7 @@
 <script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>-->
 <!-- End of scripts for the text editor -->
 
-<script type="text/javascript">
-	$('#btn_question').click(function(){
-		$("#myModal").modal('show');
-	});
-</script>
+
 
 
 <script type="text/javascript">
@@ -149,13 +184,15 @@
 		alert("clicked");
 		$("#options_list").append('<li class="list-group-item option"><input class="form-control" type="text" placeholder="Option Text"></li>');
 		$('.option').draggable(); 
+		
 	});
 </script>
 <script type="text/javascript">
 	$(function() {
 	    $(".option").draggable();
-
-	    $('#trash').droppable({
+		$(".step").draggable();
+		//$("#steps").sortable();
+	    $('.trash').droppable({
 	        drop: function(event, ui) {
 	            ui.draggable.remove();
 	        }
@@ -236,4 +273,76 @@
 	    }            
 	});
 </script>
+
+
+
+<!-- Scripts to deal with the plan modal -->
+
+<script> 
+	var csrftoken = getCookie('csrftoken');
+	$('#plan_button').click(function(){
+
+		$("#steps_container").show();
+		$("#steps_list").append('<li class="list-group-item step"><input class="form-control" type="text" placeholder="Step Text"></li>');
+		$('.step').draggable(); 
+		//$('#steps').sortable('refresh');
+		$('#plan_button').html("Next step");
+		
+	});
+	
+
+	$('#example_button').click(function(){
+		alert("example button clicked");
+		
+		if ($('#example_name').val() == ''){
+			BootstrapDialog.alert('Please enter the example name on the top of the page!');
+		}
+		else if( $('#number_of_panels').val() == null){
+			BootstrapDialog.alert('Please select the number of panels on the top of the page!');
+		}
+		else{
+			// create the example with the panels
+			var request = $.post("/weave/create_example/", {
+                'example_name': $('#example_name').val(),
+                'number_of_panels': $('#number_of_panels').val(),
+                'csrfmiddlewaretoken': csrftoken,
+            });
+            request.done(function(outcome) { // Extract a list of the relevant groups
+		        if ("error" in outcome) {
+		            BootstrapDialog.alert('Please enter a valid example name and a valid number of panels');
+		        } 
+		        else if ("disallowed" in outcome){
+		        	BootstrapDialog.alert('Please select a different name for your example because there is an example with your selected name!');
+		        }
+		        else {
+		        	// create the steps from the plan
+		        	$('#steps li').each(function(index, li) {
+			 			var stepText = $(li).find( "input" ).val();  
+			 		 	console.log(index + stepText);
+			 		 	var request = $.post("/weave/save_explanation/", {
+			 		 		'example_name' : $('#example_name').val(),
+			 		 		'step_number' : index,
+			 		 		'html' : stepText
+			 		 	});
+					});
+
+			 		// load the example creator page
+					window.location = '/weave/example_creator?panels=' + $('#number_of_panels').val() + '&example_name=' + $('#example_name').val();
+		        }
+            // ensure you can't go back because it will make a conflict with the example- might modify an existing one...
+           
+       		});
+		}
+ 
+		//window.location = '/weave/example_creator?panels=3'
+		//alert("code to load the example creation page" + $('#number_of_panels').val());
+	});
+</script>
+
+<script type="text/javascript" src="{% static 'js/jquery.sortable.js' %}"></script>
+
+<script>
+    $('.sortable').sortable();
+</script>
+
 {% endblock %}

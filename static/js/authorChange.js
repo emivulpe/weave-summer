@@ -133,7 +133,11 @@ $('#btn_prev').click(function() {
 
 // Reset the example on click of the reset button
 $('#btn_done').click(function() {
-    alert("done");
+    $("#plan_modal").modal('show');
+});
+
+$('#btn_question').click(function(){
+    $("#question_modal").modal('show');
 });
 
 
