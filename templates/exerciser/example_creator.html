@@ -111,6 +111,18 @@
             </div>
             <div class="modal-body">
 
+
+<label for = "example_name">Example name:</label>
+<input id = "example_name" class="form-control" type="text" placeholder="ExampleName">
+
+<label for = "number_of_panels">Number of panels:</label>
+				    <select id = "number_of_panels" class="form-control">
+						<option value="1" selected>1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
             	<label for = "question_text">Problem:</label>
                 <textarea class="form-control" rows="5" id="question_text" style = "resize:none; margin-bottom:8px;"></textarea>
 				
@@ -181,7 +193,6 @@
 
 <script type="text/javascript">
 	$('#add_option_button').click(function(){
-		alert("clicked");
 		$("#options_list").append('<li class="list-group-item option"><input class="form-control" type="text" placeholder="Option Text"></li>');
 		$('.option').draggable(); 
 		
@@ -189,6 +200,7 @@
 </script>
 <script type="text/javascript">
 	$(function() {
+		$("#plan_modal").modal('show');
 	    $(".option").draggable();
 		$(".step").draggable();
 		//$("#steps").sortable();

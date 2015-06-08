@@ -1069,9 +1069,7 @@ def example_creator(request):
 	# Request the context of the request.
 	# The context contains information such as the client's machine details, for example.
 	context = RequestContext(request)
-	panels = int(request.GET.get('panels'))
-	example_name = request.GET.get('example_name')
-	print example_name
+
 	
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
@@ -1079,7 +1077,7 @@ def example_creator(request):
 
 
 	# Ensure panels corresponds to something meaningful
-	return render_to_response('exerciser/example_creator.html', {'panels':range(0,panels), 'example_name' : example_name}, context)
+	return render_to_response('exerciser/example_creator.html', {'panels':range(0,3)}, context)
 
 	# A method to create a new html explanation
 @requires_csrf_token
