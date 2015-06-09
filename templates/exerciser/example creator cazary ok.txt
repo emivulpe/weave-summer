@@ -37,18 +37,36 @@
   <div id="foo"  style = "height:100%;">
   	<!-- the number of panels needs to be taken from what the user selected previously -->
 			<div class="row2" id = "outer_panel2" style ="position:relative; overflow-y:auto;overflow-x:hidden; height:70%;">
-				<table id="panel_container" style=" line-height: 110%;overflow:auto;height:100%; width:100%;table-layout:fixed;">
+				<table id="panel_container2" style=" line-height: 110%;overflow:auto;height:100%; table-layout:fixed;">
 
-					<tr id = "example_panels"></tr>		
+					<tr id = "example_areas">
+					{% for panel in panels %}
+						<th class = "panel">
+							<textarea id="id_cazary_full{{ forloop.counter }}">full mode</textarea>
+							<!--
+		                    <div id="editor{{ forloop.counter }}" contenteditable="true" style = "height: 100%;">
+		                        <p>Here's a typical paragraph element</p>
+		                        <ol>
+		                          <li>and now a list</li>
+		                          <li>with only</li>
+		                          <li>three items</li>
+		                        </ol>
+		                    </div>
+		                -->
+						</th>
+					{% endfor %}
+					</tr>		
 				</table>
 			</div>
-			<div class="row2" id="explanation_row2" style = "height:30%;">
-				<!--<div id = "explanation" style="line-height: 104%;padding:2px;font-size:15px;">To start the example click on the Start button. You can move through the steps by clicking of the arrows that will appear on screen or using the left and right arrows on the keyboard.</div> -->
-				<textarea id = "explanation_area" style="width: 100%; height: 100%;">
-					Some Initial Content was in this textarea
-				</textarea>
-
-			</div>
+			<textarea id="explanation_id_cazary_full">full mode</textarea>
+			<!--<div class="row2" id="explanation_area" contenteditable="true" style = "height:30%;">
+	            <p>Here's a typical paragraph element</p>
+	            <ol>
+	              <li>and now a list</li>
+	              <li>with only</li>
+	              <li>three items</li>
+	            </ol>
+			</div>-->
 
    </div> <!-- end of #foo -->
 
@@ -133,7 +151,7 @@
 			-->
             </div>
             <div class="modal-footer">
-                <button id = "create_example_button" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                <button id = "create_example_button" type="button" class="btn btn-default">OK</button>
             </div>
         </div>
     </div>
@@ -143,91 +161,23 @@
 {% block javascripts %}
 
 
-<script type="text/javascript">
 
-	$('#add_option_button').click(function(){
-		$("#options_list").append('<li class="list-group-item option"><input class="form-control" type="text" placeholder="Option Text"></li>');
-		$('.option').draggable(); 
-		
-	});
-	$('#create_example_button').click(function(){
-		$("#example_name_label").html($("#example_name").val());
-		var number_of_panels = parseInt($("#number_of_panels").val());
-		var panel_width = $("#panel_container").width()/number_of_panels;
-		console.log(panel_width  +" wew " + $("#panel_container").width());
-		for (i = 0; i < number_of_panels; i++) {
-			$("#example_panels").append('<th id = "panel_area_' + i + '" class = "panel" valign="top" style = " width:' + panel_width + 'px;"><textarea id = "area' + i + '" style = "width:' + panel_width + 'px;">Some Initial Content was in this textarea</textarea></th>');
-		}
-		$("#panel_container" ).colResizable({ disable : true });
-
-		var exampleEditors = [];
-
-		$('textarea[id^="area"]').each(function(index) {
-			//console.log($(this).attr("id"));
-			//$(this).width($("#panel_container").width()/number_of_panels);
-			//$(this).width($("#panel_area_" + index).width());
-			//$("th#panel_area_" + index).css("width",$("#panel_container").width()/number_of_panels);
-			//$(this).css("width",$("th#panel_area_" + index).width());
-			//console.log($(this).width() + " fw " + $("th#panel_area_" + index).width());
-			//console.log($(this).attr("id") + "fresd" + $("th#panel_area_" + index).attr("id"));
-			$(this).height($("#outer_panel2").height()*0.8);
-			exampleEditors[index] = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],
-}).panelInstance($(this).attr("id"));	
-			
-			
-		});
-
-		var explanationEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance("explanation_area");
-		
-
-
-
-		//Re-init the plugin on the new elements
-		$("#panel_container").colResizable({
-		    liveDrag: true,
-		    gripInnerHtml: "<div class='grip'></div>",
-		    draggingClass: "dragging",
-		    onDrag: function (){
-			$('textarea[id^="area"]').each(function(index) {
-				var editor = nicEditors.findEditor($(this).attr("id"));
-				var content = editor.getContent();
-				exampleEditors[index].removeInstance($(this).attr("id"));
-				//$("#panel_area_" + index).height($("#example_panels").height()+"px");
-				$(this).width($("#panel_area_" + index).width() + "px");
-				updatedEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));	
-
-				exampleEditors[index] = updatedEditor;
-
-				
-			});
-		}
-		});
-
-	});
-</script>
-
-<!-- Scripts for the text editor -->
+<!-- Scripts for the text editor 
 <script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
 <script type="text/javascript">
 	/*
 	bkLib.onDomLoaded(function() {
 		$('textarea[id^="area"]').each(function(index) {
 			console.log($(this).attr("id"));
-			$(this).width($("#panel_container").width()/number_of_panels);
-			$(this).height($("#outer_panel2").height()*0.8);
-			new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance($(this).attr("id"));	
-			
-			
+			//new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance($(this).attr("id"));	
 		});
 
-		new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance("explanation_area");
-
-	
-	});*/
-
+		new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}"}).panelInstance("explanation_area");	
+	});
+*/
 </script>
 
-
+<script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>-->
 <!-- End of scripts for the text editor -->
 
 
@@ -247,7 +197,22 @@
 	});
 </script>
 
+<script type="text/javascript">
+	$('#add_option_button').click(function(){
+		$("#options_list").append('<li class="list-group-item option"><input class="form-control" type="text" placeholder="Option Text"></li>');
+		$('.option').draggable(); 
+		
+	});
+	$('#create_example_button').click(function(){
+		$("#example_name_label").html($("#example_name").val());
 
+		/*for (i = 0; i < parseInt($("#number_of_panels").val()); i++) {
+			$("#example_areas").append('<th class = "panel"><div id="editor"' + i + 'contenteditable="true" style = "height: 100%;"><p>Here iss a typical paragraph element</p><ol><li>and now a list</li><li>with only</li></ol></div></th>');
+			}
+		*/
+		
+	});
+</script>
 <script type="text/javascript">
 	$(function() {
 		$("#plan_modal").modal('show');
@@ -411,7 +376,7 @@
 
 
 <!-- Cazary code -->
-<!--
+
 <script type="text/javascript" src=  "{% static 'cazary/cazary-dev/cazary.js' %}"></script>
 <script type="text/javascript">
 	(function($, window){
@@ -437,6 +402,6 @@
 		});
 	})
 	(jQuery, window);
-</script>-->
+</script>
 <!-- End of xazary code -->
 {% endblock %}
