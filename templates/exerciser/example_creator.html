@@ -217,6 +217,47 @@
 		}
 		});
 
+
+
+		$('#interface').mousedown(function(){
+		    int00 = setInterval(function() { repeatingfunction(); }, 1);
+		}).mouseup(function() { 
+		    clearInterval(int00);
+		});
+
+		function repeatingfunction() {
+		    console.log("mouse down");
+
+			$("#panel_container").height($("#outer_panel2").height() + "px");
+
+
+			$('textarea[id^="area"]').each(function(index) {
+			var editor = nicEditors.findEditor($(this).attr("id"));
+			var content = editor.getContent();
+			//console.log($("#area_container" + index).attr("id"));
+			exampleEditors[index].removeInstance($(this).attr("id"));
+			//$("#panel_area_" + index).height($("#example_panels").height()+"px");
+			$("#area_container" + index).height($("#outer_panel2").height() + "px");
+
+			$(this).height(($("#outer_panel2").height()) + "px");
+			updatedEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));	
+
+			exampleEditors[index] = updatedEditor;
+				
+				
+			});
+			var editor = nicEditors.findEditor("explanation_area");
+			var content = editor.getContent();
+			//console.log($("#area_container" + index).attr("id"));
+			explanationEditor.removeInstance("explanation_area");
+			//$("#panel_area_" + index).height($("#example_panels").height()+"px");
+			$("#explanation_area").height($("#explanation_row2").height() + "px");
+
+			updatedEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance("explanation_area");	
+
+			explanationEditor = updatedEditor;
+		}
+
 	});
 </script>
 
@@ -290,6 +331,9 @@
 		    var navHeight = $("#navigation_bar").height();
 		    $("#foo").height("100%");
 		});
+
+
+
 	});
  </script>
 
