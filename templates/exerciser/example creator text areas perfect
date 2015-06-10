@@ -15,10 +15,10 @@
 
 {% endblock %}
 {% block highlighting %}
-    <!--<div id = "highlighting_control" class="radio-inline" style = "float:left;">
+    <div id = "highlighting_control" class="radio-inline" style = "float:left;">
     	<label class="radio-inline navbar-brand" style = "font-size:14px;"><input type="radio" name="highlighting_radio" value = "highlight" checked>Highlight &nbsp;</label>
     	<label class="radio-inline navbar-brand" style = "font-size:14px;"><input type="radio" name="highlighting_radio" value = "unhighlight">Unhighlight</label>
-	</div>-->
+	</div>
 {% endblock %}
 {% block app_controls %}
 
@@ -42,7 +42,7 @@
 					<tr id = "example_panels"></tr>		
 				</table>
 			</div>
-			<div class="row2" id="explanation_row2">
+			<div class="row2" id="explanation_row2" style = "height:30%;">
 				<!--<div id = "explanation" style="line-height: 104%;padding:2px;font-size:15px;">To start the example click on the Start button. You can move through the steps by clicking of the arrows that will appear on screen or using the left and right arrows on the keyboard.</div> -->
 				<textarea id = "explanation_area" style="width: 100%; height: 100%;">
 					Some Initial Content was in this textarea
