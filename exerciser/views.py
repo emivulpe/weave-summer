@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation
+from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption
 import json 
 import simplejson 
 import datetime
@@ -1122,7 +1122,7 @@ def save_explanation(request):
 	html_explanation.save() #Save the changes
 	return HttpResponse("{}",content_type = "application/json")
 
-	# A method to create a new html step
+# A method to create a new html step
 @requires_csrf_token
 def save_step(request):
 	print "in save step"
@@ -1137,6 +1137,7 @@ def save_step(request):
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 		
 	try:
+		print example_name
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
@@ -1149,6 +1150,75 @@ def save_step(request):
 	html_step.html = html
 	html_step.save() #Save the changes
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
+
+
+# A method to create a new html step
+@requires_csrf_token
+def save_step_texts(request):
+	print "in save step texts"
+
+	try:
+		html = request.POST['html']
+		example_name = request.POST['example_name']
+		step_number = request.POST['step_number']
+		panel_texts = json.loads(request.POST['panel_texts'])
+	except KeyError:
+		print "key error in save step texts"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+		
+	try:
+		print example_name
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		print "index error in save step texts"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	print "step html ", html
+	print "step number ",	step_number
+	for panel_id in panel_texts:
+		print panel_id, "PANEEEEEEEEEEEEEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLL"
+		html = panel_texts[panel_id]
+		html_step = HTMLStep.objects.get_or_create(example = example, step_number = step_number, panel_id = panel_id)[0]
+		html_step.html = html
+		html_step.save() #Save the changes
+	
+	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
+
+
+	# A method to create a new html step
+@requires_csrf_token
+def save_question(request):
+	print "in save question"
+
+	try:
+		question_text = request.POST['question_text']
+		print question_text, "QUESTION TEXT"
+		example_name = request.POST['example_name']
+		print example_name, "EXAMPLE NAME"
+		step_number = request.POST['step_number']
+		print step_number, "STEP NUMBER"
+		options = json.loads(request.POST['options'])['options']
+		print options, "OPTIONSSSSSS"
+	except KeyError:
+		print "key error in save question"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+		
+	try:
+		print example_name
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		print "index error in save question"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	print "question step html ", question_text
+	print "question step number ",	step_number
+	question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
+	question_options = ExampleOption.objects.filter(question = question).delete()
+	question.question_text = question_text
+	question.save()
+	for option_text in options:
+		option = ExampleOption.objects.get_or_create(question = question, option_text = option_text)[0]
+	return HttpResponse("{}",content_type = "application/json")
 
 
 def get_next_step(request):
@@ -1171,20 +1241,25 @@ def get_next_step(request):
 
 	html_steps = HTMLStep.objects.filter(example = example, step_number = step_number)
 	html_explanation = HTMLExplanation.objects.filter(example = example, step_number = step_number)
+	question = ExampleQuestion.objects.filter(example = example, step_number = step_number)
 	step_entry= {}
 	number_of_panels = example.number_of_panels
 	# Add the panel and the html for the panel in format panel_id:html- this will be directly used in the js
 	for i in range (number_of_panels):
-		panel_id = "area" + str(i+1)
+		panel_id = "area" + str(i)
 		panel_entry = html_steps.filter(panel_id = panel_id)
 		if len(panel_entry) > 0:
 			# there has been a text saved for this panel so return the first one
 			step_entry[panel_id] = panel_entry[0].html
 			print "something in panel exists"
 		else:
-			# there was no previously inserted text for this panel so return empty string
-			step_entry[panel_id] = ""
-			print "nothing in panel exists"
+			previous_html_steps = HTMLStep.objects.filter(example = example, step_number = step_number - 1,panel_id = panel_id)
+			if len(previous_html_steps) > 0:
+				step_entry[panel_id] = previous_html_steps[0].html
+			else:
+				# there was no previously inserted text for this panel so return empty string
+				step_entry[panel_id] = ""
+				print "nothing in panel exists"
 	# Add the html for the explanation if it existed else add an empty string
 	if len(html_explanation) > 0:
 		step_entry["explanation_area"] = html_explanation[0].html
@@ -1192,5 +1267,21 @@ def get_next_step(request):
 	else:
 		step_entry["explanation_area"] = ""
 		print "no explanation exists"
+	if len(question) > 0:
+		question = question[0]
+		print "QUESTIOOOOOON" , question.question_text
+		step_entry["question"] = question.question_text
+		options = ExampleOption.objects.filter(question = question)
+		question_options = []
+		for i in range(0, len(options)):
+			print i
+			print len(options)
+			print options[i].option_text
+			question_options.append(options[i].option_text)
+		step_entry["options"] = simplejson.dumps(question_options)
+		print step_entry["options"], "STEP ENTRY OPTIONS "
 
+	else:
+		step_entry["question"] = ""
+		print "NOT A QUESTIOOOOOON"
 	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")

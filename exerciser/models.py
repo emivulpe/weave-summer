@@ -263,6 +263,9 @@ class Example (models.Model):
 	name = models.CharField(primary_key = True, max_length=100)
 	number_of_panels = models.IntegerField()
 
+	def __unicode__(self):
+		return " ".join((self.name, " panels: ", str(self.number_of_panels)))
+
 class HTMLStep(models.Model):
 	example = models.ForeignKey(Example, unique = False)
 	html = models.TextField()
@@ -280,3 +283,18 @@ class HTMLExplanation(models.Model):
 	def __unicode__(self):
 		return " ".join((self.example.name ," text: ",self.html))
 
+class ExampleQuestion(models.Model):
+	question_text = models.TextField()
+	example = models.ForeignKey(Example, unique = False)
+	step_number = models.IntegerField()
+
+
+	def __unicode__(self):
+		return self.question_text
+
+class ExampleOption(models.Model):
+	question = models.ForeignKey(ExampleQuestion, unique = False)
+	option_text = models.TextField()
+
+	def __unicode__(self):
+		return self.option_text

@@ -2,89 +2,228 @@ var currentStep = 0; // Stores the current step you're on. 0 means initial state
 var csrftoken = getCookie('csrftoken');
 var direction = "next";
 var last_direction = "next";
+var exampleName = "";
+
+
 $("#btn_prev").css('visibility', 'hidden');
 $("#btn_reset").css('visibility', 'hidden');
 
+$('#create_example_button').click(function(){
+    exampleName = $('#example_name').val()
+    var request = $.post("/weave/create_example/", {
+        'example_name': exampleName,
+        'number_of_panels': $('#number_of_panels').val(),
+        'csrfmiddlewaretoken': csrftoken,
+    });
+    request.done(function(outcome) { // Extract a list of the relevant groups
+        if ("error" in outcome) {
+            BootstrapDialog.alert('Please enter a valid example name and a valid number of panels');
+        } 
+        else if ("disallowed" in outcome){
+            BootstrapDialog.alert('Please select a different name for your example because there is an example with your selected name!');
+        }
+        else {
+            $('#plan_modal').modal('hide');
+            $("#example_name_label").html(exampleName);
+            var number_of_panels = parseInt($("#number_of_panels").val());
+            var panel_width = $("#panel_container").width()/number_of_panels;
+            console.log(panel_width  +" wew " + $("#panel_container").width());
+            for (i = 0; i < number_of_panels; i++) {
+                $("#example_panels").append('<th id = "panel_area_' + i + '" class = "panel" valign="top" style = " width:' + panel_width + 'px;"><div id = "area_container' + i + '" class="panel" style="margin:0px; float: left;word-wrap:break-word;overflow-y:auto; overflow-x:hidden; width:' + panel_width + 'px;"><textarea id = "area' + i + '" class="panel" style = "width:' + (panel_width-20) + 'px;"></textarea></div></th>');
+            }
+            $("#panel_container" ).colResizable({ disable : true });
+
+            var exampleEditors = [];
+
+            $('textarea[id^="area"]').each(function(index) {
+                $(this).height($("#outer_panel2").height()*0.71);
+                exampleEditors[index] = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));                   
+            });
+
+            var explanationEditor = new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("explanation_area");
+
+
+            //Re-init the plugin on the new elements
+            $("#panel_container").colResizable({
+                liveDrag: true,
+                gripInnerHtml: "<div class='grip'></div>",
+                draggingClass: "dragging",
+                onDrag: function (){
+                    $('textarea[id^="area"]').each(function(index) {
+                        var editor = nicEditors.findEditor($(this).attr("id"));
+                        var content = editor.getContent();
+                        exampleEditors[index].removeInstance($(this).attr("id"));
+                        $("#area_container" + index).width($("#panel_area_" + index).width() + "px");
+                        $(this).width(($("#panel_area_" + index).width() - 20) + "px");
+                        updatedEditor = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));   
+                        exampleEditors[index] = updatedEditor;                        
+                    });
+                }
+            });
+        }
+    });
+
+});
+
+
+$('#create_question_step').click(function(){
+    $('#question_modal').modal('hide');
+    goToStep("next",true);
+
+
+});
+
+
+$("#question_step_close_button").click(function(){
+    alert("question closed");
+    $(".option").each(function(){
+        $(this).remove();
+    })
+})
 
 
 // A function defining the actions the student interface needs to undertake at a particular step
-function goToStep(direction) {
-    //alert("in go to" + $("#example_name").text() + "da");
+function goToStep(direction, question) {
+
 	//save the html in a db (either replace the existing one if there is one or create a new one
 	//NOTE: there are multiple panels- ensure you say what html goes for which panel
 	
     handleControlVisibility(direction);
-	
+	var panel_texts = {}
 	// Save the entries for each panel for the step
 	$('textarea[id^="area"]').each(function(index) {
 		console.log($(this).attr("id"));
         var panelId = $(this).attr("id");
         var panelArea = nicEditors.findEditor(panelId);
         var panelContent = panelArea.getContent();
-        $.post("/weave/save_step/", {
-            'html': panelContent,
-			'csrfmiddlewaretoken': csrftoken,
-			'example_name': $("#example_name").text(),
-			'step_number': currentStep,
-			'panel_id' : panelId,
-        });
-	});
-	var explanationArea = nicEditors.findEditor("explanation_area");	//Save the explanation for this step
-    var explanation = explanationArea.getContent();
-	$.post("/weave/save_explanation/", {
-		'html': explanation,
-		'csrfmiddlewaretoken': csrftoken,
-		'example_name': $("#example_name").text(),
-		'step_number':currentStep,
-	});
+        panel_texts[panelId] = panelContent;
 
-    //if it is next 
-        //increment the step counter
-    //if it is back
-        //decrement the counter
-    if (direction == "next"){
-        currentStep ++;
-    }
-    else{
-        currentStep --;
-    }
-
-    //get request to see if there is entry for that step
-    //if there is- fill the textarea with it
-    //else show an empty text area
-    var request = $.get('/weave/get_next_step/', {
-        'example_name' : $("#example_name").text(),
-        'step_number' : currentStep
+	});
+    var saveStepTextsRequest = $.post("/weave/save_step_texts/", {
+            'html': "panelContent",
+            'csrfmiddlewaretoken': csrftoken,
+            'example_name': exampleName,
+            'step_number': currentStep,
+            'panel_texts' : JSON.stringify(panel_texts)
     });
-    request.done(function(data) {
-        if (!("error" in data)) {
-            for (var key in data) {
-              if (data.hasOwnProperty(key)) {
+    saveStepTextsRequest.done(function() {
+        var explanation = "";
+        if(question){
+            
+            explanation = "<b>" + $("#question_text").val() + "</b><br>";
+            var questionText = $("#question_text").val();
+            alert("question" + explanation);
 
-                console.log(key + 1);
-                console.log(data[key] + 2);
-                console.log($("#"+key).html() + 3);
-                var text_area = nicEditors.findEditor(key);
+            //Add the question options if any
+            var options = [];
+            $(".option_text").each(function(index){
+                if($("input:radio[id='multiple_choice_radio_button']").is(":checked")) {
+                    options[index] = $(this).val(); 
+                    explanation += $(this).val() + "<br>";
+                    console.log($(this).val() + "OPTION VAL");
+                }
+                
+            })
+            $(".option").each(function(){
+                $(this).remove();
+            })
+            //A trick to pass the array with AJAX- it is not possible to pass an array otherwise!
+            var options_dict = {'options':options};
 
-                if (key == "explanation_area"){
-                    if(text_area.getContent().toLowerCase().substring(0,7) == "<b>step" || text_area.getContent().toLowerCase().substring(0,4) == "step"){
-                        // The step identification is already contained in the content of the explanation so don't add it again
+            console.log(options_dict['options'] + "OPTIONS DICT");
+            alert(explanation);
+            //A special request to post the question- create a question etc
+            $.post("/weave/save_question/", {
+                'question_text': questionText,
+                'csrfmiddlewaretoken': csrftoken,
+                'example_name': exampleName,
+                'step_number':currentStep,
+                'options' : JSON.stringify(options_dict)
+            }); 
+
+        } 
+        else {
+            
+            var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
+            explanation = explanationArea.getContent();
+            alert("not question" + explanation);
+        }
+        $.post("/weave/save_explanation/", {
+            'html': explanation,
+            'csrfmiddlewaretoken': csrftoken,
+            'example_name': exampleName,
+            'step_number':currentStep,
+        }).done(function() {
+          //if it is next 
+            //increment the step counter
+        //if it is back
+            //decrement the counter
+        if (direction == "next"){
+            currentStep ++;
+        }
+        else{
+            currentStep --;
+        }
+
+        //get request to see if there is entry for that step
+        //if there is- fill the textarea with it
+        //else show an empty text area
+        var request = $.get('/weave/get_next_step/', {
+            'example_name' : exampleName,
+            'step_number' : currentStep
+        });
+        request.done(function(data) {
+            if (!("error" in data)) {
+                for (var key in data) {
+                  if (data.hasOwnProperty(key)) {
+
+                    console.log(key + 1);
+                    console.log(data[key] + 2);
+                    console.log($("#"+key).html() + 3);
+                    var text_area = nicEditors.findEditor(key);
+
+                    if (key == "explanation_area"){
                         text_area.setContent(data[key]); 
                     }
-                    else{
-                        text_area.setContent("<b>Step " + currentStep + ":</b> " + data[key]); 
+                    else {
+                        if (key == "question"){
+                            if (data[key] != ""){
+                                $("#question_text").val(data[key]);
+                                $("#question_modal").modal('show');
+                                console.log("THIS STEP IS A QUESTION!!!!!!!!");
+                            }
+                            else{
+                                console.log("this is not a question?????????");
+                            }
+                        }
+                        else if (key == "options"){
+                            var questionOptions = JSON.parse(data[key]);
+                            for (var i = 0; i < questionOptions.length; i++){
+                                console.log(questionOptions[i] + " this is an option");
+                                $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" value=' + questionOptions[i] + '></li>');
+                            }
+                            $('.option').draggable();   
+                            console.log("OPTIOOOOOOOOOOOOOONSSSSSSS");
+                        }
+                        else {
+                            text_area.setContent(data[key]);
+                        }
+                        
                     }
-                }
-                else{
-                    text_area.setContent(data[key]);
-                }
 
-                console.log(text_area + 4);
-                
-              }
+                    console.log(text_area + 4);
+                    
+                  }
+                }
             }
-        }
-    });
+            else{
+                console.log("there was an error");
+            }
+        });
+    });  
+
+    })
+
 }
 
 
@@ -120,14 +259,14 @@ function doReset() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
-    goToStep("next");
+    goToStep("next", false);
     alert("next");
 });
 
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
-    goToStep("back");
+    goToStep("back", false);
     alert("back");
 });
 
@@ -137,46 +276,20 @@ $('#btn_done').click(function() {
 });
 
 $('#btn_question').click(function(){
+    // reset the values of the input fields
+    $("#question_text").val("");
+    $(".option_text").each(function(){
+        $(this).val("");
+    })
+
+
+    $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>');
+    $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>');
+    $('.option').draggable();                  
     $("#question_modal").modal('show');
 });
 
 
-// Attaching the required actions on button clicks
-$(document).ready(function() {
-    $("#btnClose").click(function(e) {
-        HideDialog();
-        e.preventDefault();
-    });
-
-    $("#btnSubmit").click(function(e) {
-        if (multipleChoiceQuestion) {
-            answer = $(".options input:checked + label").text();
-        } else {
-            answer = $("#textarea_" + textareaNum).val();
-            textareaNum++;
-        }
-        if (answer != "" && answer != undefined) {
-            explanation_dict[currentStep - 1] = " You answered: " + answer + "<br>" + explanation_dict[currentStep - 1];
-            HideDialog();
-            e.preventDefault();
-            var now = new Date().getTime();
-            if (currentStep > 0) {
-                $.post("/weave/log_question_info_db/", {
-                    'time': (now - lastTime) / 1000,
-                    'step': currentStep,
-                    'answer': answer,
-                    'example_name': app_name,
-                    'csrfmiddlewaretoken': csrftoken,
-                    'multiple_choice': multipleChoiceQuestion
-                });
-            }
-            lastTime = now;
-            answer = " You answered: " + answer;
-            goToStep("next");
-        }
-    });
-
-});
 
 
 // Show the dialog for a question
@@ -220,12 +333,12 @@ document.onkeydown = function(e) {
     switch (e.keyCode) {
         case 37:
             if (currentStep > 0 && $("#dialog").is(':hidden')) {
-                goToStep("back");
+                goToStep("back",false);
             }
             break;
         case 39:
             if (currentStep <= totalSteps && $("#dialog").is(':hidden')) { //if the action is question that hasn't been asked yet, i.e. the explanation_dict is still empty for that step
-                goToStep("next");
+                goToStep("next",false);
             }
             break;
     }
