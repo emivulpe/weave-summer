@@ -110,8 +110,10 @@ function goToStep(direction, question) {
         var explanation = "";
         if(question){
             
-            explanation = "<b>" + $("#question_text").val() + "</b><br>";
-            var questionText = $("#question_text").val();
+            
+            var questionEditor = nicEditors.findEditor("question_text");
+            var questionText = questionEditor.getContent();
+            explanation = "<b>" + questionText + "</b><br>";
             alert("question" + explanation);
 
             //Add the question options if any
@@ -188,8 +190,9 @@ function goToStep(direction, question) {
                     else {
                         if (key == "question"){
                             if (data[key] != ""){
-                                $("#question_text").val(data[key]);
                                 $("#question_modal").modal('show');
+                                var questionEditor = nicEditors.findEditor("question_text");
+                                questionEditor.setContent(data[key]);
                                 console.log("THIS STEP IS A QUESTION!!!!!!!!");
                             }
                             else{
@@ -277,7 +280,11 @@ $('#btn_done').click(function() {
 
 $('#btn_question').click(function(){
     // reset the values of the input fields
-    $("#question_text").val("");
+    /*var questionEditor = nicEditors.findEditor("question_text");
+    if(questionEditor != undefined){
+        questionEditor.setContent("");
+    }
+    */
     $(".option_text").each(function(){
         $(this).val("");
     })
