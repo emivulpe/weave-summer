@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 )
 
 # This is the version of the urls for the deployed project
-if False:
+if True:
     urlpatterns = patterns('',
 
         url(r'^admin/', include(admin.site.urls)),

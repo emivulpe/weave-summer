@@ -7,7 +7,7 @@ PROJECT_PATH = os.path.abspath(PROJECT_PATH)
 TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
 STATIC_PATH = os.path.join(PROJECT_PATH,'static')
 
-DEPLOYED = True
+DEPLOYED = False
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

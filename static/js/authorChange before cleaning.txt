@@ -36,7 +36,14 @@ $('#create_example_button').click(function(){
             var exampleEditors = [];
 
             $('textarea[id^="area"]').each(function(index) {
-                $(this).height($("#outer_panel2").height()*0.71);
+                //console.log($(this).attr("id"));
+                //$(this).width($("#panel_container").width()/number_of_panels);
+                //$(this).width($("#panel_area_" + index).width());
+                //$("th#panel_area_" + index).css("width",$("#panel_container").width()/number_of_panels);
+                //$(this).css("width",$("th#panel_area_" + index).width());
+                //console.log($(this).width() + " fw " + $("th#panel_area_" + index).width());
+                //console.log($(this).attr("id") + "fresd" + $("th#panel_area_" + index).attr("id"));
+                $(this).height($("#outer_panel2").height()*0.8);
                 exampleEditors[index] = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));                   
             });
 
@@ -52,11 +59,17 @@ $('#create_example_button').click(function(){
                     $('textarea[id^="area"]').each(function(index) {
                         var editor = nicEditors.findEditor($(this).attr("id"));
                         var content = editor.getContent();
+                        //console.log($("#area_container" + index).attr("id"));
                         exampleEditors[index].removeInstance($(this).attr("id"));
+                        //$("#panel_area_" + index).height($("#example_panels").height()+"px");
                         $("#area_container" + index).width($("#panel_area_" + index).width() + "px");
+
                         $(this).width(($("#panel_area_" + index).width() - 20) + "px");
                         updatedEditor = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));   
-                        exampleEditors[index] = updatedEditor;                        
+
+                        exampleEditors[index] = updatedEditor;
+                        
+                        
                     });
                 }
             });
@@ -67,24 +80,27 @@ $('#create_example_button').click(function(){
 
 
 $('#create_question_step').click(function(){
+   
     $('#question_modal').modal('hide');
     goToStep("next",true);
-
+    // reset the values of the input fields
+    $("#question_text").val("");
+    $(".option").each(function(){
+        $(this).val("");
+    })
 
 });
 
 
 $("#question_step_close_button").click(function(){
     alert("question closed");
-    $(".option").each(function(){
-        $(this).remove();
-    })
 })
 
 
 // A function defining the actions the student interface needs to undertake at a particular step
 function goToStep(direction, question) {
 
+    //alert("in go to" + $("#example_name").text() + "da");
 	//save the html in a db (either replace the existing one if there is one or create a new one
 	//NOTE: there are multiple panels- ensure you say what html goes for which panel
 	
@@ -99,19 +115,17 @@ function goToStep(direction, question) {
         panel_texts[panelId] = panelContent;
 
 	});
-    var saveStepTextsRequest = $.post("/weave/save_step_texts/", {
+    $.post("/weave/save_step_texts/", {
             'html': "panelContent",
             'csrfmiddlewaretoken': csrftoken,
             'example_name': exampleName,
             'step_number': currentStep,
             'panel_texts' : JSON.stringify(panel_texts)
-    });
-    saveStepTextsRequest.done(function() {
+    }).done(function() {
         var explanation = "";
         if(question){
             
-            explanation = "<b>" + $("#question_text").val() + "</b><br>";
-            var questionText = $("#question_text").val();
+            explanation = $("#question_text").val();
             alert("question" + explanation);
 
             //Add the question options if any
@@ -119,22 +133,18 @@ function goToStep(direction, question) {
             $(".option_text").each(function(index){
                 if($("input:radio[id='multiple_choice_radio_button']").is(":checked")) {
                     options[index] = $(this).val(); 
-                    explanation += $(this).val() + "<br>";
                     console.log($(this).val() + "OPTION VAL");
                 }
                 
-            })
-            $(".option").each(function(){
-                $(this).remove();
             })
             //A trick to pass the array with AJAX- it is not possible to pass an array otherwise!
             var options_dict = {'options':options};
 
             console.log(options_dict['options'] + "OPTIONS DICT");
-            alert(explanation);
+
             //A special request to post the question- create a question etc
             $.post("/weave/save_question/", {
-                'question_text': questionText,
+                'question_text': explanation,
                 'csrfmiddlewaretoken': csrftoken,
                 'example_name': exampleName,
                 'step_number':currentStep,
@@ -188,7 +198,6 @@ function goToStep(direction, question) {
                     else {
                         if (key == "question"){
                             if (data[key] != ""){
-                                $("#question_text").val(data[key]);
                                 $("#question_modal").modal('show');
                                 console.log("THIS STEP IS A QUESTION!!!!!!!!");
                             }
@@ -197,12 +206,6 @@ function goToStep(direction, question) {
                             }
                         }
                         else if (key == "options"){
-                            var questionOptions = JSON.parse(data[key]);
-                            for (var i = 0; i < questionOptions.length; i++){
-                                console.log(questionOptions[i] + " this is an option");
-                                $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" value=' + questionOptions[i] + '></li>');
-                            }
-                            $('.option').draggable();   
                             console.log("OPTIOOOOOOOOOOOOOONSSSSSSS");
                         }
                         else {
@@ -276,19 +279,7 @@ $('#btn_done').click(function() {
 });
 
 $('#btn_question').click(function(){
-    // reset the values of the input fields
-    $("#question_text").val("");
-    $(".option_text").each(function(){
-        $(this).val("");
-    })
-
-
-    $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>');
-    $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>');
-    $('.option').draggable();              
     $("#question_modal").modal('show');
-
-
 });
 
 
