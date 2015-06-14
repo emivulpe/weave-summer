@@ -52,11 +52,13 @@ body {
 			<div class="row2" id = "outer_panel2" style ="position:relative; overflow-y:hidden;overflow-x:hidden; height:70%;">
 				<table id="panel_container" style=" line-height: 110%;overflow:hidden;height:100%; width:100%;table-layout:fixed;">
 					<tr id = "example_panels">
+
+
 					</tr>		
 				</table>
 			</div>
-			<div class="row2" id="explanation_row2" style = "overflow-x:auto; overflow-y:scroll;">
-				<div id="explanation_area_panel" style = "position:absolute;"></div>
+			<div class="row2" id="explanation_row2">
+				<div id="explanation_area_panel"></div>
 				<textarea id = "explanation_area" style="width: 100%; height: 100%;margin-top:50px;"></textarea>
 			</div>
 
@@ -298,22 +300,15 @@ body {
 <script type="text/javascript">
 
 $().ready(function() {
-var int00;
+
 	$("#MySplitter").splitter({
 		type: "h", 
 		accessKey: "P"
 	});
-	$('.hsplitbar').mousedown(function(){
-		    int00 = setInterval(function() { repeatingfunction(); }, 1);
-		})
-	$(window).mouseup(function() { 
-		    clearInterval(int00);
-		});
-/*	$(".hsplitbar").mouseup(function(){
+	$(".hsplitbar").mouseup(function(){
 	console.log("success3");
-	repeatingfunction();
 	})
-*/
+
 });
 
 </script>
