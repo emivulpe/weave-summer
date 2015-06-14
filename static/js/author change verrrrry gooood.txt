@@ -56,12 +56,13 @@ $('#create_example_button').click(function(){
             //$("#area_panel_0").css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth( true ) + "px");
             $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
             $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
-            $("#explanation_area_panel").css("width", $("#explanation_row2").find($(".nicEdit-main")).outerWidth( true ) + "px");
+            $("#explanation_row2").find($(".nicEdit-panel")).css("width", $("#explanation_row2").width() + "px");
             
             $('[id^="area_panel_"]').each(function(){
                 $(this).css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth( true ) + "px")
             });
 
+$(".nicEdit-panelContain").css("position","absolute");
 
             //Re-init the plugin on the new elements
             $("#panel_container").colResizable({
