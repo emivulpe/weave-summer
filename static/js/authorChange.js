@@ -218,6 +218,7 @@ function goToStep(direction, question) {
             'example_name' : exampleName,
             'step_number' : currentStep
         });
+        
         request.done(function(data) {
             if (!("error" in data)) {
                 for (var key in data) {
