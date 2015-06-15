@@ -179,9 +179,9 @@ body {
 		function repeatingfunction() {
 		    console.log("mouse down");
 
-			//$("#panel_container").height($("#outer_panel2").height() + "px");
+			$("#panel_container").height($("#outer_panel2").height() + "px");
 
-/*
+
 			$('textarea[id^="area"]').each(function(index) {
 				var editor = nicEditors.findEditor($(this).attr("id"));
 				var content = editor.getContent();
@@ -194,21 +194,11 @@ body {
 				updatedEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));	
 
 				exampleEditors[index] = updatedEditor;
-
-
-
 					
 			});
 
-*/
-
-            $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
-            $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");		
-
-            $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
-            $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
-            $("#explanation_area_panel").css("width", $("#explanation_row2").find($(".nicEdit-main")).outerWidth( true ) + "px");	
-			/*var editor = nicEditors.findEditor("explanation_area");
+			
+			var editor = nicEditors.findEditor("explanation_area");
 			var content = editor.getContent();
 			//console.log($("#area_container" + index).attr("id"));
 			explanationEditor.removeInstance("explanation_area");
@@ -217,7 +207,7 @@ body {
 
 			updatedEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance("explanation_area");	
 
-			explanationEditor = updatedEditor;*/
+			explanationEditor = updatedEditor;
 		}
 </script>
 
@@ -315,11 +305,9 @@ var int00;
 	});
 	$('.hsplitbar').mousedown(function(){
 		    int00 = setInterval(function() { repeatingfunction(); }, 1);
-		    $("#explanation_area_panel").css("position","relative");
 		})
 	$(window).mouseup(function() { 
 		    clearInterval(int00);
-		    $("#explanation_area_panel").css("position","fixed");
 		});
 /*	$(".hsplitbar").mouseup(function(){
 	console.log("success3");

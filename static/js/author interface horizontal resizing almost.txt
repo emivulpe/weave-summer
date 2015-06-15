@@ -77,7 +77,7 @@ $('#create_example_button').click(function(){
                         $(this).width(($("#panel_area_" + index).width() - 20) + "px");
                         updatedEditor = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);   
                         exampleEditors[index] = updatedEditor;                        
-                    });
+                    });*/
                      $('textarea[id^="area"]').each(function(index) {
                         var editor = nicEditors.findEditor($(this).attr("id"));
                         var content = editor.getContent();
@@ -86,21 +86,7 @@ $('#create_example_button').click(function(){
                         $(this).width(($("#panel_area_" + index).width() - 20) + "px");
                        updatedEditor = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("area_panel_" + index);   
                         exampleEditors[index] = updatedEditor;                        
-                    });*/
-
-                     $('[id^="area_container"]').each(function(index) {
-                        var container_width = $(this).parent().width();
-                        console.log("id " + $(this).attr("id") + "width" + container_width);
-                        $(this).width(container_width);
-                        $(this).children().each(function(){
-                            $(this).width(container_width);
-                        })
-                        $(this).find($(".nicEdit-main")).width(container_width - 24+ "px");
-                        $(this).find($(".nicEdit-panelContain")).width(container_width - 20 + "px");
-                        $(this).find($(".nicEdit-main")).css("min-height",$(this).height() - $(this).find($(".nicEdit-panel")).height() - 20 + "px");
-                        $(this).find($(".nicEdit-main")).css("margin-top",$(this).find($(".nicEdit-panel")).height() + 5 + "px");
-
-                     })   
+                    });
 
                 }
             });
