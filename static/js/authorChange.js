@@ -94,6 +94,7 @@ $('#create_example_button').click(function(){
 
 $('#create_question_step').click(function(){
 
+
     var invalidInputs = $('.option_text').filter(function() {
         return $.trim(this.value) == '';
     });
@@ -345,6 +346,8 @@ $('#btn_question').click(function(){
         questionEditor.setContent("");
     }
     */
+    $("#question_modal").find($(".nicEdit-main")).css("min-height",50 + "px");
+
     $(".option_text").each(function(){
         $(this).val("");
     })

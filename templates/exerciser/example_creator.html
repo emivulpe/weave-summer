@@ -61,23 +61,7 @@ body {
 			</div>
 
 </div>
-<!--
-<div id="widget">
-  <div id="foo"  style = "height:100%;">
 
-			<div class="row2" id = "outer_panel2" style ="position:relative; overflow-y:hidden;overflow-x:hidden; height:100px;">
-				<table id="panel_container" style=" line-height: 110%;overflow:hidden;height:100%; width:100%;table-layout:fixed;">
-					<tr id = "example_panels"></tr>		
-				</table>
-			</div>
-			<div class="row2" id="explanation_row2">
-				<div id="explanation_area_panel" style="width: 100%; position:fixed;"></div>
-				<textarea id = "explanation_area" style="width: 100%; height: 100%;margin-top:50px;"></textarea>
-			</div>
-   </div>
-</div> 
-
--->
 <div id="question_modal" class="modal fade" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -96,13 +80,21 @@ body {
 				</div>
 				<div id = "options_container">
 					<ul id = "options_list" class="list-group" style = "">
-<!--						<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>
-						<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>
--->
-
 					</ul>
 					<button id = "add_option_button" type="button" class="btn btn-default">Add option</button>
 					<i class="fa fa-trash-o fa-3x trash" style = "float:right; padding-left:70%;"></i>
+				</div>
+				<div id = "comments_container">
+					<div id = "multiple_choice_comment_container">
+		            	<label for = "correct_answer_comment">Correct answer comment:</label>
+		                <div id = "correct_answer_comment"><textarea id="correct_answer_comment_textarea"></textarea></div>
+		                <label for = "wrong_answer_comment">Wrong answer comment:</label>
+		                <div id = "wrong_answer_comment"><textarea id="wrong_answer_comment_textarea"></textarea></div>
+	            	</div>
+	                <div id = "open_comment_container" style = "display:none;">
+		                <label for = "general_comment">Comment:</label>
+		                <div id = "general_comment"><textarea id="general_comment_textarea"></textarea></div>
+	           		</div>
 				</div>
             </div>
             <div class="modal-footer">
@@ -194,6 +186,13 @@ body {
 	$("#question_modal").on('shown.bs.modal',function(){
 	$("#question_text").width($("#question_text_container").width());
     new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("question_text");
+	$("#correct_answer_comment_textarea").width($("#question_text_container").width());
+	new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("correct_answer_comment_textarea");
+	$("#wrong_answer_comment_textarea").width($("#question_text_container").width());
+		new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("wrong_answer_comment_textarea");
+	$("#general_comment_textarea").width($("#question_text_container").width());
+	new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("general_comment_textarea");
+
 	})
 
 
@@ -206,13 +205,21 @@ body {
 
 <script type="text/javascript">
 	$('input[type=radio][name=question_type_radio]').on('change', function(){
+		$("#question_modal").find($(".nicEdit-main")).css("min-height",50 + "px");	//$("#correct_answer_comment").children().css("width", ($("#correct_answer_comment").width()) + "px");
+
+
 	    switch($(this).val()){
 	        case 'multiple_choice' :
 	            $("#options_container").show();
+	            $("#open_comment_container").hide()
+	            $("#multiple_choice_comment_container").show();
 	            //$("#question_type").after('<input id = "option1" class="form-control" type="text" placeholder="Option Text">');
 	            break;
 	        case 'open' :
+	        	$("#multiple_choice_comment_container").hide();
+	        	$("#open_comment_container").show();
 	       		$("#options_container").hide();
+
 	            break;
 	    }            
 	});
@@ -348,10 +355,23 @@ $(window).resize(function() {
         }
     });
 
-$("#question_text_container").children().css("width", ($("#question_text_container").width()) + "px");
-	$("#question_text_container").find($(".nicEdit-main")).css("width",($("#question_text_container").width()) + "px");
+	$("#question_text_container").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#question_text_container").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
 
-})
+	$("#correct_answer_comment").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#correct_answer_comment").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+
+
+	$("#wrong_answer_comment").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#wrong_answer_comment").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+
+	$("#general_comment").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#general_comment").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+/*
+	$("#comments_container").children().css("width", ($("#comments_container").width()) + "px");
+	$("#comments_container").find($(".nicEdit-main")).css("width",($("#comments_container").width()) + "px");
+*/
+});
 
 
 </script>
