@@ -167,18 +167,13 @@ function goToStep(direction, question) {
 
             //Add the question options if any
             var options = [];
-            //var correct = [];
+            var correct = [];
             if($("input:radio[id='multiple_choice_radio_button']").is(":checked")) {
                 $(".option_text").each(function(index){
-                    /*
                         options[index] = $(this).val(); 
                         explanation += $(this).val() + "<br>";
                         console.log($(this).val() + "OPTION VAL");
                         correct[index] = $(this).parent().prev().find($(":checkbox")).is(':checked');
-                    */
-                    option_text = $(this).val(); 
-                    correct = $(this).parent().prev().find($(":checkbox")).is(':checked');
-                    options[index] = {"option_text" : option_text, "correct" : correct};
                 });
             }
                 
@@ -187,7 +182,7 @@ function goToStep(direction, question) {
                 $(this).remove();
             })
             //A trick to pass the array with AJAX- it is not possible to pass an array otherwise!
-            var options_dict = {'options' : options};
+            var options_dict = {'options':options, 'correct' : correct};
             console.log(options_dict['options'] + "OPTIONS DICT");
             alert(explanation);
             //A special request to post the question- create a question etc
@@ -260,14 +255,7 @@ function goToStep(direction, question) {
                             var questionOptions = JSON.parse(data[key]);
                             for (var i = 0; i < questionOptions.length; i++){
                                 console.log(questionOptions[i]["option_text"] + " this is an option" + questionOptions[i]["correct"]);
-                                var correct = questionOptions[i]["correct"];
-                                if (correct){
-                                    $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table style = "width:100%;"><tr><th><input type="checkbox" checked></th><th><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></th></tr></table></li>');
-                                }
-                                else{
-                                    $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><th><input type="checkbox"></th><th><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></th></tr></table></li>');
-
-                                }
+                                $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><th><input type="checkbox"></th><th><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></th></tr></table></li>');
                             }
                             correctAnswerController();
                             $('.option').draggable();   
