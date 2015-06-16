@@ -161,17 +161,46 @@ body {
 
 
 	$('#add_option_button').click(function(){
-		$("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><th><input type="checkbox"></th><th><input class="form-control option_text" type="text" placeholder="Option Text"></th></tr></table></li>');
+		$("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>');
 		$('.option').draggable(); 
-		correctAnswerController();
 		
 	});
 
+
+/*$('#interface').mousedown(function(){
+		    int00 = setInterval(function() { repeatingfunction(); }, 1);
+		}).mouseup(function() { 
+		    clearInterval(int00);
+		});*/
+
+		//$("#widget").mouseup(function(){repeatingfunction()});
 
 		//change the name of the function if it is being used
 		function repeatingfunction() {
 		    console.log("mouse down");
 
+			//$("#panel_container").height($("#outer_panel2").height() + "px");
+
+/*
+			$('textarea[id^="area"]').each(function(index) {
+				var editor = nicEditors.findEditor($(this).attr("id"));
+				var content = editor.getContent();
+				//console.log($("#area_container" + index).attr("id"));
+				exampleEditors[index].removeInstance($(this).attr("id"));
+				//$("#panel_area_" + index).height($("#example_panels").height()+"px");
+				$("#area_container" + index).height($("#outer_panel2").height() + "px");
+
+				$(this).height(($("#outer_panel2").height()) + "px");
+				updatedEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));	
+
+				exampleEditors[index] = updatedEditor;
+
+
+
+					
+			});
+
+*/
 
             $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
             $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");		
@@ -179,7 +208,16 @@ body {
             $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
             $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
             $("#explanation_area_panel").css("width", $("#explanation_row2").find($(".nicEdit-main")).outerWidth( true ) + "px");	
+			/*var editor = nicEditors.findEditor("explanation_area");
+			var content = editor.getContent();
+			//console.log($("#area_container" + index).attr("id"));
+			explanationEditor.removeInstance("explanation_area");
+			//$("#panel_area_" + index).height($("#example_panels").height()+"px");
+			$("#explanation_area").height($("#explanation_row2").height() + "px");
 
+			updatedEditor = new nicEditor({iconsPath : "{% static 'js/nicEditorIcons.gif' %}", 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance("explanation_area");	
+
+			explanationEditor = updatedEditor;*/
 		}
 </script>
 
@@ -206,6 +244,7 @@ body {
 
 <script type="text/javascript">
 	$('input[type=radio][name=question_type_radio]').on('change', function(){
+		console.log("CHANGEEEEEEEEEEEEEEEEEE");
 	    switch($(this).val()){
 	        case 'multiple_choice' :
 	            $("#options_container").show();
@@ -350,7 +389,22 @@ $(window).resize(function() {
 
 $("#question_text_container").children().css("width", ($("#question_text_container").width()) + "px");
 	$("#question_text_container").find($(".nicEdit-main")).css("width",($("#question_text_container").width()) + "px");
+    //new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("question_text");
 
+            
+	//$('[id^="panel_area_"]').each(function(index) {
+/*
+	 $('[id^="area_container"]').each(function(index) {
+	    var container_width = $(this).parent().width();
+	    console.log("id " + $(this).attr("id") + "width" + container_width);
+	    $(this).width(container_width);
+	    $(this).children().each(function(){
+	        $(this).width(container_width);
+	    })
+	    $(this).find($(".nicEdit-main")).width(container_width - 24+ "px");
+	    $(this).find($(".nicEdit-panelContain")).width(container_width - 20 + "px");
+	 })
+*/
 })
 
 

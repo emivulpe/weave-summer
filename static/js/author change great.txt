@@ -69,6 +69,24 @@ $('#create_example_button').click(function(){
                 gripInnerHtml: "<div class='grip'></div>",
                 draggingClass: "dragging",
                 onDrag: function (){
+                    /*$('textarea[id^="area"]').each(function(index) {
+                        var editor = nicEditors.findEditor($(this).attr("id"));
+                        var content = editor.getContent();
+                        exampleEditors[index].removeInstance($(this).attr("id"));
+                        $("#area_container" + index).width($("#panel_area_" + index).width() + "px");
+                        $(this).width(($("#panel_area_" + index).width() - 20) + "px");
+                        updatedEditor = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);   
+                        exampleEditors[index] = updatedEditor;                        
+                    });
+                     $('textarea[id^="area"]').each(function(index) {
+                        var editor = nicEditors.findEditor($(this).attr("id"));
+                        var content = editor.getContent();
+                       exampleEditors[index].removeInstance($(this).attr("id"));
+                        $("#area_container" + index).width($("#panel_area_" + index).width() + "px");
+                        $(this).width(($("#panel_area_" + index).width() - 20) + "px");
+                       updatedEditor = new nicEditor({iconsPath : nicEditorPath,  buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("area_panel_" + index);   
+                        exampleEditors[index] = updatedEditor;                        
+                    });*/
 
                      $('[id^="area_container"]').each(function(index) {
                         var container_width = $(this).parent().width();
@@ -93,31 +111,9 @@ $('#create_example_button').click(function(){
 
 
 $('#create_question_step').click(function(){
+    $('#question_modal').modal('hide');
+    goToStep("next",true);
 
-    var invalidInputs = $('.option_text').filter(function() {
-        return $.trim(this.value) == '';
-    });
-    var questionEditor = nicEditors.findEditor("question_text");
-    var questionText = questionEditor.getContent();
-    console.log(questionText + "question_text");
-    if(questionText.length > 5){
-        if($('#multiple_choice_radio_button').is(':checked')) {
-            if ($("#options_list input:checkbox:checked").length == 0){
-                BootstrapDialog.alert('Please select at least one correct answer by clicking on the checkbox next to the correct answer!');
-            }
-            else if (invalidInputs.length > 0) {
-                BootstrapDialog.alert('Please enter text for each of the options or delete an option by draging it to the recycle bin!');
-            } 
-            else{
-                $('#question_modal').modal('hide');
-                goToStep("next",true);
-            }
-        }
-    }
-    else{
-        BootstrapDialog.alert('Please enter your question! A valid question is at least 5 characters long.');
-
-    }
 
 });
 
@@ -222,7 +218,7 @@ function goToStep(direction, question) {
             'example_name' : exampleName,
             'step_number' : currentStep
         });
-
+        
         request.done(function(data) {
             if (!("error" in data)) {
                 for (var key in data) {
@@ -252,9 +248,8 @@ function goToStep(direction, question) {
                             var questionOptions = JSON.parse(data[key]);
                             for (var i = 0; i < questionOptions.length; i++){
                                 console.log(questionOptions[i] + " this is an option");
-                                $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><th><input type="checkbox"></th><th><input class="form-control option_text" type="text" value=' + questionOptions[i] + '></th></tr></table></li>');
+                                $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" value=' + questionOptions[i] + '></li>');
                             }
-                            correctAnswerController();
                             $('.option').draggable();   
                             console.log("OPTIOOOOOOOOOOOOOONSSSSSSS");
                         }
@@ -279,17 +274,7 @@ function goToStep(direction, question) {
 
 }
 
-function correctAnswerController(){
-    $('#options_list :checkbox').change(function () {
-        if ($(this).is(':checked')) {
-            console.log($(this).val() + ' is now checked');
-            $(this).parents("li").css("background-color","green");
-        } else {
-            console.log($(this).val() + ' is now unchecked');
-            $(this).parents("li").css("background-color","white");
-        }
-    });
-}
+
 function handleControlVisibility(direction){
         // Ensure the correct arrows are shown
     if (currentStep == 1 && direction == "back") {
@@ -350,11 +335,11 @@ $('#btn_question').click(function(){
     })
 
 
-    $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><th><input type="checkbox"></th><th><input class="form-control option_text" type="text" placeholder="Option Text"></th></tr></table></li>');
-    $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><th><input type="checkbox"></th><th><input class="form-control option_text" type="text" placeholder="Option Text"></th></tr></table></li>');
+    $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>');
+    $("#options_list").append('<li class="list-group-item option"><input class="form-control option_text" type="text" placeholder="Option Text"></li>');
     $('.option').draggable();              
     $("#question_modal").modal('show');
-    correctAnswerController();
+
 
 });
 
