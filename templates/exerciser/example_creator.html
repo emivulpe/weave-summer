@@ -16,7 +16,7 @@ body {
  * Splitter container. Set this to the desired width and height
  * of the combined left and right panes.
  */
-#MySplitter {
+#example_container {
 	height: 95%;
 	width: 100%;
 	border: 4px solid black;
@@ -28,7 +28,7 @@ body {
  * mouse is over the splitter or the splitter is focused
  * via the keyboard taborder or an accessKey. 
  */
-#MySplitter .hsplitbar {
+#example_container .hsplitbar {
 	height: 4px;
 	background: black no-repeat center;
 	/* No margin, border, or padding allowed */
@@ -48,17 +48,17 @@ body {
 
 
 {% block body_block %}
-<div id="MySplitter">
-			<div id = "outer_panel2" style ="position:relative; overflow-y:hidden;overflow-x:hidden;">
-				<table id="panel_container" style=" line-height: 110%;overflow:hidden;height:100%; width:100%;">
-					<tr id = "example_panels">
-					</tr>		
-				</table>
-			</div>
-			<div id="explanation_row2" style = "position:relative;overflow-x:hidden; overflow-y:scroll;">
-				<div id="explanation_area_panel" style = "position:fixed;"></div>
-				<textarea id = "explanation_area" style="width: 100%; height: 100%;"></textarea>
-			</div>
+<div id="example_container" style = "visibility:hidden;">
+	<div id = "outer_panel2" style ="position:relative; overflow-y:hidden;overflow-x:hidden;">
+		<table id="panel_container" style=" line-height: 110%;overflow:hidden;height:100%; width:100%;">
+			<tr id = "example_panels">
+			</tr>		
+		</table>
+	</div>
+	<div id="explanation_row2" style = "position:relative;overflow-x:hidden; overflow-y:scroll;">
+		<div id="explanation_area_panel" style = "position:fixed;"></div>
+		<textarea id = "explanation_area" style="width: 100%; height: 100%;"></textarea>
+	</div>
 
 </div>
 
@@ -140,7 +140,8 @@ body {
 <script type="text/javascript">
 
 	var nicEditorPath = "{% static 'js/nicEditorIcons.gif' %}";
-
+	var editGif = "{% static 'js/nicEdit plugin/src/nicExample/icons/edit.gif' %}";
+	var buttonList = ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor', 'edit'];
 	$('#example_name').on('input', function() {
 	    console.log("input changed" + $("#example_name").val());
 	    if ($("#example_name").val() == ""){
@@ -180,18 +181,19 @@ body {
 
 <!-- Scripts for the text editor -->
 <script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/nicEdit plugin/src/nicExample/nicEdit.js' %}"></script>
 
 
 <script type="text/javascript">
 	$("#question_modal").on('shown.bs.modal',function(){
 	$("#question_text").width($("#question_text_container").width());
-    new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("question_text");
+    new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("question_text");
 	$("#correct_answer_comment_textarea").width($("#question_text_container").width());
-	new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("correct_answer_comment_textarea");
+	new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("correct_answer_comment_textarea");
 	$("#wrong_answer_comment_textarea").width($("#question_text_container").width());
-		new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("wrong_answer_comment_textarea");
+	new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("wrong_answer_comment_textarea");
 	$("#general_comment_textarea").width($("#question_text_container").width());
-	new nicEditor({iconsPath : nicEditorPath,buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor']}).panelInstance("general_comment_textarea");
+	new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("general_comment_textarea");
 
 	})
 
@@ -278,7 +280,7 @@ body {
 $().ready(function() {
 
 var int00;
-	$("#MySplitter").splitter({
+	$("#example_container").splitter({
 		type: "h", 
 		accessKey: "P"
 	});
@@ -299,11 +301,11 @@ var int00;
 
 $(window).resize(function() {
 	
-	$("#outer_panel2").width($("#MySplitter").width() + "px");
-	$("#explanation_row2").width($("#MySplitter").width() + "px");
-	$("#panel_container").width($("#MySplitter").width() + "px");
-	$(".hsplitbar").width($("#MySplitter").width() + "px");
-	$("#explanation_row2").height($("#MySplitter").height() - $("#outer_panel2").height() - 4 + "px");
+	$("#outer_panel2").width($("#example_container").width() + "px");
+	$("#explanation_row2").width($("#example_container").width() + "px");
+	$("#panel_container").width($("#example_container").width() + "px");
+	$(".hsplitbar").width($("#example_container").width() + "px");
+	$("#explanation_row2").height($("#example_container").height() - $("#outer_panel2").height() - 4 + "px");
 
 
 	 $('[id^="area_container"]').each(function(index) {

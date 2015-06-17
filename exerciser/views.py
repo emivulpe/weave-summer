@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption
+from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, CorrectAnswerComment, WrongAnswerComment, GeneralComment
 import json 
 import simplejson 
 import datetime
@@ -1199,6 +1199,10 @@ def save_question(request):
 		print step_number, "STEP NUMBER"
 		options = json.loads(request.POST['options'])['options']
 		print options, "DETAILSSSSSSSSSSS"
+		comments = json.loads(request.POST['comments'])
+		print comments, "comments"
+		for key in comments:
+			print key
 		#options = options_details['option_text']
 		#print options, "OPTIONSSSSSS"
 		#correct = options_details['correct']
@@ -1227,6 +1231,16 @@ def save_question(request):
 		opt = ExampleOption.objects.get_or_create(question = question, option_text = option_text)[0]
 		opt.correct = is_correct
 		opt.save()
+	for comment in comments:
+		if comment == "general_comment":
+			GeneralComment.objects.filter(question = question).delete()
+			c = GeneralComment.objects.get_or_create(question = question, comment = comments[comment])[0]
+		elif comment == "correct_answer_comment":
+			CorrectAnswerComment.objects.filter(question = question).delete()
+			c = CorrectAnswerComment.objects.get_or_create(question = question, comment = comments[comment])[0]
+		elif comment == "wrong_answer_comment":
+			WrongAnswerComment.objects.filter(question = question).delete()
+			c = WrongAnswerComment.objects.get_or_create(question = question, comment = comments[comment])[0]
 	return HttpResponse("{}",content_type = "application/json")
 
 
@@ -1287,6 +1301,21 @@ def get_next_step(request):
 			print len(options)
 			print options[i].option_text
 			question_options.append({"option_text" : options[i].option_text, "correct": options[i].correct})
+		correct_answer_comment = CorrectAnswerComment.objects.filter(question = question)
+		if len(correct_answer_comment) > 0:
+			step_entry["correct_answer_comment"] = correct_answer_comment[0].comment
+		else:
+			step_entry["correct_answer_comment"] = ""
+		wrong_answer_comment = WrongAnswerComment.objects.filter(question = question)
+		if len(wrong_answer_comment) > 0:
+			step_entry["wrong_answer_comment"] = wrong_answer_comment[0].comment
+		else:
+			step_entry["wrong_answer_comment"] = ""
+		general_comment = GeneralComment.objects.filter(question = question)
+		if len(general_comment)  > 0:
+			step_entry["general_comment"] = general_comment[0].comment
+		else:
+			step_entry["general_comment"] = ""
 		step_entry["options"] = simplejson.dumps(question_options)
 		print step_entry["options"], "STEP ENTRY OPTIONS "
 
