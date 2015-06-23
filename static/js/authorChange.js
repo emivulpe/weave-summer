@@ -5,9 +5,10 @@ var last_direction = "next";
 var exampleName = "";
 var exampleEditors = [];
 var explanationEditor = null;
+var option_number = 1;
+var commentEditors = [];
 
-
-$("#btn_prev").css('visibility', 'hidden');
+$(".prev_btn").css('visibility', 'hidden');
 $("#btn_reset").css('visibility', 'hidden');
 
 $('#create_example_button').click(function(){
@@ -94,7 +95,7 @@ $('#create_example_button').click(function(){
 
 
 $('#create_question_step').click(function(){
-
+    option_number = 1;
 
     var invalidInputs = $('.option_text').filter(function() {
         return $.trim(this.value) == '';
@@ -102,7 +103,7 @@ $('#create_question_step').click(function(){
     var questionEditor = nicEditors.findEditor("question_text");
     var questionText = questionEditor.getContent();
     console.log(questionText + "question_text");
-    if(questionText.length > 5){
+    if(questionText.length > 4){
         if($('#multiple_choice_radio_button').is(':checked')) {
             if ($("#options_list input:checkbox:checked").length == 0){
                 BootstrapDialog.alert('Please select at least one correct answer by clicking on the checkbox next to the correct answer!');
@@ -113,11 +114,15 @@ $('#create_question_step').click(function(){
             else{
                 $('#question_modal').modal('hide');
                 goToStep("next",true);
+                $("#create_question_step").hide();
+
             }
         }
         else{
             $('#question_modal').modal('hide');
             goToStep("next",true);
+            $("#create_question_step").hide();
+
         }
     }
     else{
@@ -129,15 +134,12 @@ $('#create_question_step').click(function(){
 
 
 $("#question_step_close_button").click(function(){
-    alert("question closed");
-    $(".option").each(function(){
-        $(this).remove();
-    })
+    resetQuestionModal();
 })
 
 
 // A function defining the actions the student interface needs to undertake at a particular step
-function goToStep(direction, question) {
+function goToStep(direction, question, textToChange, newText) {
 
 	//save the html in a db (either replace the existing one if there is one or create a new one
 	//NOTE: there are multiple panels- ensure you say what html goes for which panel
@@ -154,75 +156,20 @@ function goToStep(direction, question) {
 
 	});
     var saveStepTextsRequest = $.post("/weave/save_step_texts/", {
-            'html': "panelContent",
-            'csrfmiddlewaretoken': csrftoken,
-            'example_name': exampleName,
-            'step_number': currentStep,
-            'panel_texts' : JSON.stringify(panel_texts)
+        'html': "panelContent",
+        'csrfmiddlewaretoken': csrftoken,
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'panel_texts' : JSON.stringify(panel_texts)
     });
     saveStepTextsRequest.done(function() {
         var explanation = "";
         if(question){
-            
-            
-            var questionEditor = nicEditors.findEditor("question_text");
-            var questionText = questionEditor.getContent();
-            explanation = "<b>" + questionText + "</b><br>";
-            alert("question" + explanation);
-
-            //Add the question options if any
-            var options = [];
-            var comments_dict = {};
-            //var correct = [];
-            if($("input:radio[id='multiple_choice_radio_button']").is(":checked")) {
-                $(".option_text").each(function(index){
-                    /*
-                        options[index] = $(this).val(); 
-                        explanation += $(this).val() + "<br>";
-                        console.log($(this).val() + "OPTION VAL");
-                        correct[index] = $(this).parent().prev().find($(":checkbox")).is(':checked');
-                    */
-                    option_text = $(this).val(); 
-                    correct = $(this).parent().prev().find($(":checkbox")).is(':checked');
-                    options[index] = {"option_text" : option_text, "correct" : correct};
-                });
-                var correctAnswerComment = nicEditors.findEditor(correct_answer_comment_textarea).getContent();
-                var wrongAnswerComment = nicEditors.findEditor(wrong_answer_comment_textarea).getContent();
-                comments_dict['correct_answer_comment'] = correctAnswerComment;
-                comments_dict['wrong_answer_comment'] = wrongAnswerComment;
-            }
-            else{
-                var generalComment = nicEditors.findEditor(general_comment_textarea).getContent();
-                comments_dict['general_comment'] = generalComment;
-            }
-                
-
-            $(".option").each(function(){
-                $(this).remove();
-            })
-            //A trick to pass the array with AJAX- it is not possible to pass an array otherwise!
-            var options_dict = {'options' : options};
-            console.log(options_dict['options'] + "OPTIONS DICT");
-            alert(explanation);
-
-
-
-            //A special request to post the question- create a question etc
-            $.post("/weave/save_question/", {
-                'question_text': questionText,
-                'csrfmiddlewaretoken': csrftoken,
-                'example_name': exampleName,
-                'step_number':currentStep,
-                'options' : JSON.stringify(options_dict),
-                'comments' : JSON.stringify(comments_dict)
-            }); 
-
+            saveQuestion();
         } 
         else {
-            
             var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
             explanation = explanationArea.getContent();
-            alert("not question" + explanation);
         }
         $.post("/weave/save_explanation/", {
             'html': explanation,
@@ -230,41 +177,139 @@ function goToStep(direction, question) {
             'example_name': exampleName,
             'step_number':currentStep,
         }).done(function() {
-          //if it is next 
-            //increment the step counter
-        //if it is back
-            //decrement the counter
+            if(direction == "this"){
+                if(textToChange != undefined && newText != undefined){
+
+                    $.post("/weave/edit_steps/", {
+                        'example_name': exampleName,
+                        'panel_id': "some panel id",
+                        'csrfmiddlewaretoken': csrftoken,
+                        'text_to_change' : textToChange + "",
+                        'new_text' : newText
+                    }).done(function(){loadStep(direction)});
+                }
+
+            }
+            else {
+                loadStep(direction);
+            }
+        });  
+
+    })
+
+}
+
+
+
+function saveQuestion(){
+    var questionEditor = nicEditors.findEditor("question_text");
+    var questionText = questionEditor.getContent();
+    explanation = "<b>" + questionText + "</b><br>";
+
+    //Add the question options if any
+    var options = [];
+    //var comments_dict = {};
+    if($("input:radio[id^='multiple_choice_']").is(":checked")) {
+        $(".option_text").each(function(index){
+            option_text = $(this).val(); 
+            correct = $(this).parent().prev().find($(":checkbox")).is(':checked');
+            options[index] = {"option_text" : option_text, "correct" : correct};
+        });
+        $("[id^=option_").each(function(index){
+            optionText = $(this).find(".option_text").val();
+            correct = $(this).find($(":checkbox")).is(':checked');
+            optionComment = "no comment";
+            options[index] = {"option_text" : optionText, "correct" : correct};
+            if($("input:radio[id='multiple_choice_with_comments_radio_button']").is(":checked")){
+                var commentArea = nicEditors.findEditor("comment_textarea_" + (index + 1));
+                optionComment = commentArea.getContent();
+                options[index]["comment"] = optionComment;
+            }
+        });
+
+
+    }
+    /*if($("input:radio[id='multiple_choice_radio_button']").is(":checked")) {
+        $(".option_text").each(function(index){
+            option_text = $(this).val(); 
+            correct = $(this).parent().prev().find($(":checkbox")).is(':checked');
+            options[index] = {"option_text" : option_text, "correct" : correct};
+        });*/
+        //Ensure these are fixed
+        //var correctAnswerComment = nicEditors.findEditor(correct_answer_comment_textarea).getContent();
+        //var wrongAnswerComment = nicEditors.findEditor(wrong_answer_comment_textarea).getContent();
+        //comments_dict['correct_answer_comment'] = "correctAnswerComment";
+        //comments_dict['wrong_answer_comment'] = "wrongAnswerComment";
+
+    else{
+        //var generalComment = nicEditors.findEditor(general_comment_textarea).getContent();
+       // comments_dict['general_comment'] = "generalComment";
+    }
+
+
+    //A trick to pass the array with AJAX- it is not possible to pass an array otherwise!
+    var options_dict = {'options' : options};
+    console.log(options_dict['options'] + "OPTIONS DICT");
+    var questionType = $('input[name="question_type_radio"]:checked').val();;
+    //A special request to post the question- create a question etc
+    $.post("/weave/save_question/", {
+        'question_text': questionText,
+        'csrfmiddlewaretoken': csrftoken,
+        'example_name': exampleName,
+        'step_number':currentStep,
+        'options' : JSON.stringify(options_dict),
+        'question_type' : questionType
+        //'comments' : JSON.stringify(comments_dict)
+    }); 
+    resetQuestionModal();
+}
+
+
+function loadStep(direction){
+    if (direction != "this"){
         if (direction == "next"){
             currentStep ++;
         }
         else{
             currentStep --;
         }
-        $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
-        //get request to see if there is entry for that step
-        //if there is- fill the textarea with it
-        //else show an empty text area
-        var request = $.get('/weave/get_next_step/', {
-            'example_name' : exampleName,
-            'step_number' : currentStep
-        });
+    }
+    $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
+    //get request to see if there is entry for that step
+    //if there is- fill the textarea with it
+    //else show an empty text area
+    var request = $.get('/weave/get_next_step/', {
+        'example_name' : exampleName,
+        'step_number' : currentStep
+    });
 
-        request.done(function(data) {
-            if (!("error" in data)) {
-                for (var key in data) {
-                  if (data.hasOwnProperty(key)) {
+    request.done(function(data) {
+        manageExampleAreas(data);
+    });
+}
 
-                    console.log(key + 1);
-                    console.log(data[key] + 2);
-                    console.log($("#"+key).html() + 3);
-                    var text_area = nicEditors.findEditor(key);
 
+function manageExampleAreas(data) {
+    if (!("error" in data)) {
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+
+                console.log(key + 1);
+                console.log(data[key] + 2);
+                console.log($("#"+key).html() + 3);
+                
+                //if (text_area != undefined){
                     if (key == "explanation_area"){
+                        text_area = nicEditors.findEditor(key);
                         text_area.setContent(data[key]); 
                     }
                     else {
-                        if (key == "question"){
+                        if (key == "question_text"){
+                            //alert("question");
                             if (data[key] != ""){
+                                $("#create_question_step").hide();
+                                $("#question_step_navigator").show();
+                                $("#question_step_close_button").hide();
                                 $("#question_modal").modal('show');
                                 var questionEditor = nicEditors.findEditor("question_text");
                                 questionEditor.setContent(data[key]);
@@ -275,22 +320,52 @@ function goToStep(direction, question) {
                             }
                         }
                         else if (key == "options"){
-                            var questionOptions = JSON.parse(data[key]);
+                            //alert("options");
+                            //var questionOptions = JSON.parse(data[key]);
+                            var questionOptions = data[key];
+                            //alert(questionOptions);
                             for (var i = 0; i < questionOptions.length; i++){
-                                console.log(questionOptions[i]["option_text"] + " this is an option" + questionOptions[i]["correct"]);
-                                var correct = questionOptions[i]["correct"];
+                                option = questionOptions[i];
+                                console.log(option["option_text"] + " this is an option" + option["correct"]);
+                                var optionText = option["option_text"]; 
+                                var correct = option["correct"];
+                                //alert(optionText);
                                 if (correct){
-                                    $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table style = "width:100%;"><tr><td><input type="checkbox" checked></td><td><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></td></tr></table></li>');
+                                    $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox" checked></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" value="' + optionText + '"></td></tr></table></li>');
+
+                                    //$("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table style = "width:100%;"><tr><td><input type="checkbox" checked></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></td></tr></table></li>');
                                 }
                                 else{
-                                    $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><td><input type="checkbox"></td><td><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></td></tr></table></li>');
-
+                                    $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" value=' + optionText + '></td></tr></table></li>');
+                                    //$("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></td></tr></table></li>');
                                 }
+                                if (option.hasOwnProperty("comment")){
+                                    //alert("there is a comment");
+                                    commentText = option["comment"];
+                                    $("#option_" + option_number).append('<tr id = "comment_area_' + option_number + '"><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Answer comment:</label><textarea id="comment_textarea_' + option_number + '" style = "width:100%;"></textarea></td></tr>');
+                                    //$("comment_textarea_" + option_number).width($("#question_text_container").width());
+                                    new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + option_number);
+                                    nicEditors.findEditor("comment_textarea_" + option_number).setContent(commentText);
+                                }
+                                option_number++;
                             }
-                            correctAnswerController();
-                            $('.option').draggable();   
+
+                            //correctAnswerController();
+                            //$('.option').draggable();   
                             console.log("OPTIOOOOOOOOOOOOOONSSSSSSS");
                         }
+                        else if (key == "question_type"){
+                            questionType = data[key];
+                            //$('[value="'+ data[key] +'"]').prop('checked', true);
+                            $("[name=question_type_radio][value="+ questionType +"]").prop('checked', true);// + data[key] + "]")
+                            /*if (questionType != "open"){
+                                $("#options_container").show();
+                            }
+                            else{
+                                $("#options_container").hide();
+                            }*/
+                        }
+                        /*
                         else if(key == "correct_answer_comment"){
                             var correctAnswerComment = nicEditors.findEditor("correct_answer_comment_textarea");
                             correctAnswerComment.setContent(data[key]);
@@ -303,25 +378,25 @@ function goToStep(direction, question) {
                             var generalComment = nicEditors.findEditor("general_comment_textarea");
                             generalComment.setContent(data[key]);
                         }
+                        */
                         else {
+                            text_area = nicEditors.findEditor(key);
                             text_area.setContent(data[key]);
                         }
                         
-                    }
-
-                    console.log(text_area + 4);
-                    
-                  }
+                   // }
                 }
+                //else{
+                //    alert("undefined");
+                //}    
+                //console.log(text_area + 4);
+            
             }
-            else{
-                console.log("there was an error");
-            }
-        });
-    });  
-
-    })
-
+        }
+    }
+    else{
+        console.log("there was an error");
+    }
 }
 
 function correctAnswerController(){
@@ -336,14 +411,25 @@ function correctAnswerController(){
     });
 }
 function handleControlVisibility(direction){
+    if(direction != "this"){
         // Ensure the correct arrows are shown
-    if (currentStep == 1 && direction == "back") {
-        $("#btn_prev").css('visibility', 'hidden');
-    } else {
-        $("#btn_prev").css('visibility', 'visible');
-        $("#btn_next").css('visibility', 'visible');
+        if (currentStep <= 1 && direction == "back") {
+            $(".prev_btn").css('visibility', 'hidden');
+        } else {
+            $(".prev_btn").css('visibility', 'visible');
+            $(".next_btn").css('visibility', 'visible');
+        }
     }
     
+}
+
+function resetQuestionModal(){
+    $("#multiple_choice_radio_button").prop('checked',true);
+    $(".option").each(function(){
+        $(this).remove();
+    })
+    option_number = 1;
+    $("#options_container").show();
 }
 
 // Reset an example- show only the relevant elements
@@ -351,8 +437,8 @@ function doReset() {
     $("*[id^='fragment_']").css("background-color", "transparent");
     $("*[id^='fragment_']").hide();
     $('#explanation').html('');
-    $("#btn_prev").css('visibility', 'hidden');
-    $("#btn_next").css('visibility', 'visible');
+    $(".prev_btn").css('visibility', 'hidden');
+    $(".next_btn").css('visibility', 'visible');
     $("#btn_reset").css('visibility', 'hidden');
     $("#forward_button_label").text('Start');
     $("#forward_button_label").css('cursor', 'pointer');
@@ -368,14 +454,26 @@ function doReset() {
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
     goToStep("next", false);
-    alert("next");
 });
 
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
     goToStep("back", false);
-    alert("back");
+});
+
+// Use JQuery to pick up when the user pushes the next button.
+$('#question_btn_next').click(function() {
+    goToStep("next", true);
+    $("#question_modal").modal('hide');
+
+});
+
+
+// Bind an event to the previous button.
+$('#question_btn_prev').click(function() {
+    goToStep("back", true);
+    $("#question_modal").modal('hide');
 });
 
 // Reset the example on click of the reset button
@@ -385,10 +483,14 @@ $('#btn_done').click(function() {
 
 $('#btn_question').click(function(){
     // reset the values of the input fields
+    resetQuestionModal();
+    $("#create_question_step").show();
+    $("#question_step_navigator").hide();
     var questionEditor = nicEditors.findEditor("question_text");
     if(questionEditor != undefined){
         questionEditor.setContent("");
     }
+    /*
     var correctAnswerComment = nicEditors.findEditor("correct_answer_comment_textarea");
     if(correctAnswerComment != undefined){
         correctAnswerComment.setContent("");
@@ -401,16 +503,37 @@ $('#btn_question').click(function(){
     if(generalComment != undefined){
         generalComment.setContent("");
     }
+    */
     $("#question_modal").find($(".nicEdit-main")).css("min-height",50 + "px");
 
     $(".option_text").each(function(){
         $(this).val("");
     })
+    var option_type = $('input[type=radio][name=question_type_radio]').val();
+        $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
+        $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
+       
+        if (option_type == "multiple_choice_with_comments"){
+            $('table[id^="option_"]').each(function(index) {
+                $(this).append('<tr id = "comment_area_' + (index + 1) + '"><td colspan = "3"><label for = "comment_textarea_' + (index + 1) + '">Answer comment:</label><textarea id="comment_textarea_' + (index + 1) + '" style = "width:100%;"></textarea></td></tr>');
+            });
 
+            $('textarea[id^="comment_textarea_"]').each(function(index) {
+                //$(this).height($("#outer_panel2").height()*0.71);
+                //$(this).css("margin","100px");
+                //$(this).width($("#question_text_container").width());
+                commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
+            });
+            //$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'" style = "width:100%;"><tr class = "handle"><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr><tr><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Correct answer comment:</label><textarea id="comment_textarea_' + option_number++ + '" style = "width:100%;"></textarea></td></tr></table></li>');
+            //$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr class = "handle"><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr><tr><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Correct answer comment:</label><textarea id="comment_textarea_' + option_number++ + '" style = "width:100%;"></textarea></td></tr></table></li>');
+        }
+        /*else{
+            $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
+            $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
+        }*/
 
-    $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><td><input type="checkbox"></td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
-    $("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><td><input type="checkbox"></td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
-    $('.option').draggable();              
+    //$('.option').draggable();    
+    $("#question_step_close_button").show();          
     $("#question_modal").modal('show');
     correctAnswerController();
 

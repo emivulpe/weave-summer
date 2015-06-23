@@ -288,6 +288,7 @@ class ExampleQuestion(models.Model):
 	example = models.ForeignKey(Example, unique = False)
 	step_number = models.IntegerField()
 	multiple_choice = models.BooleanField()
+	kind = models.CharField(max_length = 30)
 
 
 	def __unicode__(self):
@@ -297,9 +298,10 @@ class ExampleOption(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	option_text = models.TextField()
 	correct = models.BooleanField(default = False)
+	number = models.IntegerField();
 
 	def __unicode__(self):
-		return " ".join((self.option_text, " correct: ", str(self.correct)))
+		return " ".join((self.option_text, " correct: ", str(self.correct), " number: ", str(self.number)))
 
 class CorrectAnswerComment(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
@@ -317,6 +319,13 @@ class WrongAnswerComment(models.Model):
 
 class GeneralComment(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
+	comment = models.TextField()
+
+	def __unicode__(self):
+		return self.comment
+
+class OptionComment(models.Model):
+	option = models.ForeignKey(ExampleOption, unique = False)
 	comment = models.TextField()
 
 	def __unicode__(self):

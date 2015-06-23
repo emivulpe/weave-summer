@@ -6,11 +6,13 @@
 * @version: 0.9.0
 */
  
+
 /* START CONFIG */
 var nicEditOptions = {
     buttons : {
-        'edit' : {name : __('Edit'), type : 'nicEditorEditButton'}
-    }/* NICEDIT_REMOVE_START */,iconFiles : {'edit' : editGif}/* NICEDIT_REMOVE_END */
+        'edit' : {name : __('Edit'), type : 'nicEditorEditButton'},
+        'unhighlight' : {name : __('Unhighlight'), type : 'nicEditorUnhighlightButton'}
+    }/* NICEDIT_REMOVE_START */,iconFiles : {'edit' : editGif, 'unhighlight' : unhighlightGif}/* NICEDIT_REMOVE_END */
 };
 /* END CONFIG */
  
@@ -20,6 +22,12 @@ var nicEditorEditButton = nicEditorButton.extend({
   }
 });
  
+var nicEditorUnhighlightButton = nicEditorButton.extend({
+    mouseClick : function() {
+        this.ne.nicCommand("hiliteColor","#FFFFFF")
+    }
+});
+
 nicEditors.registerPlugin(nicPlugin,nicEditOptions);
 
 function getSelText()
@@ -38,5 +46,14 @@ function getSelText()
         txt = document.selection.createRange().text;
             }
     else return;
-    alert("this was the selected text: " + txt);
+    $("#text_to_change").text(txt);
+    $("#edit_modal").modal('show');
+
 }
+$("#apply_changes_button").click(function(){
+    textToChange = $("#text_to_change").text();
+    newText = $("#new_text_textarea").val();
+    goToStep("this", false, textToChange, newText);
+    $("#edit_modal").modal('hide');
+});
+

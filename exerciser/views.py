@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, CorrectAnswerComment, WrongAnswerComment, GeneralComment
+from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, CorrectAnswerComment, WrongAnswerComment, GeneralComment, OptionComment
 import json 
 import simplejson 
 import datetime
@@ -19,7 +19,7 @@ from django.contrib.auth.models import User
 from chartit import DataPool, Chart
 from django.db.models import Avg
 from django.db.models import Count, Max, Sum
-
+import lxml.html
 
 
 
@@ -1185,7 +1185,7 @@ def save_step_texts(request):
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
 
 
-	# A method to create a new html step
+# A method to create a new html step
 @requires_csrf_token
 def save_question(request):
 	print "in save question"
@@ -1193,16 +1193,18 @@ def save_question(request):
 	try:
 		question_text = request.POST['question_text']
 		print question_text, "QUESTION TEXT"
+		question_type = request.POST['question_type']
+		print question_type, "QUESTION TYPE"
 		example_name = request.POST['example_name']
 		print example_name, "EXAMPLE NAME"
 		step_number = request.POST['step_number']
 		print step_number, "STEP NUMBER"
 		options = json.loads(request.POST['options'])['options']
 		print options, "DETAILSSSSSSSSSSS"
-		comments = json.loads(request.POST['comments'])
-		print comments, "comments"
-		for key in comments:
-			print key
+		#comments = json.loads(request.POST['comments'])
+		#print comments, "comments"
+		#for key in comments:
+		#	print key
 		#options = options_details['option_text']
 		#print options, "OPTIONSSSSSS"
 		#correct = options_details['correct']
@@ -1224,13 +1226,21 @@ def save_question(request):
 	question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
 	question_options = ExampleOption.objects.filter(question = question).delete()
 	question.question_text = question_text
+	question.kind = question_type 
 	question.save()
-	for option in options:
+	for index in range(len(options)):
+		print index, " heeeere"
+		option = options[index]
 		option_text = option['option_text']
 		is_correct = option['correct']
-		opt = ExampleOption.objects.get_or_create(question = question, option_text = option_text)[0]
+		opt = ExampleOption.objects.get_or_create(question = question, option_text = option_text, number = index)[0]
 		opt.correct = is_correct
 		opt.save()
+		if "comment" in option:
+			comment_text = option['comment']
+			option_comment = OptionComment.objects.get_or_create(option = opt, comment = comment_text)
+
+	"""
 	for comment in comments:
 		if comment == "general_comment":
 			GeneralComment.objects.filter(question = question).delete()
@@ -1241,6 +1251,7 @@ def save_question(request):
 		elif comment == "wrong_answer_comment":
 			WrongAnswerComment.objects.filter(question = question).delete()
 			c = WrongAnswerComment.objects.get_or_create(question = question, comment = comments[comment])[0]
+	"""
 	return HttpResponse("{}",content_type = "application/json")
 
 
@@ -1293,15 +1304,24 @@ def get_next_step(request):
 	if len(question) > 0:
 		question = question[0]
 		print "QUESTIOOOOOON" , question.question_text
-		step_entry["question"] = question.question_text
+		step_entry["question_text"] = question.question_text
+		step_entry["question_type"] = question.kind
 		options = ExampleOption.objects.filter(question = question)
 		question_options = []
 		for i in range(0, len(options)):
 			print i
 			print len(options)
 			print options[i].option_text
-			question_options.append({"option_text" : options[i].option_text, "correct": options[i].correct})
+			option = options[i]
+			question_options.append({"option_text" : option.option_text, "correct": option.correct})
+			option_comment = OptionComment.objects.filter(option = option)
+			if len(option_comment) > 0:
+				option_comment = option_comment[0]
+				question_options[len(question_options) - 1]["comment"] = option_comment.comment
+		step_entry["options"] = question_options
+		"""
 		correct_answer_comment = CorrectAnswerComment.objects.filter(question = question)
+		
 		if len(correct_answer_comment) > 0:
 			step_entry["correct_answer_comment"] = correct_answer_comment[0].comment
 		else:
@@ -1318,8 +1338,53 @@ def get_next_step(request):
 			step_entry["general_comment"] = ""
 		step_entry["options"] = simplejson.dumps(question_options)
 		print step_entry["options"], "STEP ENTRY OPTIONS "
-
+		"""
 	else:
-		step_entry["question"] = ""
+		step_entry["question_text"] = ""
 		print "NOT A QUESTIOOOOOON"
 	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
+
+@requires_csrf_token
+def edit_steps(request):
+	print "in edit steps"
+	try:
+		new_text = request.POST['new_text']
+		text_to_change = request.POST['text_to_change']
+		if text_to_change != "":
+			example_name = request.POST['example_name']
+			print text_to_change, "TEXT TO CHANGE", example_name
+			try:
+				example = Example.objects.filter(name = example_name)[0]
+			except KeyError:
+				print "key error in edit steps"
+
+			steps = HTMLStep.objects.filter(example = example)
+			for step in steps:
+				step.html = keeptags(step.html,"div").replace(keeptags(text_to_change.strip(),"div"), new_text).replace("&amp;", "").replace("amp;","").replace("&nbsp;","").replace("nbsp;","")
+				step.save()
+	except KeyError:
+		print "key error in edit steps"		
+	return HttpResponse("{}",content_type = "application/json")
+
+def keeptags(value, tags):
+    """
+    Strips all [X]HTML tags except the space seperated list of tags 
+    from the output.
+    
+    Usage: keeptags:"strong em ul li"
+    """
+    import re
+    from django.utils.html import strip_tags, escape
+    tags = [re.escape(tag) for tag in tags.split()]
+    tags_re = '(%s)' % '|'.join(tags)
+    singletag_re = re.compile(r'<(%s\s*/?)>' % tags_re)
+    starttag_re = re.compile(r'<(%s)(\s+[^>]+)>' % tags_re)
+    endtag_re = re.compile(r'<(/%s)>' % tags_re)
+    value = singletag_re.sub('##~~~\g<1>~~~##', value)
+    value = starttag_re.sub('##~~~\g<1>\g<3>~~~##', value)
+    value = endtag_re.sub('##~~~\g<1>~~~##', value)
+    value = strip_tags(value)
+    value = escape(value)
+    recreate_re = re.compile('##~~~([^~]+)~~~##')
+    value = recreate_re.sub('<\g<1>>', value)
+    return value

@@ -41,5 +41,6 @@ urlpatterns = patterns('',
 		url(r'^author_interface/', views.author_interface, name='author_interface'),
 		url(r'^example_creator', views.example_creator, name='example_creator'),
 		url(r'^create_example', views.create_example, name='create_example'),
+		url(r'^edit_steps', views.edit_steps, name='edit_steps'),
 
 		) 
