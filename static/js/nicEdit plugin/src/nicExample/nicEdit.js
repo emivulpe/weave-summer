@@ -19,6 +19,7 @@ var nicEditOptions = {
 var nicEditorEditButton = nicEditorButton.extend({   
   mouseClick : function() {
     getSelText();
+    getSelectionHtml();
   }
 });
  
@@ -29,7 +30,7 @@ var nicEditorUnhighlightButton = nicEditorButton.extend({
 });
 
 nicEditors.registerPlugin(nicPlugin,nicEditOptions);
-
+var rawText = "";
 function getSelText()
 {
     var txt = '';
@@ -46,14 +47,39 @@ function getSelText()
         txt = document.selection.createRange().text;
             }
     else return;
-    $("#text_to_change").text(txt);
+    
     $("#edit_modal").modal('show');
-
+    rawText = getSelectionHtml();
+    $("#text_to_change").html(rawText);
+    
 }
 $("#apply_changes_button").click(function(){
-    textToChange = $("#text_to_change").text();
-    newText = $("#new_text_textarea").val();
-    goToStep("this", false, textToChange, newText);
+    var editEditor = nicEditors.findEditor("new_text_textarea");
+    newText = editEditor.getContent();
+    //alert(textToChange);
+    //newText = $("#new_text_textarea").val();
+    alert(rawText + " raw " + newText + " new");
+    editText(rawText, newText);
     $("#edit_modal").modal('hide');
 });
 
+function getSelectionHtml() {
+    var html = "";
+    if (typeof window.getSelection != "undefined") {
+        var sel = window.getSelection();
+        if (sel.rangeCount) {
+            var container = document.createElement("div");
+            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+                container.appendChild(sel.getRangeAt(i).cloneContents());
+            }
+            html = container.innerHTML;
+        }
+    } else if (typeof document.selection != "undefined") {
+        if (document.selection.type == "Text") {
+            html = document.selection.createRange().htmlText;
+        }
+    }
+    //alert(html);
+    //$("#text_to_change_raw").text(html);
+    return html;
+}

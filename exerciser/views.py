@@ -20,6 +20,7 @@ from chartit import DataPool, Chart
 from django.db.models import Avg
 from django.db.models import Count, Max, Sum
 import lxml.html
+import xml.etree.ElementTree as ET
 
 
 
@@ -1158,7 +1159,6 @@ def save_step_texts(request):
 	print "in save step texts"
 
 	try:
-		html = request.POST['html']
 		example_name = request.POST['example_name']
 		step_number = request.POST['step_number']
 		panel_texts = json.loads(request.POST['panel_texts'])
@@ -1173,7 +1173,6 @@ def save_step_texts(request):
 	except IndexError:
 		print "index error in save step texts"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	print "step html ", html
 	print "step number ",	step_number
 	for panel_id in panel_texts:
 		print panel_id, "PANEEEEEEEEEEEEEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLL"
@@ -1349,22 +1348,35 @@ def edit_steps(request):
 	print "in edit steps"
 	try:
 		new_text = request.POST['new_text']
-		text_to_change = request.POST['text_to_change']
-		if text_to_change != "":
+		raw_text_to_change = request.POST['text_to_change']
+		plain_text_to_change = lxml.html.fromstring(raw_text_to_change).text_content()
+		print raw_text_to_change, " RAW"
+		print plain_text_to_change, " PLAIN"
+		if plain_text_to_change != "":
 			example_name = request.POST['example_name']
-			print text_to_change, "TEXT TO CHANGE", example_name
 			try:
 				example = Example.objects.filter(name = example_name)[0]
 			except KeyError:
 				print "key error in edit steps"
-
+			exact_matches = []
+			possible_matches = []
 			steps = HTMLStep.objects.filter(example = example)
 			for step in steps:
-				step.html = keeptags(step.html,"div").replace(keeptags(text_to_change.strip(),"div"), new_text).replace("&amp;", "").replace("amp;","").replace("&nbsp;","").replace("nbsp;","")
-				step.save()
+				raw_step_html = step.html;
+				plain_step_html = lxml.html.fromstring(step.html).text_content()
+				if raw_text_to_change in raw_step_html:
+					exact_matches.append({"example": example_name, "step_number" :step.step_number, "text" : step.html})
+				elif plain_text_to_change in plain_step_html:
+					possible_matches.append({"example": example_name, "step_number" :step.step_number, "text" : step.html})
+				print raw_step_html, " raw step"
+				print plain_step_html, " plain step"
+				#step.html = keeptags(step.html,"div br").replace(keeptags(text_to_change.strip(),"div"), new_text).replace("&amp;", "").replace("amp;","").replace("&nbsp;","").replace("nbsp;","")
+				#step.save()
+			print exact_matches, " EXACT"
+			print possible_matches, " possible"			
 	except KeyError:
 		print "key error in edit steps"		
-	return HttpResponse("{}",content_type = "application/json")
+	return HttpResponse(simplejson.dumps({"exact_matches" : exact_matches, "possible_matches" : possible_matches}),content_type = "application/json")
 
 def keeptags(value, tags):
     """
@@ -1388,3 +1400,6 @@ def keeptags(value, tags):
     recreate_re = re.compile('##~~~([^~]+)~~~##')
     value = recreate_re.sub('<\g<1>>', value)
     return value
+
+def remove_tags(text):
+    return ''.join(ET.fromstring(text).itertext())

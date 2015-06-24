@@ -7,6 +7,10 @@ var exampleEditors = [];
 var explanationEditor = null;
 var option_number = 1;
 var commentEditors = [];
+var exactMatches = [];
+var possibleMatches = [];
+var stepToChangeIndex = 0;
+var previousStepToChangeDirection = "next"; 
 
 $(".prev_btn").css('visibility', 'hidden');
 $("#btn_reset").css('visibility', 'hidden');
@@ -139,12 +143,119 @@ $("#question_step_close_button").click(function(){
 
 
 // A function defining the actions the student interface needs to undertake at a particular step
+function editText(textToChange, newText) {
+
+    var panel_texts = {}
+    // Save the entries for each panel for the step
+    $('textarea[id^="area"]').each(function(index) {
+        console.log($(this).attr("id"));
+        var panelId = $(this).attr("id");
+        var panelArea = nicEditors.findEditor(panelId);
+        var panelContent = panelArea.getContent();
+        panel_texts[panelId] = panelContent;
+
+    });
+
+    var saveStepTextsRequest = $.post("/weave/save_step_texts/", {
+        'csrfmiddlewaretoken': csrftoken,
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'panel_texts' : JSON.stringify(panel_texts)
+    });
+    saveStepTextsRequest.done(function() {
+        var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
+        explanation = explanationArea.getContent();
+        $.post("/weave/save_explanation/", {
+            'html': explanation,
+            'csrfmiddlewaretoken': csrftoken,
+            'example_name': exampleName,
+            'step_number':currentStep,
+        }).done(function() {
+
+            $.post("/weave/edit_steps/", {
+                'example_name': exampleName,
+                'panel_id': "some panel id",
+                'csrfmiddlewaretoken': csrftoken,
+                'text_to_change' : textToChange + "",
+                'new_text' : newText
+            }).done(
+                function(affectedSteps){
+                    loadStep(direction);
+                    alert(affectedSteps['exact_matches']);
+                    alert(affectedSteps['possible_matches']);
+                    exactMatches = affectedSteps['exact_matches'];
+                    possibleMatches = affectedSteps['possible_matches'];
+                    alert(exactMatches.length);
+
+                    //handleStepEditorControlVisibility("next" , 1, 4);
+                    $("#step_editor_modal").modal('show');
+                    confirmStepChanges("next");
+                    for (i = 0; i < exactMatches.length; i++){
+                        
+                    }
+
+                });
+        });  
+
+    })
+
+}
+
+
+function confirmStepChanges(direction){
+    alert(stepToChangeIndex + " step to change " + previousStepToChangeDirection + " prev");
+    if (previousStepToChangeDirection == "next"){
+        stepToChangeIndex++;
+    }
+    else if(previousStepToChangeDirection == "back"){
+        stepToChangeIndex--;
+    }
+    /*if (direction == "next"){
+        if (previousStepToChangeDirection == "back"){
+            stepToChangeIndex++;
+            stepToChangeIndex++;
+        }
+        else{
+            stepToChangeIndex++;
+        }
+    }
+    else if (direction == "back"){
+        if (previousStepToChangeDirection == "next"){
+            stepToChangeIndex--;
+            //stepToChangeIndex--;
+        }
+        else{
+            stepToChangeIndex--;
+        }
+    }
+
+    // do stuff here
+*/
+    /*else if (direction == "back"){
+        if (previousStepToChangeDirection == "next"){
+            // need to do this twice because it is 1 step ahead from before
+            stepToChangeIndex--;
+        }
+        else{
+            stepToChangeIndex--;
+        }
+
+    }*/
+    previousStepToChangeDirection = direction;
+    handleStepEditorControlVisibility(direction , stepToChangeIndex, exactMatches.length + 4);
+
+}
+
+
+// A function defining the actions the student interface needs to undertake at a particular step
 function goToStep(direction, question, textToChange, newText) {
 
 	//save the html in a db (either replace the existing one if there is one or create a new one
 	//NOTE: there are multiple panels- ensure you say what html goes for which panel
 	
-    handleControlVisibility(direction);
+    handleStepEditorControlVisibility(direction, currentStep, 1000);
+
+    //handleControlVisibility(direction);
 	var panel_texts = {}
 	// Save the entries for each panel for the step
 	$('textarea[id^="area"]').each(function(index) {
@@ -156,7 +267,6 @@ function goToStep(direction, question, textToChange, newText) {
 
 	});
     var saveStepTextsRequest = $.post("/weave/save_step_texts/", {
-        'html': "panelContent",
         'csrfmiddlewaretoken': csrftoken,
         'example_name': exampleName,
         'step_number': currentStep,
@@ -423,6 +533,26 @@ function handleControlVisibility(direction){
     
 }
 
+function handleStepEditorControlVisibility(direction, currentStepNumber, numberOfSteps){
+
+    if(direction != "this"){
+        if (currentStepNumber == numberOfSteps && direction == "next") {
+            $(".next_btn").css('visibility', 'hidden');
+        } 
+        else if (currentStepNumber <= 1 && direction == "back") {
+            $(".prev_btn").css('visibility', 'hidden');
+        } 
+        else {
+            $(".prev_btn").css('visibility', 'visible');
+            $(".next_btn").css('visibility', 'visible');
+        }
+    }
+}       
+
+
+
+
+
 function resetQuestionModal(){
     $("#multiple_choice_radio_button").prop('checked',true);
     $(".option").each(function(){
@@ -461,6 +591,21 @@ $('#btn_next').click(function() {
 $('#btn_prev').click(function() {
     goToStep("back", false);
 });
+
+
+$('#step_editor_btn_next').click(function() {
+    confirmStepChanges("next");
+});
+
+
+// Bind an event to the previous button.
+$('#step_editor_btn_prev').click(function() {
+    confirmStepChanges("back");
+});
+
+
+
+
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#question_btn_next').click(function() {

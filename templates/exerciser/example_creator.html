@@ -157,10 +157,37 @@ body {
             	<label for = "text_to_change">Text to change:</label>
                 <div id="text_to_change"></div>
                 <label>New text:</label>
-		        <div id = "new_text_panel"><textarea id="new_text_textarea" style = "width:100%;"></textarea></div>   
+		        <div id = "new_text_panel">
+		        	<div id="new_text_textarea_panel" style = "position:fixed; width: 100%;"></div>
+		        	<textarea id="new_text_textarea" style = "width:100%;"></textarea>
+		        </div>  
+		        <div id="text_to_change_raw" style = "display:none"></div> 
             </div>
             <div class="modal-footer">	
                 <button id = "apply_changes_button" type="button" class="btn btn-default">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="step_editor_modal" class="modal fade" data-keyboard="false" data-backdrop="static" style = "display:none;">
+    <div class="modal-dialog draggable">
+        <div id="step_editor_modal_content" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Step Editor</h4>
+            </div>
+            <div id = "step_editor_modal_body" class="modal-body">
+                <div id="text_before_change"></div>
+		        <textarea id="text_to_change_textarea" style = "width:100%;"></textarea>
+		        <div id="text_after_change"></div> 
+            </div>
+            <div class="modal-footer">
+                <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
+	            	<li><a id="step_editor_btn_prev" class="prev_btn" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
+					<li><a id="step_editor_btn_next" class="next_btn" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+				</ul>	
+                <!--<button id = "step_editor_confirmation_button" type="button" class="btn btn-default">OK</button>-->
             </div>
         </div>
     </div>
@@ -190,11 +217,12 @@ body {
 	$('#add_option_button').click(function(){
 		var option_type = $('input[type=radio][name=question_type_radio]:checked').val();
 		console.log(option_type + "OPTION TYPE");
-		$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number + '"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
+		$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number + '"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
 		if (option_type == "multiple_choice_with_comments"){
-            $('#option_' + (option_number - 1)).append('<tr id = "comment_area_' + (option_number - 1) + '"><td colspan = "3"><label for = "comment_textarea_' + (option_number - 1) + '">Answer comment:</label><textarea id="comment_textarea_' + (option_number - 1) + '" style = "width:100%;"></textarea></td></tr>');
-            new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + (option_number - 1));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
+            $('#option_' + option_number).append('<tr id = "comment_area_' + option_number + '"><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Answer comment:</label><textarea id="comment_textarea_' + option_number + '" style = "width:100%;"></textarea></td></tr>');
+            new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + option_number);//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
 		}
+		option_number++;
 
 		//$('.option').draggable(); 
 		correctAnswerController();
@@ -226,6 +254,7 @@ body {
 
 
 <script type="text/javascript">
+
 	$("#question_modal").on('shown.bs.modal',function(){
 		$("#question_text").width($("#question_text_container").width());
 	    new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("question_text");
@@ -235,16 +264,50 @@ body {
 		new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("wrong_answer_comment_textarea");
 		$("#general_comment_textarea").width($("#question_text_container").width());
 		new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("general_comment_textarea");
-		*/
+		
     	var commentEditors = [];
         $('textarea[id^="comment_textarea_"]').each(function(index) {
             //$(this).height($("#outer_panel2").height()*0.71);
             //$(this).css("margin","100px");
             //$(this).width($("#question_text_container").width());
             commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
-        });
+        });*/
 	})
 
+	$("#edit_modal").on('shown.bs.modal',function(){
+		new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).addInstance("new_text_textarea").setPanel('new_text_textarea_panel');
+        //$("#edit_modal").find($(".nicEdit-main")).css("min-height",$("#edit_modal").height() - $("#edit_modal").find($(".nicEdit-panel")).height() - 20 + "px");
+        $("#edit_modal").find($(".nicEdit-main")).css("margin-top",$("#edit_modal").find($(".nicEdit-panel")).height() + 5 + "px");
+        $("#new_text_textarea_panel").css("width", $("#edit_modal").find($(".nicEdit-main")).outerWidth( true ) + "px");
+        var editEditor = nicEditors.findEditor("new_text_textarea");
+        editEditor.setContent(rawText);
+		/*$("#correct_answer_comment_textarea").width($("#question_text_container").width());
+		new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("correct_answer_comment_textarea");
+		$("#wrong_answer_comment_textarea").width($("#question_text_container").width());
+		new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("wrong_answer_comment_textarea");
+		$("#general_comment_textarea").width($("#question_text_container").width());
+		new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("general_comment_textarea");
+		
+    	var commentEditors = [];
+        $('textarea[id^="comment_textarea_"]').each(function(index) {
+            //$(this).height($("#outer_panel2").height()*0.71);
+            //$(this).css("margin","100px");
+            //$(this).width($("#question_text_container").width());
+            commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
+        });*/
+	})
+	var stepEditor;
+	$("#step_editor_modal").on('shown.bs.modal',function(){
+		$("#step_editor_btn_prev").css('visibility', 'hidden');
+		stepEditor = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
+	})
+	$(document).ready(function(){
+		//new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
+		//$("#step_editor_modal").modal('show');
+	})
+	$('#step_editor_modal').on('hidden.bs.modal', function () {
+		stepEditor.removeInstance('text_to_change_textarea');
+	})
 
 </script>
 
@@ -310,6 +373,7 @@ body {
 	            ui.draggable.remove();
 	        }
 	    });
+
 	});
 
 	$(document).ready(function() {
