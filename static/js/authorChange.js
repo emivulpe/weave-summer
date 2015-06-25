@@ -9,7 +9,7 @@ var option_number = 1;
 var commentEditors = [];
 var exactMatches = [];
 var possibleMatches = [];
-var stepToChangeIndex = 0;
+var stepToChangeIndex = -1;
 var previousStepToChangeDirection = "next"; 
 
 $(".prev_btn").css('visibility', 'hidden');
@@ -203,46 +203,24 @@ function editText(textToChange, newText) {
 
 
 function confirmStepChanges(direction){
-    alert(stepToChangeIndex + " step to change " + previousStepToChangeDirection + " prev");
-    if (previousStepToChangeDirection == "next"){
+   
+    if (direction == "next"){
         stepToChangeIndex++;
+        handleStepEditorControlVisibility(direction , stepToChangeIndex, exactMatches.length + 4);
     }
-    else if(previousStepToChangeDirection == "back"){
+    else if(direction == "back"){
+        handleStepEditorControlVisibility(direction , stepToChangeIndex, exactMatches.length + 4);
         stepToChangeIndex--;
-    }
-    /*if (direction == "next"){
-        if (previousStepToChangeDirection == "back"){
-            stepToChangeIndex++;
-            stepToChangeIndex++;
-        }
-        else{
-            stepToChangeIndex++;
-        }
-    }
-    else if (direction == "back"){
-        if (previousStepToChangeDirection == "next"){
-            stepToChangeIndex--;
-            //stepToChangeIndex--;
-        }
-        else{
-            stepToChangeIndex--;
-        }
-    }
-
-    // do stuff here
-*/
-    /*else if (direction == "back"){
-        if (previousStepToChangeDirection == "next"){
-            // need to do this twice because it is 1 step ahead from before
-            stepToChangeIndex--;
-        }
-        else{
-            stepToChangeIndex--;
-        }
-
-    }*/
-    previousStepToChangeDirection = direction;
-    handleStepEditorControlVisibility(direction , stepToChangeIndex, exactMatches.length + 4);
+    } 
+    alert(stepToChangeIndex + " step to change " + direction + " prev");
+    if(possibleMatches[stepToChangeIndex] != undefined){
+        stepDetails = possibleMatches[stepToChangeIndex]; 
+        alert(stepDetails["html"]);
+        $("#step_editor_title").text("Step Editor- step " + stepDetails["step_number"]);
+        $("#current_step_text").html(stepDetails["html"]);
+        stepEditor = nicEditors.findEditor("text_to_change_textarea");
+        stepEditor.setContent(stepDetails["proposed_text"]);
+    }   
 
 }
 

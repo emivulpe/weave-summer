@@ -59,7 +59,12 @@ $("#apply_changes_button").click(function(){
     //alert(textToChange);
     //newText = $("#new_text_textarea").val();
     alert(rawText + " raw " + newText + " new");
-    editText(rawText, newText);
+    if (rawText != ""){
+        editText(rawText, newText);
+    }
+    else {
+        BootstrapDialog.alert('Sorry but you can make edits without selecting some text with the mouse first!');
+    }
     $("#edit_modal").modal('hide');
 });
 
@@ -79,7 +84,10 @@ function getSelectionHtml() {
             html = document.selection.createRange().htmlText;
         }
     }
-    //alert(html);
+    alert(html);
+    if (html == ""){
+        alert("empty html");
+    }
     //$("#text_to_change_raw").text(html);
     return html;
 }

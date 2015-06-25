@@ -1365,9 +1365,11 @@ def edit_steps(request):
 				raw_step_html = step.html;
 				plain_step_html = lxml.html.fromstring(step.html).text_content()
 				if raw_text_to_change in raw_step_html:
-					exact_matches.append({"example": example_name, "step_number" :step.step_number, "text" : step.html})
+					exact_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html})
 				elif plain_text_to_change in plain_step_html:
-					possible_matches.append({"example": example_name, "step_number" :step.step_number, "text" : step.html})
+					plain_new_text = keeptags(new_text,"br div")
+					proposed_text = plain_step_html.replace(plain_text_to_change, plain_new_text)
+					possible_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text})
 				print raw_step_html, " raw step"
 				print plain_step_html, " plain step"
 				#step.html = keeptags(step.html,"div br").replace(keeptags(text_to_change.strip(),"div"), new_text).replace("&amp;", "").replace("amp;","").replace("&nbsp;","").replace("nbsp;","")
