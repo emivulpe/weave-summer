@@ -4,8 +4,8 @@ var direction = "next";
 var last_direction = "next";
 var exampleName = "";
 var exampleEditors = [];
-var explanationEditor = null;
-var option_number = 1;
+var explanationEditor = undefined;
+//var option_number = 1;
 var commentEditors = [];
 var exactMatches = [];
 var possibleMatches = [];
@@ -49,9 +49,23 @@ $('#create_example_button').click(function(){
             $('textarea[id^="area"]').each(function(index) {
                 $(this).height($("#outer_panel2").height()*0.71);
                 //$(this).css("margin","100px");
-                exampleEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);                   
+
+                /*if(nicEditInstances[$(this).attr("id")] != undefined){
+                    nicEditInstances[$(this).attr("id")].removeInstance(nicEditInstances[$(this).attr("id")]);
+                    nicEditInstances[$(this).attr("id")] = undefined;
+                }*/
+
+                if(nicEditInstances[$(this).attr("id")] == undefined){
+                    nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);                   
+                }
             });
-            explanationEditor = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).addInstance("explanation_area").setPanel('explanation_area_panel');
+            /*if(nicEditInstances["explanation_area"] != undefined){
+                nicEditInstances["explanation_area"].removeInstance(nicEditInstances["explanation_area"]);
+                nicEditInstances["explanation_area"] = undefined;
+            }*/
+            if(nicEditInstances["explanation_area"] == undefined){
+                nicEditInstances["explanation_area"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).addInstance("explanation_area").setPanel('explanation_area_panel');
+            }
             //$(".nicEdit-main").css("height",$("#area_container0").height() - $(".nicEdit-panel").height() - 20 + "px");
 
             $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
@@ -101,7 +115,7 @@ $('#create_example_button').click(function(){
 
 
 $('#create_question_step').click(function(){
-    option_number = 1;
+    //option_number = 1;
 
     var invalidInputs = $('.option_text').filter(function() {
         return $.trim(this.value) == '';
@@ -182,7 +196,7 @@ function editText(textToChange, newText) {
                 'new_text' : newText
             }).done(
                 function(affectedSteps){
-                    loadStep(direction);
+                    loadStep("this");
                     //alert(affectedSteps['exact_matches']);
                     //alert(affectedSteps['possible_matches']);
                     exactMatches = affectedSteps['exact_matches'];
@@ -223,18 +237,18 @@ function confirmStepChanges(direction){
     }
     if (direction == "next"){
         stepToChangeIndex++;
-        alert(stepToChangeIndex + " step to change " + direction + " prev");
+        //alert(stepToChangeIndex + " step to change " + direction + " prev");
         handleStepEditorControlVisibility(direction , stepToChangeIndex, typeOfMatches.length, typeOfControls);
     }
     else if(direction == "back"){
-        alert(stepToChangeIndex + " step to change " + direction + " prev");
+        //alert(stepToChangeIndex + " step to change " + direction + " prev");
         handleStepEditorControlVisibility(direction , stepToChangeIndex, typeOfMatches.length, typeOfControls);
         stepToChangeIndex--;
     } 
     //alert(stepToChangeIndex + " step to change " + direction + " prev");
     if(typeOfMatches[stepToChangeIndex] != undefined){
         stepDetails = typeOfMatches[stepToChangeIndex]; 
-        alert(stepDetails["html"] + " interested in this");
+        //alert(stepDetails["html"] + " interested in this");
         $("#step_editor_title").text(title + (stepDetails["step_number"] + 1));
         $("#current_step_text").html(stepDetails["html"]);
         stepEditor = nicEditors.findEditor("text_to_change_textarea");
@@ -470,30 +484,41 @@ function manageExampleAreas(data, direction) {
                             //var questionOptions = JSON.parse(data[key]);
                             var questionOptions = data[key];
                             //alert(questionOptions);
+
                             for (var i = 0; i < questionOptions.length; i++){
+                                opt_number = i + 1;
                                 option = questionOptions[i];
-                                console.log(option["option_text"] + " this is an option" + option["correct"]);
+                                console.log(option["option_text"] + " this is an option" + option["correct"] + opt_number);
                                 var optionText = option["option_text"]; 
                                 var correct = option["correct"];
                                 //alert(optionText);
                                 if (correct){
-                                    $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox" checked></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" value="' + optionText + '"></td></tr></table></li>');
+                                    $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox" checked></td><td>' + opt_number + '.</td><td><input class="form-control option_text" type="text" value="' + optionText + '"></td></tr></table></li>');
 
                                     //$("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table style = "width:100%;"><tr><td><input type="checkbox" checked></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></td></tr></table></li>');
                                 }
                                 else{
-                                    $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" value=' + optionText + '></td></tr></table></li>');
+                                    $("#options_list").append('<li class="list-group-item option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + opt_number + '.</td><td><input class="form-control option_text" type="text" value=' + optionText + '></td></tr></table></li>');
                                     //$("#options_list").append('<li class="list-group-item option"><table style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" value=' + questionOptions[i]["option_text"] + '></td></tr></table></li>');
                                 }
                                 if (option.hasOwnProperty("comment")){
                                     //alert("there is a comment");
                                     commentText = option["comment"];
-                                    $("#option_" + option_number).append('<tr id = "comment_area_' + option_number + '"><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Answer comment:</label><textarea id="comment_textarea_' + option_number + '" style = "width:100%;"></textarea></td></tr>');
+                                    $("#option_" + opt_number).append('<tr id = "comment_area_' + opt_number + '"><td colspan = "3"><label for = "comment_textarea_' + opt_number + '">Answer comment:</label><textarea id="comment_textarea_' + opt_number + '" style = "width:100%;"></textarea></td></tr>');
                                     //$("comment_textarea_" + option_number).width($("#question_text_container").width());
-                                    nicEditInstances["comment_textarea_" + option_number] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + option_number);
-                                    nicEditors.findEditor("comment_textarea_" + option_number).setContent(commentText);
+                                    /*if(nicEditInstances[("comment_textarea_" + option_number)] != undefined){
+                                        alert("removing");
+                                        nicEditInstances[("comment_textarea_" + option_number)].removeInstance(nicEditInstances["comment_textarea_" + option_number]);
+                                        nicEditInstances[("comment_textarea_" + option_number)] = undefined;
+                                    }*/
+                                    
+                                    //if(nicEditInstances[("comment_textarea_" + opt_number)] == undefined){
+                                     //   alert("here");
+                                        nicEditInstances[("comment_textarea_" + opt_number)] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + opt_number);
+                                   // }
+                                    //alert(nicEditors.findEditor("comment_textarea_" + opt_number));
+                                    nicEditors.findEditor("comment_textarea_" + opt_number).setContent(commentText);
                                 }
-                                option_number++;
                             }
 
                             //correctAnswerController();
@@ -576,7 +601,7 @@ function handleStepEditorControlVisibility2(direction, currentStepNumber, number
     if(controlClass == ".question_control"){
         currentStepNumber++;
     }
-    alert(controlClass + ".prev_btn");
+    //alert(controlClass + ".prev_btn");
     if(direction != "this"){
         if (currentStepNumber >= numberOfSteps && direction == "next") {
             $(controlClass + ".next_btn").css('visibility', 'hidden');
@@ -636,7 +661,7 @@ function resetQuestionModal(){
     $(".option").each(function(){
         $(this).remove();
     })
-    option_number = 1;
+    //option_number = 1;
     $("#options_container").show();
 }
 
@@ -732,6 +757,7 @@ $('#btn_question').click(function(){
         $(this).val("");
     })
     var option_type = $('input[type=radio][name=question_type_radio]').val();
+        option_number = 1;
         $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
         $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
        
@@ -744,10 +770,13 @@ $('#btn_question').click(function(){
                 //$(this).height($("#outer_panel2").height()*0.71);
                 //$(this).css("margin","100px");
                 //$(this).width($("#question_text_container").width());
-                
-
-                nicEditInstances[$(this).attr("id")] = commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
-
+                /*if(nicEditInstances[$(this).attr("id")] != undefined){
+                    nicEditInstances[$(this).attr("id")].removeInstance(nicEditInstances[$(this).attr("id")]);
+                    nicEditInstances[$(this).attr("id")] = undefined;
+                }*/
+                //if(nicEditInstances[$(this).attr("id")] == undefined){
+                nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
+                //}
 
                 //---------commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
             
