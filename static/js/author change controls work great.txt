@@ -215,11 +215,9 @@ function confirmStepChanges(direction){
     typeOfControls = ".step_editor_control";
     if (exactMatchesBeingProcessed){
         typeOfMatches = exactMatches;
-        title = "Exact matches step editor- step ";
     }
     else{
         typeOfMatches = possibleMatches;
-        title = "Possible matches step editor- step ";
     }
     if (direction == "next"){
         stepToChangeIndex++;
@@ -234,20 +232,17 @@ function confirmStepChanges(direction){
     //alert(stepToChangeIndex + " step to change " + direction + " prev");
     if(typeOfMatches[stepToChangeIndex] != undefined){
         stepDetails = typeOfMatches[stepToChangeIndex]; 
-        alert(stepDetails["html"] + " interested in this");
-        $("#step_editor_title").text(title + (stepDetails["step_number"] + 1));
+        //alert(stepDetails["html"]);
+        $("#step_editor_title").text("Step Editor- step " + (stepDetails["step_number"] + 1));
         $("#current_step_text").html(stepDetails["html"]);
         stepEditor = nicEditors.findEditor("text_to_change_textarea");
         if(stepEditor != undefined){
-            //alert(stepDetails["proposed_text"] + " this should not be undefined");
+            alert(stepDetails["proposed_text"] + " this should not be undefined");
             stepEditor.setContent(stepDetails["proposed_text"]);
         }
         else{
             alert("Step editor was undefined!!!");
         }
-    }
-    else{
-        alert("check here");
     }   
 
 }
@@ -490,7 +485,7 @@ function manageExampleAreas(data, direction) {
                                     commentText = option["comment"];
                                     $("#option_" + option_number).append('<tr id = "comment_area_' + option_number + '"><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Answer comment:</label><textarea id="comment_textarea_' + option_number + '" style = "width:100%;"></textarea></td></tr>');
                                     //$("comment_textarea_" + option_number).width($("#question_text_container").width());
-                                    nicEditInstances["comment_textarea_" + option_number] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + option_number);
+                                    new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + option_number);
                                     nicEditors.findEditor("comment_textarea_" + option_number).setContent(commentText);
                                 }
                                 option_number++;
@@ -602,11 +597,11 @@ function handleStepEditorControlVisibility(direction, currentStepNumber, numberO
     if (direction == "back"){
         currentStepNumber--;
     }
-    //alert(currentStepNumber + " steppppppp");
+    alert(currentStepNumber + " steppppppp");
     if(direction == "next"){
         if(currentStepNumber < 0  || (controlClass == ".step_editor_control" && currentStepNumber <= 0)){
             $(controlClass + ".prev_btn").css('visibility', 'hidden');
-            //alert("should hide");
+            alert("should hide");
         }
         else{
              $(controlClass + ".prev_btn").css('visibility', 'visible');
@@ -744,15 +739,7 @@ $('#btn_question').click(function(){
                 //$(this).height($("#outer_panel2").height()*0.71);
                 //$(this).css("margin","100px");
                 //$(this).width($("#question_text_container").width());
-                
-
-                nicEditInstances[$(this).attr("id")] = commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
-
-
-                //---------commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
-            
-
-
+                commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);                   
             });
             //$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'" style = "width:100%;"><tr class = "handle"><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr><tr><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Correct answer comment:</label><textarea id="comment_textarea_' + option_number++ + '" style = "width:100%;"></textarea></td></tr></table></li>');
             //$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr class = "handle"><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr><tr><td colspan = "3"><label for = "comment_textarea_' + option_number + '">Correct answer comment:</label><textarea id="comment_textarea_' + option_number++ + '" style = "width:100%;"></textarea></td></tr></table></li>');

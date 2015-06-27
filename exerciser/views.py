@@ -1347,7 +1347,7 @@ def get_next_step(request):
 def edit_steps(request):
 	print "in edit steps"
 	try:
-		new_text = request.POST['new_text']
+		raw_new_text = request.POST['new_text']
 		raw_text_to_change = request.POST['text_to_change']
 		plain_text_to_change = lxml.html.fromstring(raw_text_to_change).text_content()
 		print raw_text_to_change, " RAW"
@@ -1365,15 +1365,14 @@ def edit_steps(request):
 				raw_step_html = step.html;
 				plain_step_html = lxml.html.fromstring(step.html).text_content()
 				if raw_text_to_change in raw_step_html:
-					exact_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html})
+					proposed_text = raw_step_html.replace(raw_text_to_change, raw_new_text)
+					exact_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text})
 				elif plain_text_to_change in plain_step_html:
-					plain_new_text = keeptags(new_text,"br div")
+					plain_new_text = keeptags(raw_new_text,"br div")
 					proposed_text = plain_step_html.replace(plain_text_to_change, plain_new_text)
 					possible_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text})
 				print raw_step_html, " raw step"
 				print plain_step_html, " plain step"
-				#step.html = keeptags(step.html,"div br").replace(keeptags(text_to_change.strip(),"div"), new_text).replace("&amp;", "").replace("amp;","").replace("&nbsp;","").replace("nbsp;","")
-				#step.save()
 			print exact_matches, " EXACT"
 			print possible_matches, " possible"			
 	except KeyError:
