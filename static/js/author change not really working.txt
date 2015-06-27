@@ -10,9 +10,7 @@ var commentEditors = [];
 var exactMatches = [];
 var possibleMatches = [];
 var stepToChangeIndex = -1;
-var previousStepToChangeDirection = "next";
-var exactMatchesBeingProcessed = true;
-
+var previousStepToChangeDirection = "next"; 
 
 $(".prev_btn").css('visibility', 'hidden');
 $("#btn_reset").css('visibility', 'hidden');
@@ -190,18 +188,13 @@ function editText(textToChange, newText) {
                    // alert(exactMatches.length);
 
                     //handleStepEditorControlVisibility("next" , 1, 4);
-                    //stepToChangeIndex = -1;
+                    stepToChangeIndex = -1;
                     //$(".exact_matches").show();
                     //$(".possible_matches").hide();
                     //$("#step_editor_exact_matches_btn_prev").hide();
-                    exactMatchesBeingProcessed = true;
-                    //handleStepEditorControlVisibility("next" , stepToChangeIndex, exactMatches.length, ".step_editor_control");
-                    //$("#step_editor_title").html("Edit Exact Matches");
-                    if(exactMatches.length > 0){
-                        $("#step_editor_modal").modal('show');
-                    }
-
-                   // confirmStepChanges("next");
+                    $("#step_editor_modal").modal('show');
+                    $("#step_editor_title").text("Edit Exact Matches");
+                    confirmStepChanges("next", "exact");
 
                 });
         });  
@@ -211,33 +204,42 @@ function editText(textToChange, newText) {
 }
 
 
-function confirmStepChanges(direction){
-    typeOfControls = ".step_editor_control";
-    if (exactMatchesBeingProcessed){
+function confirmStepChanges(direction, type){
+    if (type == "exact"){
         typeOfMatches = exactMatches;
+        typeOfControls = ".exact_matches";
+        $("#possible").hide();
+        if (stepToChangeIndex == -1){
+            $("#step_editor_exact_matches_btn_prev").hide();
+        }
+        $("#exact").show();
     }
     else{
         typeOfMatches = possibleMatches;
+        typeOfControls = ".possible_matches";
+        $("#exact").hide();
+        if (stepToChangeIndex == -1){
+            $("#step_editor_possible_matches_btn_prev").hide();
+        }
+        $("#possible").show();
     }
+    alert(typeOfMatches + " type of matches");
     if (direction == "next"){
         stepToChangeIndex++;
-        alert(stepToChangeIndex + " step to change " + direction + " prev");
         handleStepEditorControlVisibility(direction , stepToChangeIndex, typeOfMatches.length, typeOfControls);
     }
     else if(direction == "back"){
-        alert(stepToChangeIndex + " step to change " + direction + " prev");
         handleStepEditorControlVisibility(direction , stepToChangeIndex, typeOfMatches.length, typeOfControls);
         stepToChangeIndex--;
     } 
-    //alert(stepToChangeIndex + " step to change " + direction + " prev");
+    alert(stepToChangeIndex + " step to change " + direction + " prev");
     if(typeOfMatches[stepToChangeIndex] != undefined){
         stepDetails = typeOfMatches[stepToChangeIndex]; 
         //alert(stepDetails["html"]);
-        $("#step_editor_title").text("Step Editor- step " + (stepDetails["step_number"] + 1));
+        $("#step_editor_title").text("Step Editor- step " + stepDetails["step_number"]);
         $("#current_step_text").html(stepDetails["html"]);
         stepEditor = nicEditors.findEditor("text_to_change_textarea");
         if(stepEditor != undefined){
-            alert(stepDetails["proposed_text"] + " this should not be undefined");
             stepEditor.setContent(stepDetails["proposed_text"]);
         }
         else{
@@ -375,42 +377,13 @@ function saveQuestion(){
 }
 
 
-function loadStep2(direction){
+function loadStep(direction){
     if (direction != "this"){
         if (direction == "next"){
             currentStep ++;
         }
         else{
             currentStep --;
-        }
-    }
-    $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
-    //get request to see if there is entry for that step
-    //if there is- fill the textarea with it
-    //else show an empty text area
-    var request = $.get('/weave/get_next_step/', {
-        'example_name' : exampleName,
-        'step_number' : currentStep
-    });
-
-    request.done(function(data) {
-        manageExampleAreas(data, direction);
-    });
-}
-
-function loadStep(direction){
-    if (direction != "this"){
-        if (direction == "next"){
-            currentStep++;
-            if(previousStepToChangeDirection == "back"){
-                currentStep++;
-            }
-        }
-        else{
-            currentStep --;
-            if(previousStepToChangeDirection == "back"){
-                currentStep--;
-            }
         }
     }
     $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
@@ -449,8 +422,7 @@ function manageExampleAreas(data, direction) {
                                 $("#create_question_step").hide();
                                 $("#question_step_navigator").show();
                                 $("#question_step_close_button").hide();
-                                handleStepEditorControlVisibility(direction, currentStep, 1000, ".question_control");
-                                handleStepEditorControlVisibility(direction, currentStep, 1000, ".example_control");        
+                                handleStepEditorControlVisibility(direction, currentStep, 1000, ".question_control");        
                                 $("#question_modal").modal('show');
                                 var questionEditor = nicEditors.findEditor("question_text");
                                 questionEditor.setContent(data[key]);
@@ -564,7 +536,7 @@ function handleControlVisibility(direction){
     
 }
 
-function handleStepEditorControlVisibility2(direction, currentStepNumber, numberOfSteps, controlClass){
+function handleStepEditorControlVisibility(direction, currentStepNumber, numberOfSteps, controlClass){
     if(controlClass == undefined){
         controlClass = "";
     }
@@ -573,7 +545,7 @@ function handleStepEditorControlVisibility2(direction, currentStepNumber, number
     }
     alert(controlClass + ".prev_btn");
     if(direction != "this"){
-        if (currentStepNumber >= numberOfSteps && direction == "next") {
+        if (currentStepNumber == numberOfSteps && direction == "next") {
             $(controlClass + ".next_btn").css('visibility', 'hidden');
         } 
         else if (currentStepNumber <= 1 && direction == "back") {
@@ -587,42 +559,6 @@ function handleStepEditorControlVisibility2(direction, currentStepNumber, number
 }       
 
 
-function handleStepEditorControlVisibility(direction, currentStepNumber, numberOfSteps, controlClass){
-    if(controlClass == undefined){
-        controlClass = "";
-    }
-    if(controlClass == ".question_control"){
-        currentStepNumber++;
-    }
-    if (direction == "back"){
-        currentStepNumber--;
-    }
-    alert(currentStepNumber + " steppppppp");
-    if(direction == "next"){
-        if(currentStepNumber < 0  || (controlClass == ".step_editor_control" && currentStepNumber <= 0)){
-            $(controlClass + ".prev_btn").css('visibility', 'hidden');
-            alert("should hide");
-        }
-        else{
-             $(controlClass + ".prev_btn").css('visibility', 'visible');
-        }  
-    }
-    else{
-        if(currentStepNumber <= 0){
-            $(controlClass + ".prev_btn").css('visibility', 'hidden');
-        }
-        else{
-             $(controlClass + ".prev_btn").css('visibility', 'visible');
-        }
-    }
-
-    if(/*currentStepNumber >= 0 &&*/currentStepNumber < numberOfSteps - 1){
-        $(controlClass + ".next_btn").css('visibility', 'visible');
-    }
-    else{
-        $(controlClass + ".next_btn").css('visibility', 'hidden');
-    }
-}       
 
 
 
@@ -666,16 +602,26 @@ $('#btn_prev').click(function() {
 });
 
 
-$('#step_editor_btn_next').click(function() {
-    confirmStepChanges("next");
+$('#step_editor_exact_matches_btn_next').click(function() {
+    confirmStepChanges("next", "exact");
 });
 
 
 // Bind an event to the previous button.
-$('#step_editor_btn_prev').click(function() {
-    confirmStepChanges("back");
+$('#step_editor_exact_matches_btn_prev').click(function() {
+    confirmStepChanges("back", "exact");
 });
 
+
+$('#step_editor_possible_matches_btn_next').click(function() {
+    confirmStepChanges("next", "possible");
+});
+
+
+// Bind an event to the previous button.
+$('#step_editor_possible_matches_btn_prev').click(function() {
+    confirmStepChanges("back", "possible");
+});
 
 
 

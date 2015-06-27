@@ -150,7 +150,7 @@ body {
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="editor_title" class="modal-title">Edit Text</h4>
+                <h4 id="step_editor_title" class="modal-title">Edit Text</h4>
 
             </div>
             <div id = "edit_modal_body" class="modal-body">
@@ -187,8 +187,14 @@ body {
             </div>
             <div class="modal-footer">
                 <ul id = "step_editor_navigator" class="nav navbar-nav navbar-right">
-					<li style = "display: inline"><a id="step_editor_btn_prev" class="prev_btn step_editor_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
-					<li style = "display: inline"><a id="step_editor_btn_next" class="next_btn step_editor_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+                	<span id = "exact_matches_controls">
+		            	<li style = "display: inline"><a id="step_editor_exact_matches_btn_prev" class="prev_btn exact_matches step_editor_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
+						<li style = "display: inline"><a id="step_editor_exact_matches_btn_next" class="next_btn exact_matches step_editor_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+					</span>
+					<span id = "possible_matches_controls">
+						<li style = "display: inline"><a id="step_editor_possible_matches_btn_prev" class="prev_btn possible_matches step_editor_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
+						<li style = "display: inline"><a id="step_editor_possible_matches_btn_next" class="next_btn possible_matches step_editor_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+					</span>
 				</ul>	
                 <!--<button id = "step_editor_confirmation_button" type="button" class="btn btn-default">OK</button>-->
             </div>
@@ -275,35 +281,15 @@ body {
 	})
 	var stepEditor;
 	$("#step_editor_modal").on('shown.bs.modal',function(){
-		//$("#step_editor_btn_prev").css('visibility', 'hidden');
-		stepToChangeIndex = -1;
-		if(exactMatchesBeingProcessed){
-			selectedMatchesLength = exactMatches.length;
-		}
-		else{
-			selectedMatchesLength = possibleMatches.length;
-		}
-		handleStepEditorControlVisibility("next" , stepToChangeIndex, selectedMatchesLength, ".step_editor_control");
-
+		$("#step_editor_btn_prev").css('visibility', 'hidden');
 		stepEditor = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
-		confirmStepChanges("next");
 	})
 	$(document).ready(function(){
 		//new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
 		//$("#step_editor_modal").modal('show');
 	})
 	$('#step_editor_modal').on('hidden.bs.modal', function () {
-		//stepEditor.removeInstance('text_to_change_textarea');
-		if (exactMatchesBeingProcessed){
-			exactMatchesBeingProcessed = false;
-			if(possibleMatches.length > 0){
-				$("#step_editor_modal").modal('show');
-			}
-            //confirmStepChanges("next");
-		}
-		else{
-			exactMatchesBeingProcessed = true;
-		}
+		stepEditor.removeInstance('text_to_change_textarea');
 	})
 
 </script>

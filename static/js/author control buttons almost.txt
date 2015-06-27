@@ -197,10 +197,7 @@ function editText(textToChange, newText) {
                     exactMatchesBeingProcessed = true;
                     //handleStepEditorControlVisibility("next" , stepToChangeIndex, exactMatches.length, ".step_editor_control");
                     //$("#step_editor_title").html("Edit Exact Matches");
-                    if(exactMatches.length > 0){
-                        $("#step_editor_modal").modal('show');
-                    }
-
+                    $("#step_editor_modal").modal('show');
                    // confirmStepChanges("next");
 
                 });
@@ -599,9 +596,8 @@ function handleStepEditorControlVisibility(direction, currentStepNumber, numberO
     }
     alert(currentStepNumber + " steppppppp");
     if(direction == "next"){
-        if(currentStepNumber < 0  || (controlClass == ".step_editor_control" && currentStepNumber <= 0)){
+        if(currentStepNumber < 0){
             $(controlClass + ".prev_btn").css('visibility', 'hidden');
-            alert("should hide");
         }
         else{
              $(controlClass + ".prev_btn").css('visibility', 'visible');
@@ -616,7 +612,7 @@ function handleStepEditorControlVisibility(direction, currentStepNumber, numberO
         }
     }
 
-    if(/*currentStepNumber >= 0 &&*/currentStepNumber < numberOfSteps - 1){
+    if(currentStepNumber >= 0 && currentStepNumber < numberOfSteps){
         $(controlClass + ".next_btn").css('visibility', 'visible');
     }
     else{

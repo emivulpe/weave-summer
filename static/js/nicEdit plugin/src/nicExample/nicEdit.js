@@ -47,24 +47,21 @@ function getSelText()
         txt = document.selection.createRange().text;
             }
     else return;
-    
-    $("#edit_modal").modal('show');
     rawText = getSelectionHtml();
-    $("#text_to_change").html(rawText);
+    if (rawText != ""){
+        $("#edit_modal").modal('show');
+        $("#text_to_change").html(rawText);
+    }
+    else {
+        BootstrapDialog.alert('Sorry but you can make edits without selecting some text with the mouse first!');
+    }
+
     
 }
 $("#apply_changes_button").click(function(){
     var editEditor = nicEditors.findEditor("new_text_textarea");
     newText = editEditor.getContent();
-    //alert(textToChange);
-    //newText = $("#new_text_textarea").val();
-    alert(rawText + " raw " + newText + " new");
-    if (rawText != ""){
-        editText(rawText, newText);
-    }
-    else {
-        BootstrapDialog.alert('Sorry but you can make edits without selecting some text with the mouse first!');
-    }
+    editText(rawText, newText);
     $("#edit_modal").modal('hide');
 });
 
@@ -84,10 +81,5 @@ function getSelectionHtml() {
             html = document.selection.createRange().htmlText;
         }
     }
-    alert(html);
-    if (html == ""){
-        alert("empty html");
-    }
-    //$("#text_to_change_raw").text(html);
     return html;
 }
