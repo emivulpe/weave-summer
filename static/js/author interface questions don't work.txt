@@ -12,9 +12,6 @@ var possibleMatches = [];
 var stepToChangeIndex = -1;
 var previousStepToChangeDirection = "next";
 var exactMatchesBeingProcessed = true;
-var exactMatchesEdits = {};
-var possibleMatchesEdits = {};
-var currentFocusedEditor = undefined;
 
 
 $(".prev_btn").css('visibility', 'hidden');
@@ -57,11 +54,9 @@ $('#create_example_button').click(function(){
                     nicEditInstances[$(this).attr("id")].removeInstance(nicEditInstances[$(this).attr("id")]);
                     nicEditInstances[$(this).attr("id")] = undefined;
                 }*/
-                textareaId = $(this).attr("id");
+
                 if(nicEditInstances[$(this).attr("id")] == undefined){
-                    nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index).addEvent('focus', function() {
-                                                                                                                                                                                                                                    currentFocusedEditor = textareaId;
-                                                                                                                                                                                                                                  });                  
+                    nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);                   
                 }
             });
             /*if(nicEditInstances["explanation_area"] != undefined){
@@ -167,7 +162,7 @@ $("#question_step_close_button").click(function(){
 function editText(textToChange, newText) {
 
     var panel_texts = {}
-    // Save the entries for each panel for the current step
+    // Save the entries for each panel for the step
     $('textarea[id^="area"]').each(function(index) {
         console.log($(this).attr("id"));
         var panelId = $(this).attr("id");
@@ -186,28 +181,42 @@ function editText(textToChange, newText) {
     saveStepTextsRequest.done(function() {
         var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
         explanation = explanationArea.getContent();
-        // Save the explanation for the current step
         $.post("/weave/save_explanation/", {
             'html': explanation,
             'csrfmiddlewaretoken': csrftoken,
             'example_name': exampleName,
             'step_number':currentStep,
         }).done(function() {
-            //get the steps that involve the selected text- rename the view appropriately!!!
+
             $.post("/weave/edit_steps/", {
                 'example_name': exampleName,
-                'panel_id': currentFocusedEditor,
+                'panel_id': "some panel id",
                 'csrfmiddlewaretoken': csrftoken,
                 'text_to_change' : textToChange + "",
                 'new_text' : newText
             }).done(
                 function(affectedSteps){
+                    loadStep("this");
+                    //alert(affectedSteps['exact_matches']);
+                    //alert(affectedSteps['possible_matches']);
                     exactMatches = affectedSteps['exact_matches'];
                     possibleMatches = affectedSteps['possible_matches'];
+                   // alert(exactMatches.length);
+
+                    //handleStepEditorControlVisibility("next" , 1, 4);
+                    //stepToChangeIndex = -1;
+                    //$(".exact_matches").show();
+                    //$(".possible_matches").hide();
+                    //$("#step_editor_exact_matches_btn_prev").hide();
                     exactMatchesBeingProcessed = true;
+                    //handleStepEditorControlVisibility("next" , stepToChangeIndex, exactMatches.length, ".step_editor_control");
+                    //$("#step_editor_title").html("Edit Exact Matches");
                     if(exactMatches.length > 0){
                         $("#step_editor_modal").modal('show');
                     }
+
+                   // confirmStepChanges("next");
+
                 });
         });  
 
@@ -216,11 +225,7 @@ function editText(textToChange, newText) {
 }
 
 
-function confirmStepChanges(direction, initialInvocation){
-    if(!initialInvocation){
-        storeNewStepText();
-        //alert(stepToChangeIndex);
-    }
+function confirmStepChanges(direction){
     typeOfControls = ".step_editor_control";
     if (exactMatchesBeingProcessed){
         typeOfMatches = exactMatches;
@@ -246,7 +251,6 @@ function confirmStepChanges(direction, initialInvocation){
         //alert(stepDetails["html"] + " interested in this");
         $("#step_editor_title").text(title + (stepDetails["step_number"] + 1));
         $("#current_step_text").html(stepDetails["html"]);
-        $("#panel_id").text(stepDetails["panel_id"]);
         stepEditor = nicEditors.findEditor("text_to_change_textarea");
         if(stepEditor != undefined){
             //alert(stepDetails["proposed_text"] + " this should not be undefined");
@@ -257,30 +261,19 @@ function confirmStepChanges(direction, initialInvocation){
         }
     }
     else{
-        //----------------> IMPORTANT- check why it enters here <------------------ alert("check here");
+        alert("check here");
     }   
 
 }
 
-function storeNewStepText(){
-    stepEditor = nicEditors.findEditor("text_to_change_textarea");
-    newStepText = stepEditor.getContent();
-    var str=$("#step_editor_title").text();
-    stepToEdit = parseInt(str.replace( /\D+/g, '')) - 1;
-    if (exactMatchesBeingProcessed){
-        exactMatchesEdits[stepToEdit] = newStepText;
-    }
-    else{
-        possibleMatchesEdits[stepToEdit] = newStepText;
-    }
-    //alert("example: " + exampleName + " step: " + num + " new text: " + newStepText);
-}
+
 // A function defining the actions the student interface needs to undertake at a particular step
 function goToStep(direction, question, textToChange, newText) {
 
 	//save the html in a db (either replace the existing one if there is one or create a new one
 	//NOTE: there are multiple panels- ensure you say what html goes for which panel
     handleStepEditorControlVisibility(direction, currentStep, 1000, ".example_control");
+
     //handleControlVisibility(direction);
 	var panel_texts = {}
 	// Save the entries for each panel for the step
@@ -460,14 +453,10 @@ function loadStep(direction){
             var questionEditor = nicEditors.findEditor("question_text");
             questionEditor.setContent(data["question_text"]);
            // alert("THIS STEP IS A QUESTION!!!!!!!!");
-            $('#question_modal').on('shown.bs.modal', function (e) {
-                manageExampleAreas(data, direction);
-            });
         }
-        else{
+        $('#question_modal').on('shown.bs.modal', function (e) {
             manageExampleAreas(data, direction);
-        }
-
+        });
     });
 }
 
@@ -740,13 +729,13 @@ $('#btn_prev').click(function() {
 
 
 $('#step_editor_btn_next').click(function() {
-    confirmStepChanges("next", false);
+    confirmStepChanges("next");
 });
 
 
 // Bind an event to the previous button.
 $('#step_editor_btn_prev').click(function() {
-    confirmStepChanges("back", false);
+    confirmStepChanges("back");
 });
 
 
@@ -756,7 +745,7 @@ $('#step_editor_btn_prev').click(function() {
 $('#question_btn_next').click(function() {
     goToStep("next", true);
     $("#question_modal").modal('hide');
-    resetQuestionModal(true);  
+    resetQuestionModal(false);  
 
 });
 
@@ -765,10 +754,7 @@ $('#question_btn_next').click(function() {
 $('#question_btn_prev').click(function() {
     goToStep("back", true);
     $("#question_modal").modal('hide');
-    $('#question_modal').on('hidden.bs.modal', function () {
-        $(this).removeData('bs.modal')
-    });
-    resetQuestionModal(true);
+    resetQuestionModal(false);
 });
 
 // Reset the example on click of the reset button
@@ -778,9 +764,8 @@ $('#btn_done').click(function() {
 
 $('#btn_question').click(function(){
     // reset the values of the input fields
-    $('#question_modal').removeData('bs.modal')
+    resetQuestionModal(true);
     $("#create_question_step").show();
-
     $("#question_step_navigator").hide();
     var questionEditor = nicEditors.findEditor("question_text");
     if(questionEditor != undefined){
@@ -841,8 +826,6 @@ $('#btn_question').click(function(){
         }*/
 
     //$('.option').draggable();    
-    //resetQuestionModal(true);
-    //alert($(".option").length + " after reset");
     $("#question_step_close_button").show();          
     $("#question_modal").modal('show');
     correctAnswerController();

@@ -156,7 +156,7 @@ body {
             <div id = "edit_modal_body" class="modal-body">
             	<h4>Please enter the text you want to substitute the selected text with and click OK!</h4>
             	<label for = "text_to_change">Text to change:</label>
-                <div id="text_to_change" style = "border:1px solid black;"></div>
+                <div id="text_to_change"></div>
                 <label>New text:</label>
 		        <div id = "new_text_panel">
 		        	<div id="new_text_textarea_panel" style = "position:fixed; width: 100%;"></div>
@@ -181,18 +181,17 @@ body {
             <div id = "step_editor_modal_body" class="modal-body">
                 <!--<div id="text_before_change"></div>-->
                 <label for = "current_step_text">Current step text:</label>
-                <div id="current_step_text" style = "border:1px solid black;"></div>
+                <div id="current_step_text"></div>
                 <label for = "text_to_change_textarea">Suggested step text:</label>
 		        <textarea id="text_to_change_textarea" style = "width:100%;"></textarea>
 		        <!--<div id="text_after_change"></div>--> 
-		        <div id="panel_id" style = "display:none;"></div>
             </div>
             <div class="modal-footer">
                 <ul id = "step_editor_navigator" class="nav navbar-nav navbar-left">
 					<li style = "display: inline"><a id="step_editor_btn_prev" class="prev_btn step_editor_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
 					<li style = "display: inline"><a id="step_editor_btn_next" class="next_btn step_editor_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
 				</ul>	
-                <button id = "step_editor_confirmation_button" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                <button id = "step_editor_confirmation_button" type="button" class="btn btn-default">OK</button>
             </div>
         </div>
     </div>
@@ -220,38 +219,7 @@ body {
 	    	$('#create_example_button').prop('disabled', false);
 	    }
 	});
-	$("#step_editor_confirmation_button").click(function(){
-		confirmStepChanges("next", false);
-		matchesEdits = {};
-		if(exactMatchesBeingProcessed){
-			//alert("confirmation clicked- exact");
-			matchesEdits = exactMatchesEdits;
-		}
-		else{
-			//alert("confirmation clicked- possible");
-			matchesEdits = possibleMatchesEdits;
-		}
-		for (var step in matchesEdits) {
-		  if (matchesEdits.hasOwnProperty(step)) {
-		    //alert("step " + step + " text " + matchesEdits[step] + " example " + exampleName + " panel_id " + $("#panel_id").text());
-		    $.post("/weave/save_step/", {
-		        'csrfmiddlewaretoken': csrftoken,
-		        'example_name': exampleName,
-		        'step_number': step,
-		        'html' : matchesEdits[step],
-		        'panel_id' : $("#panel_id").text()
-		    })
-		  }
-		}
-		//alert("before hide");
-		$("#step_editor_modal").modal('hide');
-		//alert("after hide");
-		loadStep("this");
-		/*$("#step_editor_modal").on('hidden.bs.modal',function(){
-			loadStep("this");
-			alert("in on hidden event");
-		})*/
-	})
+
 
 	$('#add_option_button').click(function(){
 		var option_type = $('input[type=radio][name=question_type_radio]:checked').val();
@@ -288,19 +256,17 @@ body {
 		})
 	})*/
 
-	//change the name of the function if it is being used
-	function repeatingfunction() {
-	    console.log("mouse down");
-        $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
-        $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");		
+		//change the name of the function if it is being used
+		function repeatingfunction() {
+		    console.log("mouse down");
+            $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
+            $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");		
 
-        $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
-        $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
-        $("#explanation_area_panel").css("width", $("#explanation_row2").find($(".nicEdit-main")).outerWidth( true ) + "px");	
+            $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
+            $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
+            $("#explanation_area_panel").css("width", $("#explanation_row2").find($(".nicEdit-main")).outerWidth( true ) + "px");	
 
-	}
-
-
+		}
 </script>
 
 
@@ -360,7 +326,7 @@ body {
         if(nicEditInstances["text_to_change_textarea"] == undefined){
 			nicEditInstances["text_to_change_textarea"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
 		}
-		confirmStepChanges("next", true);
+		confirmStepChanges("next");
 	})
 	$(document).ready(function(){
 		//new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
@@ -381,9 +347,10 @@ body {
 		$(this).removeData('bs.modal'); 
 	})
 
-	$('.modal').on('hidden.bs.modal', function () {
-		$(this).removeData('bs.modal'); 
-	})
+	// $('.modal').on('hidden.bs.modal', function () {
+	// 	alert("dfger");
+	// 	$(this).removeData('bs.modal'); 
+	// })
 
 </script>
 
@@ -474,7 +441,6 @@ body {
 		        handle: ".modal-header"  
 		    });
 		});
-
 	});
 </script>
 <!--<script type="text/javascript" src="{% static 'js/change.js' %}"></script>-->

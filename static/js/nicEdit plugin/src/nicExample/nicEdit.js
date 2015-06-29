@@ -25,7 +25,7 @@ var nicEditorEditButton = nicEditorButton.extend({
  
 var nicEditorUnhighlightButton = nicEditorButton.extend({
     mouseClick : function() {
-        this.ne.nicCommand("hiliteColor","#FFFFFF")
+        this.ne.nicCommand("hiliteColor","#FFFFFF");
     }
 });
 

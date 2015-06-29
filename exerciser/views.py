@@ -1126,7 +1126,7 @@ def save_explanation(request):
 # A method to create a new html step
 @requires_csrf_token
 def save_step(request):
-	print "in save step"
+	print "in save steppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
 
 	try:
 		html = request.POST['html']
@@ -1147,6 +1147,7 @@ def save_step(request):
 	print "step html ", html
 	print "step number ",	step_number
 	print "panel_id ",  panel_id
+	HTMLStep.objects.filter(example = example, step_number = step_number, panel_id = panel_id).delete()
 	html_step = HTMLStep.objects.get_or_create(example = example, step_number = step_number, panel_id = panel_id)[0]
 	html_step.html = html
 	html_step.save() #Save the changes
@@ -1338,15 +1339,17 @@ def get_next_step(request):
 		step_entry["options"] = simplejson.dumps(question_options)
 		print step_entry["options"], "STEP ENTRY OPTIONS "
 		"""
-	else:
-		step_entry["question_text"] = ""
-		print "NOT A QUESTIOOOOOON"
+	#else:
+	#	step_entry["question_text"] = ""
+	#	print "NOT A QUESTIOOOOOON"
 	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
 
 @requires_csrf_token
 def edit_steps(request):
 	print "in edit steps"
 	try:
+		panel_id = request.POST['panel_id']
+		print panel_id, "iddddddddddddddddddddddddddddddddddddddd"
 		raw_new_text = request.POST['new_text']
 		raw_text_to_change = request.POST['text_to_change']
 		plain_text_to_change = lxml.html.fromstring(raw_text_to_change).text_content()
@@ -1360,17 +1363,17 @@ def edit_steps(request):
 				print "key error in edit steps"
 			exact_matches = []
 			possible_matches = []
-			steps = HTMLStep.objects.filter(example = example)
+			steps = HTMLStep.objects.filter(example = example, panel_id = panel_id)
 			for step in steps:
 				raw_step_html = step.html;
 				plain_step_html = lxml.html.fromstring(step.html).text_content()
 				if raw_text_to_change in raw_step_html:
 					proposed_text = raw_step_html.replace(raw_text_to_change, raw_new_text)
-					exact_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text})
+					exact_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
 				elif plain_text_to_change in plain_step_html:
 					plain_new_text = keeptags(raw_new_text,"br div")
-					proposed_text = plain_step_html.replace(plain_text_to_change, plain_new_text)
-					possible_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text})
+					proposed_text = plain_step_html.replace(plain_text_to_change, raw_new_text)
+					possible_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
 				print raw_step_html, " raw step"
 				print plain_step_html, " plain step"
 			print exact_matches, " EXACT"
