@@ -1363,7 +1363,7 @@ def edit_steps(request):
 				print "key error in edit steps"
 			exact_matches = []
 			possible_matches = []
-			steps = HTMLStep.objects.filter(example = example, panel_id = panel_id)
+			steps = HTMLStep.objects.filter(example = example)#, panel_id = panel_id)
 			for step in steps:
 				raw_step_html = step.html;
 				plain_step_html = lxml.html.fromstring(step.html).text_content()
