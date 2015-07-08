@@ -1373,7 +1373,7 @@ def edit_steps(request):
 		exact_matches = []
 		possible_matches = []
 		all_matches = []
-		steps = HTMLStep.objects.filter(example = example)#, panel_id = panel_id)
+		steps = HTMLStep.objects.filter(example = example, panel_id = panel_id)
 		for step in steps:
 			if step.step_number != step_number:
 				raw_step_html = step.html;

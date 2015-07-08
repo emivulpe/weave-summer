@@ -61,9 +61,7 @@ $('#create_example_button').click(function(){
                 }*/
                 textareaId = $(this).attr("id");
                 if(nicEditInstances[$(this).attr("id")] == undefined){
-                    nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index).addEvent('focus', function() {
-                                                                                                                                                                                                                                    currentFocusedEditor = textareaId;
-                                                                                                                                                                                                                                  });                  
+                    nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);                 
                 }
             });
             /*if(nicEditInstances["explanation_area"] != undefined){
