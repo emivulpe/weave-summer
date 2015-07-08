@@ -9,6 +9,7 @@ var explanationEditor = undefined;
 var commentEditors = [];
 var exactMatches = [];
 var possibleMatches = [];
+var allMatches = [];
 var stepToChangeIndex = -1;
 var previousStepToChangeDirection = "next";
 var exactMatchesBeingProcessed = true;
@@ -200,15 +201,28 @@ function editText(textToChange, newText) {
                 'panel_id': currentFocusedEditor,
                 'csrfmiddlewaretoken': csrftoken,
                 'text_to_change' : textToChange + "",
-                'new_text' : newText
+                'new_text' : newText,
+                'step_number' : currentStep
             }).done(
                 function(affectedSteps){
+
+                    /*
                     exactMatches = affectedSteps['exact_matches'];
                     possibleMatches = affectedSteps['possible_matches'];
-                    exactMatchesBeingProcessed = true;
+                    
                     if(exactMatches.length > 0){
+                        exactMatchesBeingProcessed = true;
                         $("#step_editor_modal").modal('show');
                     }
+                    else if(possibleMatches.length > 0){
+                        exactMatchesBeingProcessed = false;
+                        $("#step_editor_modal").modal('show');
+                    }
+                    */
+                    loadStep("this");
+                    allMatches = affectedSteps['all_matches'];
+                    $("#step_editor_modal").modal('show');
+                    //$("#step_editor_modal").modal('show');
                 });
         });  
 
@@ -216,7 +230,20 @@ function editText(textToChange, newText) {
 
 }
 
+function confirmStepChange(){ 
+    stepDetails = allMatches[0]; 
+    allMatches.shift();
+    $("#step_editor_title").text("Step " + (stepDetails["step_number"] + 1));
+    $("#current_step_text").html(stepDetails["html"]);
+    $("#panel_id").text(stepDetails["panel_id"]);
+    stepEditor = nicEditors.findEditor("text_to_change_textarea");
+    if(stepEditor != undefined){
+        stepEditor.setContent(stepDetails["proposed_text"]);
+    }
+}
 
+
+/*
 function confirmStepChanges(direction, initialInvocation){
     if(!initialInvocation){
         storeNewStepText();
@@ -262,7 +289,7 @@ function confirmStepChanges(direction, initialInvocation){
     }   
 
 }
-
+*/
 function storeNewStepText(){
     stepEditor = nicEditors.findEditor("text_to_change_textarea");
     newStepText = stepEditor.getContent();
@@ -649,7 +676,7 @@ $('#btn_prev').click(function() {
     goToStep("back", false);
 });
 
-
+/*
 $('#step_editor_btn_next').click(function() {
     confirmStepChanges("next", false);
 });
@@ -660,7 +687,7 @@ $('#step_editor_btn_prev').click(function() {
     confirmStepChanges("back", false);
 });
 
-
+*/
 
 
 // Use JQuery to pick up when the user pushes the next button.

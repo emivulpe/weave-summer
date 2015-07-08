@@ -188,11 +188,11 @@ body {
 		        <div id="panel_id" style = "display:none;"></div>
             </div>
             <div class="modal-footer">
-                <ul id = "step_editor_navigator" class="nav navbar-nav navbar-left">
-					<li style = "display: inline"><a id="step_editor_btn_prev" class="prev_btn step_editor_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
-					<li style = "display: inline"><a id="step_editor_btn_next" class="next_btn step_editor_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+            	<button id = "cancel_next_changes_button" type="button" class="btn btn-default navbar-left">Cancel next changes</button>
+                <ul id = "step_editor_navigator">
+					<li style = "display: inline"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button></li>
+					<li style = "display: inline"><button id = "step_editor_confirmation_button" type="button" class="btn btn-default" data-dismiss="modal">OK</button></li>
 				</ul>	
-                <button id = "step_editor_confirmation_button" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
@@ -220,7 +220,7 @@ body {
 	    	$('#create_example_button').prop('disabled', false);
 	    }
 	});
-	$("#step_editor_confirmation_button").click(function(){
+	/*$("#step_editor_confirmation_button").click(function(){
 		confirmStepChanges("next", false);
 		matchesEdits = {};
 		if(exactMatchesBeingProcessed){
@@ -252,10 +252,29 @@ body {
 
 		loadStep("this");
 
-		/*$("#step_editor_modal").on('hidden.bs.modal',function(){
-			loadStep("this");
-			alert("in on hidden event");
-		})*/
+		// $("#step_editor_modal").on('hidden.bs.modal',function(){
+		// 	loadStep("this");
+		// 	alert("in on hidden event");
+		// })
+	})*/
+	$("#step_editor_confirmation_button").click(function(){
+		//$("#step_editor_modal").modal('hide');
+		stepEditor = nicEditors.findEditor("text_to_change_textarea");
+	    newStepText = stepEditor.getContent();
+	    stepEditorTitle = $("#step_editor_title").text();
+	    stepNumber = parseInt(stepEditorTitle.replace( /\D+/g, '')) - 1;
+        $.post("/weave/edit_step/", {
+            'example_name': exampleName,
+            'panel_id': currentFocusedEditor,
+            'csrfmiddlewaretoken': csrftoken,
+            'html' : newStepText,
+            'step_number' : stepNumber
+        })
+	})
+
+	$("#cancel_next_changes_button").click(function(){
+		allMatches = [];
+		$("#step_editor_modal").modal('hide')
 	})
 
 	$('#add_option_button').click(function(){
@@ -348,6 +367,7 @@ body {
 
 	})
 	//var stepEditor;
+/*
 	$("#step_editor_modal").on('shown.bs.modal',function(){
 		//$("#step_editor_btn_prev").css('visibility', 'hidden');
 		stepToChangeIndex = -1;
@@ -358,19 +378,16 @@ body {
 			selectedMatchesLength = possibleMatches.length;
 		}
 		handleStepEditorControlVisibility("next" , stepToChangeIndex, selectedMatchesLength, ".step_editor_control");
-	    /*if(nicEditInstances["text_to_change_textarea"] != undefined){
-        	nicEditInstances["text_to_change_textarea"].removeInstance(nicEditInstances["text_to_change_textarea"]);
-        	nicEditInstances["text_to_change_textarea"] = undefined;
-        }*/
+	 // if(nicEditInstances["text_to_change_textarea"] != undefined){
+     //    	nicEditInstances["text_to_change_textarea"].removeInstance(nicEditInstances["text_to_change_textarea"]);
+     //    	nicEditInstances["text_to_change_textarea"] = undefined;
+     // }
         if(nicEditInstances["text_to_change_textarea"] == undefined){
 			nicEditInstances["text_to_change_textarea"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
 		}
 		confirmStepChanges("next", true);
 	})
-	$(document).ready(function(){
-		//new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
-		//$("#step_editor_modal").modal('show');
-	})
+
 	$('#step_editor_modal').on('hidden.bs.modal', function () {
 		//stepEditor.removeInstance('text_to_change_textarea');
 		if (exactMatchesBeingProcessed){
@@ -385,12 +402,25 @@ body {
 		}
 		$(this).removeData('bs.modal'); 
 	})
+*/
+$('.modal').on('hidden.bs.modal', function () {
+	$(this).removeData('bs.modal'); 
+})
 
-	$('.modal').on('hidden.bs.modal', function () {
-		$(this).removeData('bs.modal'); 
-	})
+
+$("#step_editor_modal").on('shown.bs.modal',function(){
+    if(nicEditInstances["text_to_change_textarea"] == undefined){
+		nicEditInstances["text_to_change_textarea"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
+	}
+	confirmStepChange();
+})
 
 
+$('#step_editor_modal').on('hidden.bs.modal', function () {
+	if(allMatches.length > 0){
+		$("#step_editor_modal").modal('show');
+	}
+})
 
 </script>
 

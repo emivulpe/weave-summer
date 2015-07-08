@@ -1125,7 +1125,7 @@ def save_explanation(request):
 
 # A method to create a new html step
 @requires_csrf_token
-def save_step(request):
+def save_step2(request):
 	print "in save steppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
 
 	try:
@@ -1153,6 +1153,14 @@ def save_step(request):
 	html_step.save() #Save the changes
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
 
+def save_panel_text(html, example_name, step_number, panel_id):
+	example = Example.objects.filter(name=example_name)
+	if len(example) > 0:
+		example = example[0]
+		HTMLStep.objects.filter(example = example, step_number = step_number, panel_id = panel_id).delete()
+		html_step = HTMLStep.objects.get_or_create(example = example, step_number = step_number, panel_id = panel_id)[0]
+		html_step.html = html
+		html_step.save() #Save the changes
 
 # A method to create a new html step
 @requires_csrf_token
@@ -1166,22 +1174,20 @@ def save_step_texts(request):
 	except KeyError:
 		print "key error in save step texts"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
-	try:
-		print example_name
-		example = Example.objects.filter(name=example_name)[0]
 
-	except IndexError:
-		print "index error in save step texts"
-		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	print "step number ",	step_number
 	for panel_id in panel_texts:
+		html = panel_texts[panel_id]
+		save_panel_text(html, example_name, step_number,panel_id)
+
+		"""
 		print panel_id, "PANEEEEEEEEEEEEEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLL"
 		html = panel_texts[panel_id]
 		html_step = HTMLStep.objects.get_or_create(example = example, step_number = step_number, panel_id = panel_id)[0]
 		html_step.html = html
 		html_step.save() #Save the changes
-	
+		"""
+
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
 
 
@@ -1201,15 +1207,7 @@ def save_question(request):
 		print step_number, "STEP NUMBER"
 		options = json.loads(request.POST['options'])['options']
 		print options, "DETAILSSSSSSSSSSS"
-		#comments = json.loads(request.POST['comments'])
-		#print comments, "comments"
-		#for key in comments:
-		#	print key
-		#options = options_details['option_text']
-		#print options, "OPTIONSSSSSS"
-		#correct = options_details['correct']
-		#print correct, "CORRECT"
-		
+
 	except KeyError:
 		print "key error in save question"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
@@ -1239,19 +1237,6 @@ def save_question(request):
 		if "comment" in option:
 			comment_text = option['comment']
 			option_comment = OptionComment.objects.get_or_create(option = opt, comment = comment_text)
-
-	"""
-	for comment in comments:
-		if comment == "general_comment":
-			GeneralComment.objects.filter(question = question).delete()
-			c = GeneralComment.objects.get_or_create(question = question, comment = comments[comment])[0]
-		elif comment == "correct_answer_comment":
-			CorrectAnswerComment.objects.filter(question = question).delete()
-			c = CorrectAnswerComment.objects.get_or_create(question = question, comment = comments[comment])[0]
-		elif comment == "wrong_answer_comment":
-			WrongAnswerComment.objects.filter(question = question).delete()
-			c = WrongAnswerComment.objects.get_or_create(question = question, comment = comments[comment])[0]
-	"""
 	return HttpResponse("{}",content_type = "application/json")
 
 
@@ -1345,28 +1330,55 @@ def get_next_step(request):
 	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
 
 @requires_csrf_token
+def edit_step(request):
+	print "in edit step"
+	try:
+		example_name = request.POST['example_name']
+		panel_id = request.POST['panel_id']
+		step_number = request.POST['step_number']
+		html = request.POST['html']
+	except KeyError:
+		print "key error in edit step"
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	save_panel_text(html, example_name, step_number, panel_id)
+	return HttpResponse(simplejson.dumps({}),content_type = "application/json")
+
+@requires_csrf_token
 def edit_steps(request):
 	print "in edit steps"
 	try:
 		panel_id = request.POST['panel_id']
+		step_number = int(request.POST['step_number'])
 		print panel_id, "iddddddddddddddddddddddddddddddddddddddd"
 		raw_new_text = request.POST['new_text']
 		raw_text_to_change = request.POST['text_to_change']
 		plain_text_to_change = lxml.html.fromstring(raw_text_to_change).text_content()
 		print raw_text_to_change, " RAW"
 		print plain_text_to_change, " PLAIN"
-		if plain_text_to_change != "":
-			example_name = request.POST['example_name']
-			try:
-				example = Example.objects.filter(name = example_name)[0]
-			except KeyError:
-				print "key error in edit steps"
-			exact_matches = []
-			possible_matches = []
-			steps = HTMLStep.objects.filter(example = example)#, panel_id = panel_id)
-			for step in steps:
+	except KeyError:
+		print "key error in edit steps"		
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	if plain_text_to_change != "":
+		example_name = request.POST['example_name']
+		try:
+			example = Example.objects.filter(name = example_name)[0]
+		except KeyError:
+			print "key error in edit steps"
+			return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+		this_step = HTMLStep.objects.filter(example = example, step_number = step_number)
+		if len(this_step) > 0:
+			this_step = this_step[0]
+			this_step_new_text = this_step.html.replace(raw_text_to_change, raw_new_text)
+			save_panel_text(this_step_new_text, example_name, step_number, panel_id)
+		exact_matches = []
+		possible_matches = []
+		all_matches = []
+		steps = HTMLStep.objects.filter(example = example)#, panel_id = panel_id)
+		for step in steps:
+			if step.step_number != step_number:
 				raw_step_html = step.html;
 				plain_step_html = lxml.html.fromstring(step.html).text_content()
+				proposed_text = ""
 				if raw_text_to_change in raw_step_html:
 					proposed_text = raw_step_html.replace(raw_text_to_change, raw_new_text)
 					exact_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
@@ -1376,11 +1388,10 @@ def edit_steps(request):
 					possible_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
 				print raw_step_html, " raw step"
 				print plain_step_html, " plain step"
-			print exact_matches, " EXACT"
-			print possible_matches, " possible"			
-	except KeyError:
-		print "key error in edit steps"		
-	return HttpResponse(simplejson.dumps({"exact_matches" : exact_matches, "possible_matches" : possible_matches}),content_type = "application/json")
+				all_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
+		print exact_matches, " EXACT"
+		print possible_matches, " possible"				
+	return HttpResponse(simplejson.dumps({"exact_matches" : exact_matches, "possible_matches" : possible_matches, "all_matches" : all_matches}),content_type = "application/json")
 
 def keeptags(value, tags):
     """
