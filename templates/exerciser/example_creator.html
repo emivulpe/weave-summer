@@ -40,12 +40,20 @@ body {
 
 {% endblock %}
 
+
+{% block navigation %} 
+	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
+	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+{% endblock %}
+
+
 {% block app_controls %}
 
 <!-- buttons to control transitions between steps -->
-	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
-	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+	<li><a id="btn_create_step_before" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Add Before</a></li>	
+	<li><a id="btn_create_step_after" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Add After</a></li>	
 	<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	
+	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;"><i class="fa fa-trash-o fa-lg landing-icon fa"></i>&nbsp;Delete</a></li>	
 	<li><a id="btn_done" href="#" style="top: 2px;"><i class="fa fa-check fa-lg landing-icon fa"></i>&nbsp;Done</a></li>	
 	
 {% endblock %}
@@ -110,6 +118,9 @@ body {
 					<li><a id="question_btn_next" class="next_btn question_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
 				</ul>
                 <button id = "create_question_step" type="button" class="btn btn-default">OK</button>
+                <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
+                	<li><a id="delete_question" class = "delete_step_btn" href="#" style=" top: 2px; color : #777;"><i class="fa fa-trash-o fa-lg landing-icon fa"></i>&nbsp;Delete</a></li>
+                </ul>             
             </div>
         </div>
     </div>

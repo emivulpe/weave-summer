@@ -266,6 +266,34 @@ class Example (models.Model):
 	def __unicode__(self):
 		return " ".join((self.name, " panels: ", str(self.number_of_panels)))
 
+
+class ExampleStep(models.Model):
+	example = models.ForeignKey(Example, unique = False)
+	step_number = models.IntegerField()
+
+
+class HTMLStep(ExampleStep):
+	html = models.TextField()
+	panel_id = models.CharField(max_length=100) # This will be the id of the html panel where the html will be shown/is taken from
+	
+	def __unicode__(self):
+		return " ".join((self.example.name ," step number: ", str(self.step_number)," panel id: ", self.panel_id," html: ", self.html))
+
+class HTMLExplanation(ExampleStep):
+	html = models.TextField()
+
+	def __unicode__(self):
+		return " ".join((self.example.name ," text: ",self.html))
+
+class ExampleQuestion(ExampleStep):
+	question_text = models.TextField()
+	multiple_choice = models.BooleanField()
+	kind = models.CharField(max_length = 30)
+
+	def __unicode__(self):
+		return self.question_text
+
+"""
 class HTMLStep(models.Model):
 	example = models.ForeignKey(Example, unique = False)
 	html = models.TextField()
@@ -293,7 +321,7 @@ class ExampleQuestion(models.Model):
 
 	def __unicode__(self):
 		return self.question_text
-
+"""
 class ExampleOption(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	option_text = models.TextField()

@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, CorrectAnswerComment, WrongAnswerComment, GeneralComment, OptionComment
+from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, CorrectAnswerComment, WrongAnswerComment, GeneralComment, OptionComment, ExampleStep
 import json 
 import simplejson 
 import datetime
@@ -1122,7 +1122,7 @@ def save_explanation(request):
 	html_explanation.html = html
 	html_explanation.save() #Save the changes
 	return HttpResponse("{}",content_type = "application/json")
-
+"""
 # A method to create a new html step
 @requires_csrf_token
 def save_step2(request):
@@ -1152,7 +1152,7 @@ def save_step2(request):
 	html_step.html = html
 	html_step.save() #Save the changes
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
-
+"""
 def save_panel_text(html, example_name, step_number, panel_id):
 	example = Example.objects.filter(name=example_name)
 	if len(example) > 0:
@@ -1392,6 +1392,144 @@ def edit_steps(request):
 		print exact_matches, " EXACT"
 		print possible_matches, " possible"				
 	return HttpResponse(simplejson.dumps({"exact_matches" : exact_matches, "possible_matches" : possible_matches, "all_matches" : all_matches}),content_type = "application/json")
+
+
+
+
+# A method to create a new html step
+@requires_csrf_token
+def create_step(request):
+	print "in create step"
+
+	try:
+		example_name = request.POST['example_name']
+		step_number = request.POST['step_number']
+		panel_texts = json.loads(request.POST['panel_texts'])
+		explanation = request.POST['explanation']
+		insert_after = json.loads(request.POST['insert_after'])
+		insert_before = json.loads(request.POST['insert_before'])
+	except KeyError:
+		print "key error in save step texts"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	if insert_after:
+		# move each of the following steps by 1 step forward
+		following_steps = ExampleStep.objects.filter(step_number__gt = step_number)
+		for following_step in following_steps:
+			print following_step.step_number
+			following_step.step_number = following_step.step_number + 1
+			following_step.save()
+
+	# save the new step panel texts
+	for panel_id in panel_texts:
+		html = panel_texts[panel_id]
+		save_panel_text(html, example_name, step_number,panel_id)
+
+	# save the new step explanation
+	try:
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		print "index error in save explanation"
+		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
+	print "explanation html ", html
+	html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
+	html_explanation.html = explanation
+	html_explanation.save() #Save the changes
+
+
+	if insert_before:
+		# move each of the following steps by 1 step forward
+		following_steps = ExampleStep.objects.filter(step_number__gte = step_number)
+		for following_step in following_steps:
+			print following_step.step_number
+			following_step.step_number = following_step.step_number + 1
+			following_step.save()
+
+
+	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
+
+
+# A method to create a new html step
+@requires_csrf_token
+def create_question(request):
+	print "in create question"
+
+	try:
+		question_text = request.POST['question_text']
+		question_type = request.POST['question_type']
+		example_name = request.POST['example_name']
+		step_number = request.POST['step_number']
+		options = json.loads(request.POST['options'])['options']
+
+	except KeyError:
+		print "key error in save question"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+		
+	try:
+		example = Example.objects.filter(name=example_name)[0]
+	except IndexError:
+		print "index error in save question"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+
+	# move each of the following steps by 1 step forward
+	following_steps = ExampleStep.objects.filter(step_number__gt = step_number)
+	for following_step in following_steps:
+		print following_step.step_number
+		following_step.step_number = following_step.step_number + 1
+		following_step.save()
+
+	# create a new question step
+	question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
+	
+	# delete any previously existing options to ensure only the new options are there
+	ExampleOption.objects.filter(question = question).delete()
+
+	question.question_text = question_text
+	question.kind = question_type 
+	question.save()
+
+	# save the options provided by the author
+	for index in range(len(options)):
+		option = options[index]
+		option_text = option['option_text']
+		is_correct = option['correct']
+		opt = ExampleOption.objects.get_or_create(question = question, option_text = option_text, number = index)[0]
+		opt.correct = is_correct
+		opt.save()
+
+		# save comments for the option if any was provided
+		if "comment" in option:
+			comment_text = option['comment']
+			option_comment = OptionComment.objects.get_or_create(option = opt, comment = comment_text)
+
+	return HttpResponse("{}",content_type = "application/json")
+
+
+@requires_csrf_token
+def delete_step(request):
+	print "in delete steppp"
+	try:
+		example_name = request.POST['example_name']
+		step_number = int(request.POST['step_number'])
+	except KeyError:
+		print "key error in delete step"
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	try:
+		example = Example.objects.filter(name = example_name)[0]
+	except IndexError:
+		print "index error in delete step"
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	ExampleStep.objects.filter(example = example, step_number = step_number).delete()
+	steps = ExampleStep.objects.filter(example = example)
+	for step in steps:
+		if step.step_number > step_number:
+			step.step_number = step.step_number - 1
+			step.save()
+	return HttpResponse("{}",content_type = "application/json")
+
+
+
+
 
 def keeptags(value, tags):
     """

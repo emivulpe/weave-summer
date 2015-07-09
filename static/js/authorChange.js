@@ -140,6 +140,7 @@ $('#create_question_step').click(function(){
                 $('#question_modal').modal('hide');
                 goToStep("next",true);
                 $("#create_question_step").hide();
+                $("#delete_question").show();
 
             }
         }
@@ -147,6 +148,7 @@ $('#create_question_step').click(function(){
             $('#question_modal').modal('hide');
             goToStep("next",true);
             $("#create_question_step").hide();
+            $("#delete_question").show();
 
         }
     }
@@ -447,6 +449,7 @@ function loadStep(direction){
         if (data.hasOwnProperty("question_text")) {
             //alert("here is a question dialog");
             $("#create_question_step").hide();
+            $("#delete_question").show();
             $("#question_step_navigator").show();
             $("#question_step_close_button").hide();
             handleStepEditorControlVisibility(direction, currentStep, 1000, ".question_control");
@@ -665,14 +668,70 @@ function doReset() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
-    goToStep("next", false);
+    //goToStep("next", false);
+    saveStep("false", "false");
+    handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
+    loadStep("next");
 });
 
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
-    goToStep("back", false);
+    //goToStep("back", false);
+    saveStep("false", "false");
+    handleStepEditorControlVisibility("back", currentStep, 1000, ".example_control");
+    loadStep("back");
 });
+
+$('#delete_question').click(function() {
+    $("#question_modal").modal('hide');
+});
+
+$('.delete_step_btn').click(function() {
+    $.post("/weave/delete_step/", {
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'csrfmiddlewaretoken': csrftoken,
+    }).done(function(){
+        loadStep("this");
+    })
+});
+
+$('#btn_create_step_after').click(function() {
+    saveStep("true", "false");
+    currentStep ++;
+    $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
+    handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
+});
+
+$('#btn_create_step_before').click(function() {
+    alert("create before");
+    saveStep("false", "true");
+})
+
+function saveStep(insertAfter, insertBefore){
+    var panel_texts = {};
+    var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
+    explanation = explanationArea.getContent();
+    // Save the entries for each panel for the step
+    $('textarea[id^="area"]').each(function(index) {
+        console.log($(this).attr("id"));
+        var panelId = $(this).attr("id");
+        var panelArea = nicEditors.findEditor(panelId);
+        var panelContent = panelArea.getContent();
+        panel_texts[panelId] = panelContent;
+
+    });
+    var saveStepTextsRequest = $.post("/weave/create_step/", {
+        'csrfmiddlewaretoken': csrftoken,
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'panel_texts' : JSON.stringify(panel_texts),
+        'explanation' : explanation,
+        'insert_after' : insertAfter,
+        'insert_before' : insertBefore
+    });
+}
 
 /*
 $('#step_editor_btn_next').click(function() {
@@ -720,6 +779,7 @@ $('#btn_question_old').click(function(){
     //$('#question_modal').removeData('bs.modal');
     //resetQuestionModal(true);
     $("#create_question_step").show();
+    $("#delete_question").hide();
 
     $("#question_step_navigator").hide();
     var questionEditor = nicEditors.findEditor("question_text");
@@ -795,6 +855,7 @@ $('#btn_question_old').click(function(){
 $('#btn_question').click(function(){
     loadingQuestionStep = false;
     $("#create_question_step").show();
+    $("#delete_question").hide();
     $("#question_step_navigator").hide();
 
     var questionEditor = nicEditors.findEditor("question_text");
