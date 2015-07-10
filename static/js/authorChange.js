@@ -673,6 +673,8 @@ function doReset() {
 }
 
 
+
+
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
     //goToStep("next", false);
@@ -720,17 +722,26 @@ $('#btn_create_step_before').click(function() {
 */
 
 $('.create_step_btn.after').click(function() {
-    saveStep("true", "false");
-    $("#question_modal").modal('hide');
+    if($(this).hasClass("question_step_btn")){
+        saveQuestion();
+        $("#question_modal").modal('hide');
+    }
+    else{
+        saveStep("true", "false");
+    }
     currentStep ++;
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
     handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
 });
 
 $('.create_step_btn.before').click(function() {
-    $("#question_modal").modal('hide');
-    alert("create before");
-    saveStep("false", "true");
+    if($(this).hasClass("question_step_btn")){
+        $("#question_modal").modal('hide');
+        saveQuestion();
+    }
+    else{
+        saveStep("false", "true");
+    }
 })
 
 
@@ -878,8 +889,14 @@ $('#btn_question_old').click(function(){
 
 
 $('.create_question_btn').click(function(){
-    saveStep();
-    alert($(this).hasClass("before"));
+
+    // remember- check whether we need to save a question instead!
+    if($(this).hasClass("question_step_btn")){
+        saveQuestion();
+    }
+    else{
+        saveStep();
+    }
     if($(this).hasClass("before")){
         isQuestionBefore = true;
         isQuestionAfter = false;
