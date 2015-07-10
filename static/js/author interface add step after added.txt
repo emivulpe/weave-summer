@@ -18,9 +18,6 @@ var possibleMatchesEdits = {};
 var currentFocusedEditor = undefined;
 var loadingQuestionStep = false;
 
-var isQuestionBefore = false;
-var isQuestionAfter = true;
-
 
 $(".prev_btn").css('visibility', 'hidden');
 $("#btn_reset").css('visibility', 'hidden');
@@ -42,7 +39,7 @@ $('#create_example_button').click(function(){
         else {
             $('#plan_modal').modal('hide');
             $("#example_container").css("visibility", "visible");
-            $("#example_name_label").text(exampleName + "- step " +  (currentStep + 1));
+            $("#example_name_label").html(exampleName + "- step " +  (currentStep + 1));
             var number_of_panels = parseInt($("#number_of_panels").val());
             var panel_width = $("#panel_container").width()/number_of_panels;
             console.log(panel_width  +" wew " + $("#panel_container").width());
@@ -143,7 +140,7 @@ $('#create_question_step').click(function(){
                 $('#question_modal').modal('hide');
                 goToStep("next",true);
                 $("#create_question_step").hide();
-                //$("#delete_question").show();
+                $("#delete_question").show();
 
             }
         }
@@ -151,7 +148,7 @@ $('#create_question_step').click(function(){
             $('#question_modal').modal('hide');
             goToStep("next",true);
             $("#create_question_step").hide();
-            //$("#delete_question").show();
+            $("#delete_question").show();
 
         }
     }
@@ -394,9 +391,7 @@ function saveQuestion(){
         'example_name': exampleName,
         'step_number':currentStep,
         'options' : JSON.stringify(options_dict),
-        'question_type' : questionType,
-        'insert_before' : isQuestionBefore,
-        'insert_after' : isQuestionAfter
+        'question_type' : questionType
         //'comments' : JSON.stringify(comments_dict)
     }); 
     resetQuestionModal(true);
@@ -412,7 +407,7 @@ function loadStep2(direction){
             currentStep --;
         }
     }
-    $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
+    $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
     //get request to see if there is entry for that step
     //if there is- fill the textarea with it
     //else show an empty text area
@@ -441,7 +436,7 @@ function loadStep(direction){
             }
         }
     }
-    $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
+    $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
     //get request to see if there is entry for that step
     //if there is- fill the textarea with it
     //else show an empty text area
@@ -454,13 +449,11 @@ function loadStep(direction){
         if (data.hasOwnProperty("question_text")) {
             //alert("here is a question dialog");
             $("#create_question_step").hide();
-            //$("#delete_question").show();
+            $("#delete_question").show();
             $("#question_step_navigator").show();
             $("#question_step_close_button").hide();
             handleStepEditorControlVisibility(direction, currentStep, 1000, ".question_control");
-            handleStepEditorControlVisibility(direction, currentStep, 1000, ".example_control"); 
-            $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));   
-            $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");   
+            handleStepEditorControlVisibility(direction, currentStep, 1000, ".example_control");       
             $("#question_modal").modal('show');
             var questionEditor = nicEditors.findEditor("question_text");
             questionEditor.setContent(data["question_text"]);
@@ -676,7 +669,7 @@ function doReset() {
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
     //goToStep("next", false);
-    saveStep("false", "false");
+    saveStep("false");
     handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
     loadStep("next");
 });
@@ -685,7 +678,7 @@ $('#btn_next').click(function() {
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
     //goToStep("back", false);
-    saveStep("false", "false");
+    saveStep("false");
     handleStepEditorControlVisibility("back", currentStep, 1000, ".example_control");
     loadStep("back");
 });
@@ -704,37 +697,15 @@ $('.delete_step_btn').click(function() {
     })
 });
 
-
-/*
-$('#btn_create_step_after').click(function() {
-    saveStep("true", "false");
+$('#btn_create_step').click(function() {
+    saveStep("true");
     currentStep ++;
     $("#example_name_label").html(exampleName + "- step " + (currentStep + 1));
     handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
 });
 
-$('#btn_create_step_before').click(function() {
-    alert("create before");
-    saveStep("false", "true");
-})
-*/
 
-$('.create_step_btn.after').click(function() {
-    saveStep("true", "false");
-    $("#question_modal").modal('hide');
-    currentStep ++;
-    $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
-    handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
-});
-
-$('.create_step_btn.before').click(function() {
-    $("#question_modal").modal('hide');
-    alert("create before");
-    saveStep("false", "true");
-})
-
-
-function saveStep(insertAfter, insertBefore){
+function saveStep(updateFollowing){
     var panel_texts = {};
     var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
     explanation = explanationArea.getContent();
@@ -753,8 +724,7 @@ function saveStep(insertAfter, insertBefore){
         'step_number': currentStep,
         'panel_texts' : JSON.stringify(panel_texts),
         'explanation' : explanation,
-        'insert_after' : insertAfter,
-        'insert_before' : insertBefore
+        'update_following' : updateFollowing 
     });
 }
 
@@ -795,7 +765,7 @@ $('#question_btn_prev').click(function() {
 });
 
 // Reset the example on click of the reset button
-$('.done_btn').click(function() {
+$('#btn_done').click(function() {
     alert("done clicked");
 });
 
@@ -804,7 +774,7 @@ $('#btn_question_old').click(function(){
     //$('#question_modal').removeData('bs.modal');
     //resetQuestionModal(true);
     $("#create_question_step").show();
-    //$("#delete_question").hide();
+    $("#delete_question").hide();
 
     $("#question_step_navigator").hide();
     var questionEditor = nicEditors.findEditor("question_text");
@@ -877,23 +847,10 @@ $('#btn_question_old').click(function(){
 });
 
 
-$('.create_question_btn').click(function(){
-    saveStep();
-    alert($(this).hasClass("before"));
-    if($(this).hasClass("before")){
-        isQuestionBefore = true;
-        isQuestionAfter = false;
-    }
-    else{
-        currentStep ++;
-        isQuestionBefore = false;
-        isQuestionAfter = true;
-    }
-    $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
-    $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");
+$('#btn_question').click(function(){
     loadingQuestionStep = false;
     $("#create_question_step").show();
-    //$("#delete_question").hide();
+    $("#delete_question").hide();
     $("#question_step_navigator").hide();
 
     var questionEditor = nicEditors.findEditor("question_text");
@@ -921,7 +878,7 @@ $('.create_question_btn').click(function(){
 });
 
 
-/*
+
 // Show the dialog for a question
 function ShowDialog() {
     $("#overlay").show();
@@ -941,7 +898,7 @@ function HideDialog() {
     $("#overlay").hide();
     $("#dialog").fadeOut(300);
 }
-*/
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {

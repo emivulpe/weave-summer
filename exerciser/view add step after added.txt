@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
+from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, CorrectAnswerComment, WrongAnswerComment, GeneralComment, OptionComment, ExampleStep
 import json 
 import simplejson 
 import datetime
@@ -1403,24 +1403,20 @@ def create_step(request):
 
 	try:
 		example_name = request.POST['example_name']
-		step_number = int(request.POST['step_number'])
+		step_number = request.POST['step_number']
 		panel_texts = json.loads(request.POST['panel_texts'])
 		explanation = request.POST['explanation']
-		insert_after = json.loads(request.POST['insert_after'])
-		insert_before = json.loads(request.POST['insert_before'])
+		update_following = json.loads(request.POST['update_following'])
 	except KeyError:
 		print "key error in save step texts"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	try:
-		example = Example.objects.filter(name=example_name)[0]
-
-	except IndexError:
-		print "index error in save explanation"
-		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
-	if insert_after:
+	if update_following:
 		# move each of the following steps by 1 step forward
-		# when it should be > step_number use step_number + 1!
-		update_step_number_after_insertion(example, (step_number + 1))
+		following_steps = ExampleStep.objects.filter(step_number__gt = step_number)
+		for following_step in following_steps:
+			print following_step.step_number
+			following_step.step_number = following_step.step_number + 1
+			following_step.save()
 
 	# save the new step panel texts
 	for panel_id in panel_texts:
@@ -1428,16 +1424,16 @@ def create_step(request):
 		save_panel_text(html, example_name, step_number,panel_id)
 
 	# save the new step explanation
+	try:
+		example = Example.objects.filter(name=example_name)[0]
 
+	except IndexError:
+		print "index error in save explanation"
+		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
 	print "explanation html ", html
 	html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
 	html_explanation.html = explanation
 	html_explanation.save() #Save the changes
-
-
-	if insert_before:
-		update_step_number_after_insertion(example, step_number)
-
 
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
 
@@ -1451,10 +1447,8 @@ def create_question(request):
 		question_text = request.POST['question_text']
 		question_type = request.POST['question_type']
 		example_name = request.POST['example_name']
-		step_number = int(request.POST['step_number'])
+		step_number = request.POST['step_number']
 		options = json.loads(request.POST['options'])['options']
-		insert_after = json.loads(request.POST['insert_after'])
-		insert_before = json.loads(request.POST['insert_before'])
 
 	except KeyError:
 		print "key error in save question"
@@ -1466,10 +1460,12 @@ def create_question(request):
 		print "index error in save question"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
-	if insert_after:
-		# move each of the following steps by 1 step forward
-		# when it should be > step_number use step_number + 1!
-		update_step_number_after_insertion(example, (step_number + 1))
+	# move each of the following steps by 1 step forward
+	following_steps = ExampleStep.objects.filter(step_number__gt = step_number)
+	for following_step in following_steps:
+		print following_step.step_number
+		following_step.step_number = following_step.step_number + 1
+		following_step.save()
 
 	# create a new question step
 	question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
@@ -1495,18 +1491,7 @@ def create_question(request):
 			comment_text = option['comment']
 			option_comment = OptionComment.objects.get_or_create(option = opt, comment = comment_text)
 
-	if insert_before:
-		update_step_number_after_insertion(example, step_number)
-
 	return HttpResponse("{}",content_type = "application/json")
-
-
-def update_step_number_after_insertion(example, step_number):
-	following_steps = ExampleStep.objects.filter(example = example, step_number__gte = step_number)
-	for following_step in following_steps:
-		print following_step.step_number
-		following_step.step_number = following_step.step_number + 1
-		following_step.save()
 
 
 @requires_csrf_token

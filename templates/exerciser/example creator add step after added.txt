@@ -50,13 +50,10 @@ body {
 {% block app_controls %}
 
 <!-- buttons to control transitions between steps -->
-	<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step Before</a></li>	
-	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step After</a></li>	
-	<!--<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	-->
-	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question Before</a></li>
-	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question After</a></li>	
+	<li><a id="btn_create_step" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Add Step</a></li>	
+	<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	
 	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;"><i class="fa fa-trash-o fa-lg landing-icon fa"></i>&nbsp;Delete</a></li>	
-	<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px;"><i class="fa fa-check fa-lg landing-icon fa"></i>&nbsp;Done</a></li>	
+	<li><a id="btn_done" href="#" style="top: 2px;"><i class="fa fa-check fa-lg landing-icon fa"></i>&nbsp;Done</a></li>	
 	
 {% endblock %}
 
@@ -81,7 +78,7 @@ body {
         <div class="modal-content">
             <div class="modal-header">
                 <button id = "question_step_close_button" type="button" class="close modal-dissmiss" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id = "question_modal_title" class="modal-title"></h4>
+                <h4 class="modal-title">Question step</h4>
 
             </div>
             <div id = "question_modal_body" class="modal-body">
@@ -115,20 +112,13 @@ body {
 			-->
             </div>
             <div class="modal-footer">	
-            	<!--<ul id = "question_step_navigator" class="nav navbar-nav navbar-left">
+            	<ul id = "question_step_navigator" class="nav navbar-nav navbar-left">
 	            	<li><a id="question_btn_prev" class="prev_btn question_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
 					<li><a id="question_btn_next" class="next_btn question_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
-				</ul>-->
+				</ul>
                 <button id = "create_question_step" type="button" class="btn btn-default">OK</button>
                 <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
-                		<li><a id="question_btn_prev" class="prev_btn question_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
-						<li><a id="question_btn_next" class="next_btn question_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
-                		<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step Before</a></li>	
-						<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step After</a></li>	
-						<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question Before</a></li>
-						<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question After</a></li>	
-					    <li><a id="delete_question" class = "delete_step_btn" href="#" style=" top: 2px; color : #777;"><i class="fa fa-trash-o fa-lg landing-icon fa"></i>&nbsp;Delete</a></li>
-						<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px;"><i class="fa fa-check fa-lg landing-icon fa"></i>&nbsp;Done</a></li>	
+                	<li><a id="delete_question" class = "delete_step_btn" href="#" style=" top: 2px; color : #777;"><i class="fa fa-trash-o fa-lg landing-icon fa"></i>&nbsp;Delete</a></li>
                 </ul>             
             </div>
         </div>

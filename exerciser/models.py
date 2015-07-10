@@ -330,7 +330,7 @@ class ExampleOption(models.Model):
 
 	def __unicode__(self):
 		return " ".join((self.option_text, " correct: ", str(self.correct), " number: ", str(self.number)))
-
+"""
 class CorrectAnswerComment(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	comment = models.TextField()
@@ -351,7 +351,7 @@ class GeneralComment(models.Model):
 
 	def __unicode__(self):
 		return self.comment
-
+"""
 class OptionComment(models.Model):
 	option = models.ForeignKey(ExampleOption, unique = False)
 	comment = models.TextField()
