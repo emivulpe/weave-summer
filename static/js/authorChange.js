@@ -370,28 +370,6 @@ function saveQuestion(isQuestionBefore, isQuestionAfter){
 }
 
 
-function loadStep2(direction){
-    if (direction != "this"){
-        if (direction == "next"){
-            currentStep ++;
-        }
-        else{
-            currentStep --;
-        }
-    }
-    $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
-    //get request to see if there is entry for that step
-    //if there is- fill the textarea with it
-    //else show an empty text area
-    var request = $.get('/weave/get_next_step/', {
-        'example_name' : exampleName,
-        'step_number' : currentStep
-    });
-
-    request.done(function(data) {
-        manageExampleAreas(data, direction);
-    });
-}
 
 function loadStep(direction){
     if (direction != "this"){
@@ -442,59 +420,6 @@ function loadStep(direction){
 }
 
 
-function loadStep_old(direction){
-    if (direction != "this"){
-        if (direction == "next"){
-            currentStep++;
-            if(previousStepToChangeDirection == "back"){
-                currentStep++;
-            }
-        }
-        else{
-            currentStep --;
-            if(previousStepToChangeDirection == "back"){
-                currentStep--;
-            }
-        }
-    }
-    $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
-    //get request to see if there is entry for that step
-    //if there is- fill the textarea with it
-    //else show an empty text area
-    var request = $.get('/weave/get_next_step/', {
-        'example_name' : exampleName,
-        'step_number' : currentStep
-    });
-
-    request.done(function(data) {
-        if (data.hasOwnProperty("question_text")) {
-            //alert("here is a question dialog");
-            $("#create_question_step").hide();
-            //$("#delete_question").show();
-            $("#question_step_navigator").show();
-            $("#question_step_close_button").hide();
-
-            handleNavigationVisibility();
-            $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));   
-            $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");   
-            $("#question_modal").modal('show');
-            var questionEditor = nicEditors.findEditor("question_text");
-            questionEditor.setContent(data["question_text"]);
-           // alert("THIS STEP IS A QUESTION!!!!!!!!");
-           loadingQuestionStep = true;
-            $('#question_modal').on('shown.bs.modal', function (e) {
-                if(loadingQuestionStep){
-                   manageExampleAreas(data, direction); 
-                }
-                
-            });
-        }
-        else{
-            manageExampleAreas(data, direction);
-        }
-
-    });
-}
 
 
 function manageExampleAreas(data, direction) {
@@ -610,8 +535,6 @@ function doReset() {
     $("#forward_button_label").css('color', 'red');
     $("#forward_button_label").css('font-size', '24px');
     $("#next_arrow").hide();
-
-
     currentStep = 0;
 }
 
@@ -631,17 +554,22 @@ $('#btn_prev').click(function() {
     loadStep("back");
 });
 
-$('#delete_question').click(function() {
-    $("#question_modal").modal('hide');
-});
 
 $('.delete_step_btn').click(function() {
+    if ($(this).hasClass("question_step_btn")){
+        $("#question_modal").modal('hide');
+    }
     $.post("/weave/delete_step/", {
         'example_name': exampleName,
         'step_number': currentStep,
         'csrfmiddlewaretoken': csrftoken,
     }).done(function(){
-        loadStep("this");
+        if(currentStep > 0){
+            loadStep("back");
+        }
+        else{
+            loadStep("this");
+        }
     })
 });
 
@@ -757,30 +685,6 @@ $('#question_btn_prev').click(function() {
 // Reset the example on click of the reset button
 $('.done_btn').click(function() {
     alert("done clicked");
-});
-
-$('#btn_question_old').click(function(){
-    // reset the values of the input fields
-    //$('#question_modal').removeData('bs.modal');
-    //resetQuestionModal(true);
-    $("#create_question_step").show();
-    //$("#delete_question").hide();
-
-    $("#question_step_navigator").hide();
-    var questionEditor = nicEditors.findEditor("question_text");
-    if(questionEditor != undefined){
-        questionEditor.setContent("");
-    }
-
-    $("#question_modal").find($(".nicEdit-main")).css("min-height",50 + "px");
-    option_number = 1;
-    $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
-    $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
-
-    $("#question_step_close_button").show();          
-    $("#question_modal").modal('show');
-    correctAnswerController();
-
 });
 
 

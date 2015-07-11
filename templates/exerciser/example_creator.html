@@ -23,7 +23,7 @@ body {
 	/* No padding allowed */
 }
 .modal-backdrop{
-	background-color: transparent;
+	background-color: grey;
 }
 
 /* 
@@ -42,21 +42,22 @@ body {
 
 
 {% block navigation %} 
-	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
-	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
+	<!--<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
+	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>-->
 {% endblock %}
 
 
 {% block app_controls %}
 
-<!-- buttons to control transitions between steps -->
-	<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step Before</a></li>	
-	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step After</a></li>	
+	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
+	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
+	<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>	
+	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 	<!--<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	-->
-	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question Before</a></li>
-	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question After</a></li>	
-	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;"><i class="fa fa-trash-o fa-lg landing-icon fa"></i>&nbsp;Delete</a></li>	
-	<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px;"><i class="fa fa-check fa-lg landing-icon fa"></i>&nbsp;Done</a></li>	
+	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
+	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
+	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
+	<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
 	
 {% endblock %}
 
@@ -115,23 +116,21 @@ body {
 			-->
             </div>
             <div class="modal-footer">	
-            	<!--<ul id = "question_step_navigator" class="nav navbar-nav navbar-left">
-	            	<li><a id="question_btn_prev" class="prev_btn question_control" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
-					<li><a id="question_btn_next" class="next_btn question_control" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
-				</ul>-->
-                <button id = "create_question_step" type="button" class="btn btn-default">OK</button>
-                <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
-                		<li><a id="question_btn_prev" class="prev_btn question_control question_step_btn" href="#" style="top: 2px; color : #777;"><i class="fa fa-step-backward fa-lg landing-icon fa"></i>&nbsp;Previous</a></li>
-						<li><a id="question_btn_next" class="next_btn question_control question_step_btn" href="#" style=" top: 2px; color : #777;">Next&nbsp;<i class="fa fa-step-forward fa-lg landing-icon fa"></i></a></li>
-				</ul>
+                <!--<button id = "create_question_step" type="button" class="btn btn-default">OK</button>-->
+
 				<ul class="nav navbar-nav navbar-right">
-                		<li><a id="btn_create_step_before" class = "create_step_btn before question_step_btn" href="#" style="top: 2px; color : #777;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step Before</a></li>	
-						<li><a id="btn_create_step_after"  class = "create_step_btn after question_step_btn" href="#" style="top: 2px; color : #777;"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i>&nbsp;Step After</a></li>	
-						<li><a id="btn_create_question_before" class = "create_question_btn before question_step_btn" href="#" style="top: 2px; color : #777;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question Before</a></li>
-						<li><a id="btn_create_question_after" class = "create_question_btn after question_step_btn" href="#" style="top: 2px; color : #777;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question After</a></li>	
-					    <li><a id="delete_question" class = "delete_step_btn" href="#" style=" top: 2px; color : #777;"><i class="fa fa-trash-o fa-lg landing-icon fa"></i>&nbsp;Delete</a></li>
-						<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;"><i class="fa fa-check fa-lg landing-icon fa"></i>&nbsp;Done</a></li>	
-                </ul>             
+                		<li><a id="btn_create_step_before" class = "create_step_btn before question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>	
+						<li><a id="btn_create_step_after"  class = "create_step_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
+						<li><a id="btn_create_question_before" class = "create_question_btn before question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
+						<li><a id="btn_create_question_after" class = "create_question_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
+					    <li><a id="delete_question" class = "delete_step_btn question_step_btn" href="#" style=" top: 2px; color : #777;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>
+						<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
+						<li><a id="create_question_step" href="#" style="top: 2px; color : #777;" title = "Save the question step"><i class="fa fa-check fa-lg landing-icon fa"></i></a></li>
+                </ul>      
+                <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
+            		<li><a id="question_btn_prev" class="prev_btn question_control question_step_btn" href="#" style="top: 2px; color : #777;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
+					<li><a id="question_btn_next" class="next_btn question_control question_step_btn" href="#" style=" top: 2px; color : #777;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
+				</ul>       
             </div>
         </div>
     </div>

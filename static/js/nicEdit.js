@@ -322,7 +322,7 @@ var nicColorOptions = {
 
 var nicEditorColorButton=nicEditorAdvancedButton.extend({
 	addPane:function(){
-		var D = ["#A9D0F5", "#E3CEF6", "#A9E2F3", "#D0F5A9", "#F5D0A9"];
+		var D = ["#A9D0F5", "#E3CEF6", "#A9E2F3", "#D0F5A9", "#F5D0A9", "#190707"];
 		var H=new bkElement("DIV").setStyle({/*width:"270px"*/});
 		for(var index in D){
 			var I = D[index];
