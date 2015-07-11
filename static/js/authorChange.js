@@ -132,10 +132,7 @@ $('#create_question_step').click(function(){
     console.log(questionText + "question_text");
     if(questionText.length > 4){
         if($('#multiple_choice_radio_button').is(':checked')) {
-            if ($("#options_list input:checkbox:checked").length == 0){
-                BootstrapDialog.alert('Please select at least one correct answer by clicking on the checkbox next to the correct answer!');
-            }
-            else if (invalidInputs.length > 0) {
+            if (invalidInputs.length > 0) {
                 BootstrapDialog.alert('Please enter text for each of the options or delete an option by draging it to the recycle bin!');
             } 
             else{
@@ -453,14 +450,15 @@ function manageExampleAreas(data, direction) {
                             var correct = option["correct"];
                             //alert(optionText);
                             if (correct){
-                                $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox" checked></td><td>' + opt_number + '.</td><td><input class="form-control option_text" type="text" value="' + optionText + '"></td></tr></table></li>');
+                                $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox" checked></td><td>' + opt_number + '.</td><td><input class="form-control option_text" type="text" value="' + optionText + '"></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
                             }
                             else{
-                                $("#options_list").append('<li class="list-group-item option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + opt_number + '.</td><td><input class="form-control option_text" type="text" value=' + optionText + '></td></tr></table></li>');
+                                $("#options_list").append('<li class="list-group-item option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + opt_number + '.</td><td><input class="form-control option_text" type="text" value=' + optionText + '></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
                             }
+                            refreshDeleteOptionController();
                             if (option.hasOwnProperty("comment")){
 
-                                $("#option_" + opt_number).append('<tr id = "comment_area_' + opt_number + '"><td colspan = "3"><label for = "comment_textarea_' + opt_number + '">Answer comment:</label><textarea id="comment_textarea_' + opt_number + '" style = "width:100%;"></textarea></td></tr>');
+                                $("#option_" + opt_number).append('<tr id = "comment_area_' + opt_number + '"><td colspan = "4"><label for = "comment_textarea_' + opt_number + '">Answer comment:</label><textarea id="comment_textarea_' + opt_number + '" style = "width:100%;"></textarea></td></tr>');
      
                                 commentText = option["comment"];
                                 if(nicEditors.findEditor("comment_textarea_" + opt_number) == undefined){
@@ -472,7 +470,6 @@ function manageExampleAreas(data, direction) {
                         }
 
                         //correctAnswerController();
-                        //$('.option').draggable();   
                         console.log("OPTIOOOOOOOOOOOOOONSSSSSSS");
                     }
                     else if (key == "question_type"){
@@ -738,10 +735,10 @@ $('.create_question_btn').click(function(){
     //$('#question_modal').on('shown.bs.modal', function () {
         //resetQuestionModal(true);
         option_number = 1;
-        $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
-        $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
-
-
+        $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
+        $("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
+ 
+        refreshDeleteOptionController();
     //}) 
     //$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
     //$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number++ + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td></tr></table></li>');
@@ -751,6 +748,14 @@ $('.create_question_btn').click(function(){
     correctAnswerController();
 
 });
+
+
+function refreshDeleteOptionController(){
+    $(".delete_option").click(function(){
+        $(this).parents("li").remove();
+    });
+}
+
 
 
 
