@@ -1531,6 +1531,25 @@ def delete_step(request):
 			step.save()
 	return HttpResponse("{}",content_type = "application/json")
 
+@requires_csrf_token
+def check_steps(request):
+	print "in check steppps"
+	try:
+		example_name = request.GET['example_name']
+		step_number = int(request.GET['step_number'])
+	except KeyError:
+		print "key error in delete step"
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	try:
+		example = Example.objects.filter(name = example_name)[0]
+	except IndexError:
+		print "index error in delete step"
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	previous_steps = ExampleStep.objects.filter(example = example, step_number__lt = step_number)
+	next_steps = ExampleStep.objects.filter(example = example, step_number__gt = step_number)
+	print len(previous_steps), len(next_steps), "importantttttttttttttttttttttttttt"
+	return HttpResponse(simplejson.dumps({"previous_steps" : len(previous_steps), "next_steps" : len(next_steps)}),content_type = "application/json")
+
 
 
 

@@ -45,5 +45,7 @@ urlpatterns = patterns('',
 		url(r'^edit_step', views.edit_step, name='edit_step'),
 		url(r'^delete_step', views.delete_step, name='delete_step'),
 		url(r'^create_step', views.create_step, name='create_step'),
+		url(r'^create_question', views.create_question, name='create_question'),
+		url(r'^check_steps', views.check_steps, name='check_steps'),
 
 		) 

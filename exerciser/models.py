@@ -291,7 +291,7 @@ class ExampleQuestion(ExampleStep):
 	kind = models.CharField(max_length = 30)
 
 	def __unicode__(self):
-		return self.question_text
+		return " ".join((self.example.name , self.question_text, str(self.step_number)))
 
 """
 class HTMLStep(models.Model):

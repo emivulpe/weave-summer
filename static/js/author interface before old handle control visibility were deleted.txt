@@ -140,9 +140,7 @@ $('#create_question_step').click(function(){
             } 
             else{
                 $('#question_modal').modal('hide');
-                // ?????????? do I need to set the booleans somehow??????????
-                saveQuestion();
-                loadStep("next");
+                goToStep("next",true);
                 $("#create_question_step").hide();
                 //$("#delete_question").show();
 
@@ -150,9 +148,7 @@ $('#create_question_step').click(function(){
         }
         else{
             $('#question_modal').modal('hide');
-            // ?????????? do I need to set the booleans somehow??????????
-            saveQuestion();
-            loadStep("next");
+            goToStep("next",true);
             $("#create_question_step").hide();
             //$("#delete_question").show();
 
@@ -310,6 +306,59 @@ function storeNewStepText(){
     //alert("example: " + exampleName + " step: " + num + " new text: " + newStepText);
 }
 // A function defining the actions the student interface needs to undertake at a particular step
+function goToStep(direction, question) {
+
+	//save the html in a db (either replace the existing one if there is one or create a new one
+	//NOTE: there are multiple panels- ensure you say what html goes for which panel
+
+
+    // ------------------------
+
+    //----handleStepEditorControlVisibility(direction, currentStep, 1000, ".example_control");
+    handleNavigationVisibility();
+
+    // ------------------------
+
+
+    //handleControlVisibility(direction);
+	var panel_texts = {}
+	// Save the entries for each panel for the step
+	$('textarea[id^="area"]').each(function(index) {
+		console.log($(this).attr("id"));
+        var panelId = $(this).attr("id");
+        var panelArea = nicEditors.findEditor(panelId);
+        var panelContent = panelArea.getContent();
+        panel_texts[panelId] = panelContent;
+
+	});
+    var saveStepTextsRequest = $.post("/weave/save_step_texts/", {
+        'csrfmiddlewaretoken': csrftoken,
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'panel_texts' : JSON.stringify(panel_texts)
+    });
+    saveStepTextsRequest.done(function() {
+        var explanation = "";
+        if(question){
+            saveQuestion();
+        } 
+        else {
+            var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
+            explanation = explanationArea.getContent();
+        }
+        $.post("/weave/save_explanation/", {
+            'html': explanation,
+            'csrfmiddlewaretoken': csrftoken,
+            'example_name': exampleName,
+            'step_number':currentStep,
+        }).done(function() {
+            loadStep(direction);
+        });  
+
+    })
+
+}
+
 
 
 function saveQuestion(isQuestionBefore, isQuestionAfter){
@@ -420,6 +469,13 @@ function loadStep(direction){
             $("#question_step_navigator").show();
             $("#question_step_close_button").hide();
 
+
+            // ------------------------
+
+            //-------handleStepEditorControlVisibility(direction, currentStep, 1000, ".question_control");
+            //-------handleStepEditorControlVisibility(direction, currentStep, 1000, ".example_control"); 
+
+            // ------------------------
             $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));   
             $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");   
             $("#question_modal").modal('show');
@@ -474,7 +530,14 @@ function loadStep_old(direction){
             $("#question_step_navigator").show();
             $("#question_step_close_button").hide();
 
+
+            // ------------------------
+
+            //-------handleStepEditorControlVisibility(direction, currentStep, 1000, ".question_control");
+            //-------handleStepEditorControlVisibility(direction, currentStep, 1000, ".example_control"); 
+
             handleNavigationVisibility();
+            // ------------------------
             $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));   
             $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");   
             $("#question_modal").modal('show');
@@ -583,6 +646,79 @@ function correctAnswerController(){
         }
     });
 }
+function handleControlVisibility(direction){
+    if(direction != "this"){
+        // Ensure the correct arrows are shown
+        if (currentStep <= 1 && direction == "back") {
+            $(".prev_btn").css('visibility', 'hidden');
+        } else {
+            $(".prev_btn").css('visibility', 'visible');
+            $(".next_btn").css('visibility', 'visible');
+        }
+    }
+    
+}
+
+function handleStepEditorControlVisibility2(direction, currentStepNumber, numberOfSteps, controlClass){
+    if(controlClass == undefined){
+        controlClass = "";
+    }
+    if(controlClass == ".question_control"){
+        currentStepNumber++;
+    }
+    //alert(controlClass + ".prev_btn");
+    if(direction != "this"){
+        if (currentStepNumber >= numberOfSteps && direction == "next") {
+            $(controlClass + ".next_btn").css('visibility', 'hidden');
+        } 
+        else if (currentStepNumber <= 1 && direction == "back") {
+            $(controlClass + ".prev_btn").css('visibility', 'hidden');
+        } 
+        else {
+            $(controlClass + ".prev_btn").css('visibility', 'visible');
+            $(controlClass + ".next_btn").css('visibility', 'visible');
+        }
+    }
+}       
+
+
+function handleStepEditorControlVisibility(direction, currentStepNumber, numberOfSteps, controlClass){
+    if(controlClass == undefined){
+        controlClass = "";
+    }
+    if(controlClass == ".question_control"){
+        currentStepNumber++;
+    }
+    if (direction == "back"){
+        currentStepNumber--;
+    }
+    //alert(currentStepNumber + " steppppppp");
+    if(direction == "next"){
+        if(currentStepNumber < 0  || (controlClass == ".step_editor_control" && currentStepNumber <= 0)){
+            $(controlClass + ".prev_btn").css('visibility', 'hidden');
+            //alert("should hide");
+        }
+        else{
+             $(controlClass + ".prev_btn").css('visibility', 'visible');
+        }  
+    }
+    else{
+        if(currentStepNumber <= 0){
+            $(controlClass + ".prev_btn").css('visibility', 'hidden');
+        }
+        else{
+             $(controlClass + ".prev_btn").css('visibility', 'visible');
+        }
+    }
+
+    if(/*currentStepNumber >= 0 &&*/currentStepNumber < numberOfSteps - 1){
+        $(controlClass + ".next_btn").css('visibility', 'visible');
+    }
+    else{
+        $(controlClass + ".next_btn").css('visibility', 'hidden');
+    }
+}       
+
 
 
 function resetQuestionModal(radioChoiceReset){
@@ -620,14 +756,27 @@ function doReset() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
+    //goToStep("next", false);
     saveStep("false", "false");
+
+    // ------------------------
+
+    //------------handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
+
+    // ------------------------
     loadStep("next");
 });
 
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
+    //goToStep("back", false);
     saveStep("false", "false");
+
+    // ------------------------
+
+    //---------handleStepEditorControlVisibility("back", currentStep, 1000, ".example_control");
+    // ------------------------
     loadStep("back");
 });
 
@@ -670,7 +819,11 @@ $('.create_step_btn.after').click(function() {
     }
     currentStep ++;
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
+
+    // ------------------------
+    //----------handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
     handleNavigationVisibility();
+    // ------------------------
 });
 
 $('.create_step_btn.before').click(function() {
@@ -733,25 +886,40 @@ $('#step_editor_btn_prev').click(function() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#question_btn_next').click(function() {
+    //goToStep("next", true);
+
+
+    // ------------------------
+
+    //--------handleStepEditorControlVisibility("next", currentStep, 1000, ".example_control");
+    // ------------------------
     saveQuestion();
+    loadStep("next");
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal(true);  
-    loadStep("next");
+
 });
 
 
 // Bind an event to the previous button.
 $('#question_btn_prev').click(function() {
+    //goToStep("back", true);
+
+
+    // ------------------------
+
+    //------handleStepEditorControlVisibility("back", currentStep, 1000, ".example_control");
+    // ------------------------
     saveQuestion();
+    loadStep("back");
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal(true);
-    loadStep("back");
 });
 
 // Reset the example on click of the reset button
@@ -806,21 +974,7 @@ $('.create_question_btn').click(function(){
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
     $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");
     loadingQuestionStep = false;
-
-    var request = $.get("/weave/check_steps/", {
-        'example_name': exampleName,
-        'step_number': currentStep,
-        'csrfmiddlewaretoken': csrftoken,
-    });
-    request.done(function(outcome) {
-        if (outcome['next_steps'] != 0){
-            $("#create_question_step").show();
-        }
-        else{
-            $("#create_question_step").hide();
-        }
-    })
-
+    $("#create_question_step").show();
     //$("#delete_question").hide();
     $("#question_step_navigator").hide();
 
@@ -866,6 +1020,21 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Specify the shortcut keys for transition between examples
+// document.onkeydown = function(e) {
+//     switch (e.keyCode) {
+//         case 37:
+//             if (currentStep > 0 && $("#dialog").is(':hidden')) {
+//                 goToStep("back",false);
+//             }
+//             break;
+//         case 39:
+//             if (currentStep <= totalSteps && $("#dialog").is(':hidden')) { //if the action is question that hasn't been asked yet, i.e. the explanation_dict is still empty for that step
+//                 goToStep("next",false);
+//             }
+//             break;
+//     }
+// };
 
 // A function to escape HTML to ensure the correct text for the examples appears
 function escapeHtml(unsafe) {

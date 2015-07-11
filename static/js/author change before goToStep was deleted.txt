@@ -140,6 +140,8 @@ $('#create_question_step').click(function(){
             } 
             else{
                 $('#question_modal').modal('hide');
+                //goToStep("next",true);
+
                 // ?????????? do I need to set the booleans somehow??????????
                 saveQuestion();
                 loadStep("next");
@@ -150,6 +152,7 @@ $('#create_question_step').click(function(){
         }
         else{
             $('#question_modal').modal('hide');
+            //goToStep("next",true);
             // ?????????? do I need to set the booleans somehow??????????
             saveQuestion();
             loadStep("next");
@@ -310,6 +313,51 @@ function storeNewStepText(){
     //alert("example: " + exampleName + " step: " + num + " new text: " + newStepText);
 }
 // A function defining the actions the student interface needs to undertake at a particular step
+function goToStep(direction, question) {
+
+	//save the html in a db (either replace the existing one if there is one or create a new one
+	//NOTE: there are multiple panels- ensure you say what html goes for which panel
+
+    handleNavigationVisibility();
+
+	var panel_texts = {}
+	// Save the entries for each panel for the step
+	$('textarea[id^="area"]').each(function(index) {
+		console.log($(this).attr("id"));
+        var panelId = $(this).attr("id");
+        var panelArea = nicEditors.findEditor(panelId);
+        var panelContent = panelArea.getContent();
+        panel_texts[panelId] = panelContent;
+
+	});
+    var saveStepTextsRequest = $.post("/weave/save_step_texts/", {
+        'csrfmiddlewaretoken': csrftoken,
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'panel_texts' : JSON.stringify(panel_texts)
+    });
+    saveStepTextsRequest.done(function() {
+        var explanation = "";
+        if(question){
+            saveQuestion();
+        } 
+        else {
+            var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
+            explanation = explanationArea.getContent();
+        }
+        $.post("/weave/save_explanation/", {
+            'html': explanation,
+            'csrfmiddlewaretoken': csrftoken,
+            'example_name': exampleName,
+            'step_number':currentStep,
+        }).done(function() {
+            loadStep(direction);
+        });  
+
+    })
+
+}
+
 
 
 function saveQuestion(isQuestionBefore, isQuestionAfter){
@@ -620,6 +668,7 @@ function doReset() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
+    //goToStep("next", false);
     saveStep("false", "false");
     loadStep("next");
 });
@@ -627,6 +676,7 @@ $('#btn_next').click(function() {
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
+    //goToStep("back", false);
     saveStep("false", "false");
     loadStep("back");
 });
@@ -733,25 +783,29 @@ $('#step_editor_btn_prev').click(function() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#question_btn_next').click(function() {
+    //goToStep("next", true);
+
     saveQuestion();
+    loadStep("next");
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal(true);  
-    loadStep("next");
+
 });
 
 
 // Bind an event to the previous button.
 $('#question_btn_prev').click(function() {
+    //goToStep("back", true);
     saveQuestion();
+    loadStep("back");
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal(true);
-    loadStep("back");
 });
 
 // Reset the example on click of the reset button
@@ -806,21 +860,7 @@ $('.create_question_btn').click(function(){
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
     $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");
     loadingQuestionStep = false;
-
-    var request = $.get("/weave/check_steps/", {
-        'example_name': exampleName,
-        'step_number': currentStep,
-        'csrfmiddlewaretoken': csrftoken,
-    });
-    request.done(function(outcome) {
-        if (outcome['next_steps'] != 0){
-            $("#create_question_step").show();
-        }
-        else{
-            $("#create_question_step").hide();
-        }
-    })
-
+    $("#create_question_step").show();
     //$("#delete_question").hide();
     $("#question_step_navigator").hide();
 
@@ -866,6 +906,21 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Specify the shortcut keys for transition between examples
+// document.onkeydown = function(e) {
+//     switch (e.keyCode) {
+//         case 37:
+//             if (currentStep > 0 && $("#dialog").is(':hidden')) {
+//                 goToStep("back",false);
+//             }
+//             break;
+//         case 39:
+//             if (currentStep <= totalSteps && $("#dialog").is(':hidden')) { //if the action is question that hasn't been asked yet, i.e. the explanation_dict is still empty for that step
+//                 goToStep("next",false);
+//             }
+//             break;
+//     }
+// };
 
 // A function to escape HTML to ensure the correct text for the examples appears
 function escapeHtml(unsafe) {
