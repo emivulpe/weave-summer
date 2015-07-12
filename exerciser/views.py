@@ -1358,6 +1358,9 @@ def edit_steps(request):
 	except KeyError:
 		print "key error in edit steps"		
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	exact_matches = []
+	possible_matches = []
+	all_matches = []
 	if plain_text_to_change != "":
 		example_name = request.POST['example_name']
 		try:
@@ -1370,15 +1373,12 @@ def edit_steps(request):
 			this_step = this_step[0]
 			this_step_new_text = this_step.html.replace(raw_text_to_change, raw_new_text)
 			save_panel_text(this_step_new_text, example_name, step_number, panel_id)
-		exact_matches = []
-		possible_matches = []
-		all_matches = []
-		steps = HTMLStep.objects.filter(example = example, panel_id = panel_id)
+		steps = HTMLStep.objects.filter(example = example, panel_id = panel_id).order_by('step_number')
 		for step in steps:
 			if step.step_number != step_number:
 				raw_step_html = step.html;
 				plain_step_html = lxml.html.fromstring(step.html).text_content()
-				proposed_text = ""
+				proposed_text = None
 				if raw_text_to_change in raw_step_html:
 					proposed_text = raw_step_html.replace(raw_text_to_change, raw_new_text)
 					exact_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
@@ -1388,7 +1388,8 @@ def edit_steps(request):
 					possible_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
 				print raw_step_html, " raw step"
 				print plain_step_html, " plain step"
-				all_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
+				if proposed_text is not None:
+					all_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
 		print exact_matches, " EXACT"
 		print possible_matches, " possible"				
 	return HttpResponse(simplejson.dumps({"exact_matches" : exact_matches, "possible_matches" : possible_matches, "all_matches" : all_matches}),content_type = "application/json")
@@ -1547,7 +1548,6 @@ def check_steps(request):
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	previous_steps = ExampleStep.objects.filter(example = example, step_number__lt = step_number)
 	next_steps = ExampleStep.objects.filter(example = example, step_number__gt = step_number)
-	print len(previous_steps), len(next_steps), "importantttttttttttttttttttttttttt"
 	return HttpResponse(simplejson.dumps({"previous_steps" : len(previous_steps), "next_steps" : len(next_steps)}),content_type = "application/json")
 
 

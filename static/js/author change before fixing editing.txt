@@ -78,9 +78,7 @@ $('#create_example_button').click(function(){
             $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
             $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");
             
-            $("#panel_container").find($(".nicEdit-main")).focus(function(){
-                currentFocusedEditor = $(this).parent().siblings("textarea").attr("id");
-            })
+
 
             //$("#panel_container").find($(".nicEdit-panelContain")).css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth() + "px");
             //$("#panel_container").find($(".nicEdit-panel")).css("margin-right" , "0");
@@ -226,9 +224,7 @@ function editText(textToChange, newText) {
                     */
                     loadStep("this");
                     allMatches = affectedSteps['all_matches'];
-                    if(allMatches.length > 0){
-                        $("#step_editor_modal").modal('show');
-                    }
+                    $("#step_editor_modal").modal('show');
                     //$("#step_editor_modal").modal('show');
                 });
         });  
