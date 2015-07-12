@@ -458,7 +458,7 @@ function manageExampleAreas(data, direction) {
                             refreshDeleteOptionController();
                             if (option.hasOwnProperty("comment")){
 
-                                $("#option_" + opt_number).append('<tr id = "comment_area_' + opt_number + '"><td colspan = "4"><label for = "comment_textarea_' + opt_number + '">Answer comment:</label><textarea id="comment_textarea_' + opt_number + '" style = "width:100%;"></textarea></td></tr>');
+                                $("#option_" + opt_number).append('<tr id = "comment_area_' + opt_number + '"><td colspan = "4"><label>Answer comment:</label><textarea id="comment_textarea_' + opt_number + '" style = "width:100%;"></textarea></td></tr>');
      
                                 commentText = option["comment"];
                                 if(nicEditors.findEditor("comment_textarea_" + opt_number) == undefined){
@@ -609,6 +609,7 @@ $('.create_step_btn.before').click(function() {
 })
 
 
+
 function saveStep(insertBefore, insertAfter){
     if (insertBefore == undefined){
         insertBefore = false;
@@ -620,6 +621,7 @@ function saveStep(insertBefore, insertAfter){
     var panel_texts = {};
     var explanationArea = nicEditors.findEditor("explanation_area");    //Save the explanation for this step
     explanation = explanationArea.getContent();
+    explanationArea.setContent("");
     // Save the entries for each panel for the step
     $('textarea[id^="area"]').each(function(index) {
         console.log($(this).attr("id"));
@@ -686,6 +688,7 @@ $('.done_btn').click(function() {
 
 
 $('.create_question_btn').click(function(){
+
     if($(this).hasClass("before")){
         isQuestionBefore = true;
         isQuestionAfter = false;
@@ -707,20 +710,25 @@ $('.create_question_btn').click(function(){
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
     $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");
     loadingQuestionStep = false;
+    
+    window.setTimeout(function(){
+        var request = $.get("/weave/check_steps/", {
+            'example_name': exampleName,
+            'step_number': (currentStep-2),
+            'csrfmiddlewaretoken': csrftoken,
+        });
+        request.done(function(outcome) {
+            if (outcome['next_steps'] != 0){
+                $("#create_question_step").show();
+            }
+            else{
+                $("#create_question_step").hide();
+            }
 
-    var request = $.get("/weave/check_steps/", {
-        'example_name': exampleName,
-        'step_number': currentStep,
-        'csrfmiddlewaretoken': csrftoken,
-    });
-    request.done(function(outcome) {
-        if (outcome['next_steps'] != 0){
-            $("#create_question_step").show();
-        }
-        else{
-            $("#create_question_step").hide();
-        }
-    })
+        })
+    },1000);
+
+
 
     //$("#delete_question").hide();
     $("#question_step_navigator").hide();
@@ -754,6 +762,11 @@ function refreshDeleteOptionController(){
     $(".delete_option").click(function(){
         $(this).parents("li").nextAll().each(function(){
             // adapt the option number of the next options appropriately
+            $(this).find("table").attr("id", "option_" + (parseInt($(this).find(".option_number").html().replace( /\D+/g, '')) - 1));
+            alert($(this).find("[id^='comment_area_']").attr("id"));
+            alert($(this).find("[id^='comment_textarea_']").attr("id"));
+            $(this).find("[id^='comment_area_']").attr("id", "comment_area_" + (parseInt($(this).find(".option_number").html().replace( /\D+/g, '')) - 1));
+            $(this).find("[id^='comment_textarea_']").attr("id", "comment_textarea_" + (parseInt($(this).find(".option_number").html().replace( /\D+/g, '')) - 1));
             $(this).find(".option_number").html(parseInt($(this).find(".option_number").html().replace( /\D+/g, '')) - 1 + ".");
         })
         $(this).parents("li").remove();
