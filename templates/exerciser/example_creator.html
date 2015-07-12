@@ -95,24 +95,10 @@ body {
 				    <label><input id = "open_radio_button" type="radio" name="question_type_radio" value = "open">Open</label>
 				</div>
 				<div id = "options_container">
-					<ol id = "options_list" class="list-group" style = "">
+					<ol id = "options_list" class="list-group">
 					</ol>
 					<button id = "add_option_button" type="button" class="btn btn-default">Add option</button>
 				</div>
-				<!--
-				<div id = "comments_container">
-					<div id = "multiple_choice_comment_container">
-		            	<label for = "correct_answer_comment">Correct answer comment:</label>
-		                <div id = "correct_answer_comment"><textarea id="correct_answer_comment_textarea"></textarea></div>
-		                <label for = "wrong_answer_comment">Wrong answer comment:</label>
-		                <div id = "wrong_answer_comment"><textarea id="wrong_answer_comment_textarea"></textarea></div>
-	            	</div>
-	                <div id = "open_comment_container" style = "display:none;">
-		                <label for = "general_comment">Comment:</label>
-		                <div id = "general_comment"><textarea id="general_comment_textarea"></textarea></div>
-	           		</div>
-				</div>
-			-->
             </div>
             <div class="modal-footer">	
                 <!--<button id = "create_question_step" type="button" class="btn btn-default">OK</button>-->
@@ -302,7 +288,7 @@ body {
 		console.log(option_type + "OPTION TYPE");
 		option_number = $("#options_list").find($(".option")).length + 1;
 		//alert($("#options_list").find($(".option")).length + " that many");
-		$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number + '"style = "width:100%;"><tr><td><input type="checkbox"></td><td>' + option_number + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
+		$("#options_list").append('<li class="list-group-item option"><table id = "option_' + option_number + '"style = "width:100%;"><tr><td><input type="checkbox"></td><td class = "option_number">' + option_number + '.</td><td><input class="form-control option_text" type="text" placeholder="Option Text"></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
 		
 		refreshDeleteOptionController();
 
