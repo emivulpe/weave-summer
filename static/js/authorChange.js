@@ -132,21 +132,10 @@ $('#create_question_step').click(function(){
     var questionEditor = nicEditors.findEditor("question_text");
     var questionText = questionEditor.getContent();
     console.log(questionText + "question_text");
-    if(questionText.length > 4){
-        if($('#multiple_choice_radio_button').is(':checked')) {
-            if (invalidInputs.length > 0) {
-                BootstrapDialog.alert('Please enter text for each of the options or delete an option by draging it to the recycle bin!');
-            } 
-            else{
-                $('#question_modal').modal('hide');
-                // ?????????? do I need to set the booleans somehow??????????
-                saveQuestion();
-                loadStep("next");
-                $("#create_question_step").hide();
-                //$("#delete_question").show();
-
-            }
-        }
+    if($('#multiple_choice_radio_button').is(':checked')) {
+        if (invalidInputs.length > 0) {
+            BootstrapDialog.alert('Please enter text for each of the options or delete an option by draging it to the recycle bin!');
+        } 
         else{
             $('#question_modal').modal('hide');
             // ?????????? do I need to set the booleans somehow??????????
@@ -158,7 +147,12 @@ $('#create_question_step').click(function(){
         }
     }
     else{
-        BootstrapDialog.alert('Please enter your question! A valid question is at least 5 characters long.');
+        $('#question_modal').modal('hide');
+        // ?????????? do I need to set the booleans somehow??????????
+        saveQuestion();
+        loadStep("next");
+        $("#create_question_step").hide();
+        //$("#delete_question").show();
 
     }
 
@@ -402,8 +396,7 @@ function loadStep(direction){
             $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));   
             $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");   
             $("#question_modal").modal('show');
-            var questionEditor = nicEditors.findEditor("question_text");
-            questionEditor.setContent(data["question_text"]);
+
            // alert("THIS STEP IS A QUESTION!!!!!!!!");
            loadingQuestionStep = true;
             $('#question_modal').on('shown.bs.modal', function (e) {
@@ -437,6 +430,10 @@ function manageExampleAreas(data, direction) {
                 if (key == "explanation_area"){
                     text_area = nicEditors.findEditor(key);
                     text_area.setContent(data[key]); 
+                }
+                else if(key == "question_text"){
+                    var questionEditor = nicEditors.findEditor("question_text");
+                    questionEditor.setContent(data[key]);
                 }
                 else {
 
@@ -555,7 +552,7 @@ $('#btn_prev').click(function() {
     loadStep("back");
 });
 
-
+/*------
 $('.delete_step_btn').click(function() {
     if ($(this).hasClass("question_step_btn")){
         $("#question_modal").modal('hide');
@@ -574,6 +571,7 @@ $('.delete_step_btn').click(function() {
     })
 });
 
+-----*/ 
 
 /*
 $('#btn_create_step_after').click(function() {
@@ -852,3 +850,100 @@ function handleNavigationVisibility(){
         }
     })
 }
+
+/*$('.fa-trash-o').confirmation({    
+                                "placement" : "bottom",
+                                "title" : "Are you sure you would like to delete this step?" ,
+                                "onConfirm" : function(){
+                                    alert("yes");
+                                    if ($(this).hasClass("question_step_btn")){
+                                        $("#question_modal").modal('hide');
+                                    }
+                                    $.post("/weave/delete_step/", {
+                                        'example_name': exampleName,
+                                        'step_number': currentStep,
+                                        'csrfmiddlewaretoken': csrftoken,
+                                    }).done(function(){
+                                        if(currentStep > 0){
+                                            loadStep("back");
+                                        }
+                                        else{
+                                            loadStep("this");
+                                        }
+                                    })
+                                }
+                           });
+*/
+/*$( document ).ready(function() { $('.fa-trash-o').confirmation({    
+                                "placement" : "bottom",
+                                "title" : "Are you sure you would like to delete this step?" ,
+                                onConfirm : test()function(){
+                                    alert("yes");
+                                    if ($(this).hasClass("question_step_btn")){
+                                        $("#question_modal").modal('hide');
+                                    }
+                                    $.post("/weave/delete_step/", {
+                                        'example_name': exampleName,
+                                        'step_number': currentStep,
+                                        'csrfmiddlewaretoken': csrftoken,
+                                    }).done(function(){
+                                        if(currentStep > 0){
+                                            loadStep("back");
+                                        }
+                                        else{
+                                            loadStep("this");
+                                        }
+                                    })
+                                 }
+                                });
+})
+*/
+function test(){
+    alert("test");
+}
+$('.fa-trash-o').click(function(){
+$('.fa-trash-o').confirmation({    
+                                "placement" : "bottom",
+                                "title" : "Are you sure you would like to delete this step?" ,
+                                onConfirm : test()/*function(){
+                                    alert("yes");
+                                    if ($(this).hasClass("question_step_btn")){
+                                        $("#question_modal").modal('hide');
+                                    }
+                                    $.post("/weave/delete_step/", {
+                                        'example_name': exampleName,
+                                        'step_number': currentStep,
+                                        'csrfmiddlewaretoken': csrftoken,
+                                    }).done(function(){
+                                        if(currentStep > 0){
+                                            loadStep("back");
+                                        }
+                                        else{
+                                            loadStep("this");
+                                        }
+                                    })
+                                 }*/
+                                });
+    //$(this).confirmation('show');
+    /*{    
+                                "placement" : "bottom",
+                                "title" : "Are you sure you would like to delete this step?" ,
+                                "onConfirm" : function(){
+                                    if ($(this).hasClass("question_step_btn")){
+                                        $("#question_modal").modal('hide');
+                                    }
+                                    $.post("/weave/delete_step/", {
+                                        'example_name': exampleName,
+                                        'step_number': currentStep,
+                                        'csrfmiddlewaretoken': csrftoken,
+                                    }).done(function(){
+                                        if(currentStep > 0){
+                                            loadStep("back");
+                                        }
+                                        else{
+                                            loadStep("this");
+                                        }
+                                    })
+                                }
+                           });*/
+})

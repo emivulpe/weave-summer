@@ -2,10 +2,9 @@
 {% load static %}
 {% block links %}
     <link href="{% static 'css/jquery.splitter.css' %}" rel="stylesheet"/>
-    <link type="text/css" href= "{% static 'cazary/cazary-dev/themes/flat/style.css' %}" rel="stylesheet"  />
 {% endblock %}
 
-{% block app_name %}<label id = "example_name_label">{{ example_name }}{% endblock %}
+{% block app_name %}<label id = "example_name_label">{{ example.name }}{% endblock %}
 {% block style %}
 
 body {
@@ -41,19 +40,12 @@ body {
 {% endblock %}
 
 
-{% block navigation %} 
-	<!--<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
-	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>-->
-{% endblock %}
-
-
 {% block app_controls %}
 
 	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>	
 	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-	<!--<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	-->
 	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
@@ -63,16 +55,24 @@ body {
 
 
 {% block body_block %}
-<div id="example_container" style = "visibility:hidden;">
+<div id="example_container">
 	<div id = "outer_panel2" style ="position:relative; overflow-y:hidden;overflow-x:hidden;">
 		<table id="panel_container" style=" line-height: 110%;overflow:hidden;height:100%; width:100%;">
 			<tr id = "example_panels">
+				{% for panel in panels %}
+                <td id = "panel_area_{{ panel.panel_number }}" class = "panel" valign="top">
+                	<div id = "area_container{{ panel.panel_number }}" class="panel" style="margin:0px; float: left;word-wrap:break-word;overflow-y:scroll; overflow-x:hidden;">
+                		<div id="area_panel_{{ panel.panel_number }}" style="position:absolute;"></div>
+                		<textarea id = "{{ panel.panel_id }}" class="panel" style = "margin: 100px;">{{ panel.html }}</textarea>
+                	</div>
+                </td>
+				{% endfor %}
 			</tr>		
 		</table>
 	</div>
 	<div id="explanation_row2" style = "position:relative;overflow-x:hidden; overflow-y:scroll;">
 		<div id="explanation_area_panel" style = "position:fixed;"></div>
-		<textarea id = "explanation_area" style="width: 100%; height: 100%;"></textarea>
+		<textarea id = "explanation_area" style="width: 100%; height: 100%;">{{ explanation }}</textarea>
 	</div>
 
 </div>
@@ -523,7 +523,6 @@ $('#step_editor_modal').on('hidden.bs.modal', function () {
 	});
 </script>
 <!--<script type="text/javascript" src="{% static 'js/change.js' %}"></script>-->
-<script type="text/javascript" src="{% static 'js/bootstrap-confirmation.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/authorChange.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/colResizable-1.4.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>

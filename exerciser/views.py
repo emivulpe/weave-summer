@@ -18,7 +18,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from chartit import DataPool, Chart
 from django.db.models import Avg
-from django.db.models import Count, Max, Sum
+from django.db.models import Count, Max, Sum, Min
 import lxml.html
 import xml.etree.ElementTree as ET
 
@@ -1418,26 +1418,27 @@ def create_step(request):
 	except IndexError:
 		print "index error in save explanation"
 		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
-	if insert_after:
-		# move each of the following steps by 1 step forward
-		# when it should be > step_number use step_number + 1!
-		update_step_number_after_insertion(example, (step_number + 1))
+	if step_number >= 0:
+		if insert_after:
+			# move each of the following steps by 1 step forward
+			# when it should be > step_number use step_number + 1!
+			update_step_number_after_insertion(example, (step_number + 1))
 
-	# save the new step panel texts
-	for panel_id in panel_texts:
-		html = panel_texts[panel_id]
-		save_panel_text(html, example_name, step_number,panel_id)
+		# save the new step panel texts
+		for panel_id in panel_texts:
+			html = panel_texts[panel_id]
+			save_panel_text(html, example_name, step_number,panel_id)
 
-	# save the new step explanation
+		# save the new step explanation
 
-	print "explanation html ", html
-	html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
-	html_explanation.html = explanation
-	html_explanation.save() #Save the changes
+		print "explanation html ", html
+		html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
+		html_explanation.html = explanation
+		html_explanation.save() #Save the changes
 
 
-	if insert_before:
-		update_step_number_after_insertion(example, step_number)
+		if insert_before:
+			update_step_number_after_insertion(example, step_number)
 
 
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
@@ -1466,38 +1467,38 @@ def create_question(request):
 	except IndexError:
 		print "index error in save question"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	if step_number >= 0:
+		if insert_after:
+			# move each of the following steps by 1 step forward
+			# when it should be > step_number use step_number + 1!
+			update_step_number_after_insertion(example, (step_number + 1))
 
-	if insert_after:
-		# move each of the following steps by 1 step forward
-		# when it should be > step_number use step_number + 1!
-		update_step_number_after_insertion(example, (step_number + 1))
+		# create a new question step
+		question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
+		
+		# delete any previously existing options to ensure only the new options are there
+		ExampleOption.objects.filter(question = question).delete()
 
-	# create a new question step
-	question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
-	
-	# delete any previously existing options to ensure only the new options are there
-	ExampleOption.objects.filter(question = question).delete()
+		question.question_text = question_text
+		question.kind = question_type 
+		question.save()
 
-	question.question_text = question_text
-	question.kind = question_type 
-	question.save()
+		# save the options provided by the author
+		for index in range(len(options)):
+			option = options[index]
+			option_text = option['option_text']
+			is_correct = option['correct']
+			opt = ExampleOption.objects.get_or_create(question = question, option_text = option_text, number = index)[0]
+			opt.correct = is_correct
+			opt.save()
 
-	# save the options provided by the author
-	for index in range(len(options)):
-		option = options[index]
-		option_text = option['option_text']
-		is_correct = option['correct']
-		opt = ExampleOption.objects.get_or_create(question = question, option_text = option_text, number = index)[0]
-		opt.correct = is_correct
-		opt.save()
+			# save comments for the option if any was provided
+			if "comment" in option:
+				comment_text = option['comment']
+				option_comment = OptionComment.objects.get_or_create(option = opt, comment = comment_text)
 
-		# save comments for the option if any was provided
-		if "comment" in option:
-			comment_text = option['comment']
-			option_comment = OptionComment.objects.get_or_create(option = opt, comment = comment_text)
-
-	if insert_before:
-		update_step_number_after_insertion(example, step_number)
+		if insert_before:
+			update_step_number_after_insertion(example, step_number)
 
 	return HttpResponse("{}",content_type = "application/json")
 
@@ -1554,6 +1555,98 @@ def check_steps(request):
 
 
 
+
+
+def example_editor(request):
+	"""
+	A function to load the example editor page for the author interface
+	"""
+	# Request the context of the request.
+	# The context contains information such as the client's machine details, for example.
+	context = RequestContext(request)
+
+	example_list = Example.objects.all()
+	
+	# Construct a dictionary to pass to the template engine as its context.
+	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
+	context_dict = {'examples' : example_list}
+
+	for example in example_list:
+		example.url = example.name.replace(' ', '_')
+	
+	# Return a rendered response to send to the client.
+	# We make use of the shortcut function to make our lives easier.
+	# Note that the first parameter is the template we wish to use.
+	return render_to_response('exerciser/example_editor.html', context_dict, context)
+
+
+
+def edit_example(request, example_name_url):
+
+	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
+	
+	
+	context = RequestContext(request)
+	
+	## !!!!!!!!!!!!!! check if the author is authenticeted/has the permission to edit this example !!!!!!!!!!!!!!
+	##if 'student_registered' in request.session:
+		
+
+	# Change underscores in the category name to spaces.
+	# URLs don't handle spaces well, so we encode them as underscores.
+	# We can then simply replace the underscores with spaces again to get the name.
+	example_name = example_name_url.replace('_', ' ')
+
+	# Create a context dictionary which we can pass to the template rendering engine.
+	# We start by containing the name of the category passed by the user.
+	context_dict = {'example_name': example_name}
+
+	try:
+
+		example = Example.objects.get(name=example_name)
+		context_dict['example'] = example
+		
+		# Get how many panels there are
+		# when the request is done- create the panels and the editors for them
+		# request for the first step and load it
+
+		# Get the text and the explanation for the first step of that example
+		steps = HTMLStep.objects.filter(example=example)
+		# get the first non-question step to determine the number of panels
+		first_non_question_step = steps.aggregate(Min('step_number'))['step_number__min']
+		steps = steps.filter(step_number = first_non_question_step)
+		panels = []
+		if first_non_question_step != 0: # the first step is a question!
+			context_dict['explanation'] = ''
+			context_dict['is_question'] = "true"
+			for step in steps:
+				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				print panel_number
+				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
+				panels.append(panel)
+
+		else:
+			explanation = HTMLExplanation.objects.filter(example = example, step_number = first_non_question_step)
+			context_dict['explanation'] = explanation[0].html
+			context_dict['is_question'] = "false"
+			for step in steps:
+				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				print panel_number
+				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
+				panels.append(panel)
+		context_dict['panels'] = panels
+
+	# Change to something more sensible!
+	except Example.DoesNotExist:
+		return HttpResponseRedirect('/weave/')
+
+	# Go render the response and return it to the client.
+	return render_to_response('exerciser/edit_example.html', context_dict, context)
+
+
+
+
+
 def keeptags(value, tags):
     """
     Strips all [X]HTML tags except the space seperated list of tags 
@@ -1579,3 +1672,5 @@ def keeptags(value, tags):
 
 def remove_tags(text):
     return ''.join(ET.fromstring(text).itertext())
+
+

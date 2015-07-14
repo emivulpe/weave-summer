@@ -47,5 +47,7 @@ urlpatterns = patterns('',
 		url(r'^create_step', views.create_step, name='create_step'),
 		url(r'^create_question', views.create_question, name='create_question'),
 		url(r'^check_steps', views.check_steps, name='check_steps'),
+		url(r'^example_editor', views.example_editor, name='example_editor'),
+		url(r'^edit_example/(?P<example_name_url>\w+)/$', views.edit_example, name='edit_example'),
 
 		) 

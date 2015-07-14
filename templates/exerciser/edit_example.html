@@ -2,10 +2,9 @@
 {% load static %}
 {% block links %}
     <link href="{% static 'css/jquery.splitter.css' %}" rel="stylesheet"/>
-    <link type="text/css" href= "{% static 'cazary/cazary-dev/themes/flat/style.css' %}" rel="stylesheet"  />
 {% endblock %}
 
-{% block app_name %}<label id = "example_name_label">{{ example_name }}{% endblock %}
+{% block app_name %}<label id = "example_name_label">{{ example.name }}{% endblock %}
 {% block style %}
 
 body {
@@ -41,38 +40,41 @@ body {
 {% endblock %}
 
 
-{% block navigation %} 
-	<!--<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
-	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>-->
-{% endblock %}
-
-
 {% block app_controls %}
 
 	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>	
 	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-	<!--<li><a id="btn_question" href="#" style="top: 2px;"><i class="fa fa-question fa-lg landing-icon fa"></i>&nbsp;Question</a></li>	-->
 	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
 	<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
+
+	<a class="btn btn-large confirmation" data-toggle="confirmation">Click to toggle confirmation</a>
 	
 {% endblock %}
 
 
 {% block body_block %}
-<div id="example_container" style = "visibility:hidden;">
+<div id="example_container">
 	<div id = "outer_panel2" style ="position:relative; overflow-y:hidden;overflow-x:hidden;">
 		<table id="panel_container" style=" line-height: 110%;overflow:hidden;height:100%; width:100%;">
 			<tr id = "example_panels">
+				{% for panel in panels %}
+                <td id = "panel_area_{{ panel.panel_number }}" class = "panel" valign="top">
+                	<div id = "area_container{{ panel.panel_number }}" class="panel" style="margin:0px; float: left;word-wrap:break-word;overflow-y:scroll; overflow-x:hidden;">
+                		<div id="area_panel_{{ panel.panel_number }}" style="position:absolute;"></div>
+                		<textarea id = "{{ panel.panel_id }}" class="panel" style = "margin: 100px;">{{ panel.html }}</textarea>
+                	</div>
+                </td>
+				{% endfor %}
 			</tr>		
 		</table>
 	</div>
 	<div id="explanation_row2" style = "position:relative;overflow-x:hidden; overflow-y:scroll;">
 		<div id="explanation_area_panel" style = "position:fixed;"></div>
-		<textarea id = "explanation_area" style="width: 100%; height: 100%;"></textarea>
+		<textarea id = "explanation_area" style="width: 100%; height: 100%;">{{ explanation }}</textarea>
 	</div>
 
 </div>
@@ -121,34 +123,6 @@ body {
     </div>
 </div>
 
-
-
-<div id="plan_modal" class="modal fade" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog draggable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Example setup</h4>
-            </div>
-            <div class="modal-body">
-
-				<label for = "example_name">Example name:</label>
-				<input id = "example_name" class="form-control" type="text" placeholder="ExampleName">
-
-				<label for = "number_of_panels">Number of problem areas:</label>
-			    <select id = "number_of_panels" class="form-control">
-					<option value="1" selected>1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-				</select>
-            </div>
-            <div class="modal-footer">
-                <button id = "create_example_button" type="button" class="btn btn-default" disabled = "true">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <div id="edit_modal" class="modal fade" data-keyboard="false" data-backdrop="static">
@@ -206,7 +180,17 @@ body {
 {% endblock %}
 
 {% block javascripts %}
+
+
+
+
 <script type="text/javascript" src=" {% static 'js/bootstrap-dialog.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/colResizable-1.4.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.splitter-0.15.0.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap-tooltip.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap-confirmation.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/authorChange.js' %}"></script>
 
 <script type="text/javascript">
 
@@ -216,53 +200,107 @@ body {
 	var buttonList = ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor', 'edit', 'unhighlight'];
 
 	var nicEditInstances = {};
+	//alert(exampleName);
+	var exampleName = "{{ example.name }}";
+	loadStep("this");
+
+</script>
+
+<!-- Scripts for the text editor -->
+<script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/nicEdit plugin/src/nicExample/nicEdit.js' %}"></script>
 
 
-	$('#example_name').on('input', function() {
-	    if ($("#example_name").val() == ""){
-	    	$('#create_example_button').prop('disabled', true);
-	    }
-	    else {
-	    	$('#create_example_button').prop('disabled', false);
-	    }
-	});
-	/*$("#step_editor_confirmation_button").click(function(){
-		confirmStepChanges("next", false);
-		matchesEdits = {};
-		if(exactMatchesBeingProcessed){
-			//alert("confirmation clicked- exact");
-			matchesEdits = exactMatchesEdits;
-		}
-		else{
-			//alert("confirmation clicked- possible");
-			matchesEdits = possibleMatchesEdits;
-		}
-		//isStepSaved = [];
-		for (var step in matchesEdits) {
-			if (matchesEdits.hasOwnProperty(step)) {
-			  //alert("step " + step + " text " + matchesEdits[step] + " example " + exampleName + " panel_id " + $("#panel_id").text());
-				$.post("/weave/save_step/", {
-			        'csrfmiddlewaretoken': csrftoken,
-			        'example_name': exampleName,
-			        'step_number': step,
-			        'html' : matchesEdits[step],
-			        'panel_id' : $("#panel_id").text()
-			    }).done(function(){
-			    	//isStepSaved[step] = true;
-			    })
-			}
-		}
-		//alert("before hide");
-		$("#step_editor_modal").modal('hide');
-		//alert("after hide");
 
-		loadStep("this");
 
-		// $("#step_editor_modal").on('hidden.bs.modal',function(){
-		// 	loadStep("this");
-		// 	alert("in on hidden event");
-		// })
-	})*/
+<script type="text/javascript">
+$(".confirmation").confirmation({
+placement: 'bottom', // How to position the confirmation - top | bottom | left | right
+onConfirm: function(){alert("yes")}, // Set event when click at confirm button
+onCancel: function(){}})
+$(".confirmation").click(function(){
+	$(this).confirmation('show');
+})
+
+
+	//------------------------- code to initialise the editors
+
+    //$(".nicEdit-main").css("margin","100px");
+    $("#panel_container" ).colResizable({ disable : true });
+
+
+    $('textarea[id^="area"]').each(function(index) {
+        $(this).height($("#outer_panel2").height()*0.71);
+        //$(this).css("margin","100px");
+
+        /*if(nicEditInstances[$(this).attr("id")] != undefined){
+            nicEditInstances[$(this).attr("id")].removeInstance(nicEditInstances[$(this).attr("id")]);
+            nicEditInstances[$(this).attr("id")] = undefined;
+        }*/
+        textareaId = $(this).attr("id");
+        if(nicEditInstances[$(this).attr("id")] == undefined){
+            nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);                 
+        }
+    });
+    /*if(nicEditInstances["explanation_area"] != undefined){
+        nicEditInstances["explanation_area"].removeInstance(nicEditInstances["explanation_area"]);
+        nicEditInstances["explanation_area"] = undefined;
+    }*/
+    if(nicEditInstances["explanation_area"] == undefined){
+        nicEditInstances["explanation_area"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).addInstance("explanation_area").setPanel('explanation_area_panel');
+    }
+    //$(".nicEdit-main").css("height",$("#area_container0").height() - $(".nicEdit-panel").height() - 20 + "px");
+
+    $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
+    $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");
+    
+    $("#panel_container").find($(".nicEdit-main")).focus(function(){
+        currentFocusedEditor = $(this).parent().siblings("textarea").attr("id");
+    })
+
+    //$("#panel_container").find($(".nicEdit-panelContain")).css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth() + "px");
+    //$("#panel_container").find($(".nicEdit-panel")).css("margin-right" , "0");
+    //$("#area_panel_0").css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth( true ) + "px");
+    $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
+    $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
+    $("#explanation_area_panel").css("width", $("#explanation_row2").find($(".nicEdit-main")).outerWidth( true ) + "px");
+    
+    $('[id^="area_panel_"]').each(function(){
+        $(this).css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth( true ) + "px")
+    });
+
+
+    //Re-init the plugin on the new elements
+    $("#panel_container").colResizable({
+        liveDrag: true,
+        gripInnerHtml: "<div class='grip'></div>",
+        draggingClass: "dragging",
+        onDrag: function (){
+
+             $('[id^="area_container"]').each(function(index) {
+                var container_width = $(this).parent().width();
+                console.log("id " + $(this).attr("id") + "width" + container_width);
+                $(this).width(container_width);
+                $(this).children().each(function(){
+                    $(this).width(container_width);
+                })
+                $(this).find($(".nicEdit-main")).width(container_width - 24+ "px");
+                $(this).find($(".nicEdit-panelContain")).width(container_width - 20 + "px");
+                $(this).find($(".nicEdit-main")).css("min-height",$(this).height() - $(this).find($(".nicEdit-panel")).height() - 20 + "px");
+                $(this).find($(".nicEdit-main")).css("margin-top",$(this).find($(".nicEdit-panel")).height() + 5 + "px");
+
+             })   
+
+        }
+    });
+
+	handleNavigationVisibility();
+
+	// ------------ end of code to initialise the editors
+
+
+
+
 	$("#step_editor_confirmation_button").click(function(){
 		//$("#step_editor_modal").modal('hide');
 		stepEditor = nicEditors.findEditor("text_to_change_textarea");
@@ -341,13 +379,6 @@ body {
 
 
 </script>
-
-
-
-
-<!-- Scripts for the text editor -->
-<script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
-<script type="text/javascript" src=" {% static 'js/nicEdit plugin/src/nicExample/nicEdit.js' %}"></script>
 
 
 <script type="text/javascript">
@@ -523,11 +554,7 @@ $('#step_editor_modal').on('hidden.bs.modal', function () {
 	});
 </script>
 <!--<script type="text/javascript" src="{% static 'js/change.js' %}"></script>-->
-<script type="text/javascript" src="{% static 'js/bootstrap-confirmation.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/authorChange.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/colResizable-1.4.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery.splitter-0.15.0.js' %}"></script>
+
 <!--
 <script type="text/javascript">
 	jQuery(function($) {
