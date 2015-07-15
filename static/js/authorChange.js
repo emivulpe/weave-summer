@@ -683,10 +683,10 @@ $('#question_btn_prev').click(function() {
     loadStep("back");
 });
 
-// Reset the example on click of the reset button
-$('.done_btn').click(function() {
-    alert("done clicked");
-});
+// // Reset the example on click of the reset button
+// $('.done_btn').click(function() {
+//     alert("done clicked");
+// });
 
 
 $('.create_question_btn').click(function(){
@@ -850,100 +850,3 @@ function handleNavigationVisibility(){
         }
     })
 }
-
-/*$('.fa-trash-o').confirmation({    
-                                "placement" : "bottom",
-                                "title" : "Are you sure you would like to delete this step?" ,
-                                "onConfirm" : function(){
-                                    alert("yes");
-                                    if ($(this).hasClass("question_step_btn")){
-                                        $("#question_modal").modal('hide');
-                                    }
-                                    $.post("/weave/delete_step/", {
-                                        'example_name': exampleName,
-                                        'step_number': currentStep,
-                                        'csrfmiddlewaretoken': csrftoken,
-                                    }).done(function(){
-                                        if(currentStep > 0){
-                                            loadStep("back");
-                                        }
-                                        else{
-                                            loadStep("this");
-                                        }
-                                    })
-                                }
-                           });
-*/
-/*$( document ).ready(function() { $('.fa-trash-o').confirmation({    
-                                "placement" : "bottom",
-                                "title" : "Are you sure you would like to delete this step?" ,
-                                onConfirm : test()function(){
-                                    alert("yes");
-                                    if ($(this).hasClass("question_step_btn")){
-                                        $("#question_modal").modal('hide');
-                                    }
-                                    $.post("/weave/delete_step/", {
-                                        'example_name': exampleName,
-                                        'step_number': currentStep,
-                                        'csrfmiddlewaretoken': csrftoken,
-                                    }).done(function(){
-                                        if(currentStep > 0){
-                                            loadStep("back");
-                                        }
-                                        else{
-                                            loadStep("this");
-                                        }
-                                    })
-                                 }
-                                });
-})
-*/
-function test(){
-    alert("test");
-}
-$('.fa-trash-o').click(function(){
-$('.fa-trash-o').confirmation({    
-                                "placement" : "bottom",
-                                "title" : "Are you sure you would like to delete this step?" ,
-                                onConfirm : test()/*function(){
-                                    alert("yes");
-                                    if ($(this).hasClass("question_step_btn")){
-                                        $("#question_modal").modal('hide');
-                                    }
-                                    $.post("/weave/delete_step/", {
-                                        'example_name': exampleName,
-                                        'step_number': currentStep,
-                                        'csrfmiddlewaretoken': csrftoken,
-                                    }).done(function(){
-                                        if(currentStep > 0){
-                                            loadStep("back");
-                                        }
-                                        else{
-                                            loadStep("this");
-                                        }
-                                    })
-                                 }*/
-                                });
-    //$(this).confirmation('show');
-    /*{    
-                                "placement" : "bottom",
-                                "title" : "Are you sure you would like to delete this step?" ,
-                                "onConfirm" : function(){
-                                    if ($(this).hasClass("question_step_btn")){
-                                        $("#question_modal").modal('hide');
-                                    }
-                                    $.post("/weave/delete_step/", {
-                                        'example_name': exampleName,
-                                        'step_number': currentStep,
-                                        'csrfmiddlewaretoken': csrftoken,
-                                    }).done(function(){
-                                        if(currentStep > 0){
-                                            loadStep("back");
-                                        }
-                                        else{
-                                            loadStep("this");
-                                        }
-                                    })
-                                }
-                           });*/
-})

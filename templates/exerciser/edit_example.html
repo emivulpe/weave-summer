@@ -48,8 +48,8 @@ body {
 	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
-	<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
+	<li id = "delete_step_btn"><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
+	<li class = "step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
 
 	<a class="btn btn-large confirmation" data-toggle="confirmation">Click to toggle confirmation</a>
 	
@@ -110,8 +110,8 @@ body {
 						<li><a id="btn_create_step_after"  class = "create_step_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 						<li><a id="btn_create_question_before" class = "create_question_btn before question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
 						<li><a id="btn_create_question_after" class = "create_question_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-					    <li><a id="delete_question" class = "delete_step_btn question_step_btn" href="#" style=" top: 2px; color : #777;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>
-						<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
+					    <li id = "delete_question_step_btn" ><a id="delete_question" class = "delete_step_btn question_step_btn" href="#" style=" top: 2px; color : #777;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>
+						<li class = "question_step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
 						<li><a id="create_question_step" href="#" style="top: 2px; color : #777;" title = "Save the question step"><i class="fa fa-check fa-lg landing-icon fa"></i></a></li>
                 </ul>      
                 <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
@@ -214,14 +214,78 @@ body {
 
 
 <script type="text/javascript">
-$(".confirmation").confirmation({
-placement: 'bottom', // How to position the confirmation - top | bottom | left | right
-onConfirm: function(){alert("yes")}, // Set event when click at confirm button
-onCancel: function(){}})
-$(".confirmation").click(function(){
-	$(this).confirmation('show');
+$("#delete_question_step_btn").confirmation({
+    'title' : 'Are you sure you would like to delete this step?',
+    'placement': 'top', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        $("#question_modal").modal('hide');
+        $.post("/weave/delete_step/", {
+            'example_name': exampleName,
+            'step_number': currentStep,
+            'csrfmiddlewaretoken': csrftoken,
+        }).done(function(){
+            if(currentStep > 0){
+                loadStep("back");
+            }
+            else{
+                loadStep("this");
+            }
+        })
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){alert($(this).prop('tagName'));}
 })
 
+$("#delete_step_btn").confirmation({
+    'title' : 'Are you sure you would like to delete this step?',
+    'placement': 'bottom', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        $.post("/weave/delete_step/", {
+            'example_name': exampleName,
+            'step_number': currentStep,
+            'csrfmiddlewaretoken': csrftoken,
+        }).done(function(){
+            if(currentStep > 0){
+                loadStep("back");
+            }
+            else{
+                loadStep("this");
+            }
+        })
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){}
+})
+
+
+$(".step_btn.store_example_btn").confirmation({
+    'title' : 'Are you sure you would like to save the example and go to the home page?',
+    'placement': 'bottom', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        alert("code to go to the home page");
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){alert($(this).prop('tagName'));}
+})
+
+
+$(".question_step_btn.store_example_btn").confirmation({
+    'title' : 'Are you sure you would like to save the example and go to the home page?',
+    'placement': 'top', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        alert("code to go to the home page");
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){alert($(this).prop('tagName'));}
+})
 
 	//------------------------- code to initialise the editors
 
