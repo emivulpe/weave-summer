@@ -1,17 +1,10 @@
-{% extends 'exerciser/base_combined.html' %}
+{% extends 'exerciser/base.html' %}
 {% load static %}
 {% block links %}
     <link href="{% static 'css/jquery.splitter.css' %}" rel="stylesheet"/>
 {% endblock %}
 
-{% block example_name %}<label id = "example_name_label">{{ example.name }}{% endblock %}
-
-{% block home_icon %}
-<a class="navbar-brand" href="/weave/example_editor">
-    <i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
-</a>
-{% endblock %}
-
+{% block app_name %}<label id = "example_name_label">{{ example.name }}{% endblock %}
 {% block style %}
 
 body {
@@ -46,19 +39,21 @@ body {
 
 {% endblock %}
 
-{% block navigation_controls %}                      
+
+{% block app_controls %}
+
 	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
-{% endblock %}
-{% block editor_controls %}
 	<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>	
 	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 	<li id = "delete_step_btn"><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
 	<li class = "step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
-{% endblock %}
 
+	<a class="btn btn-large confirmation" data-toggle="confirmation">Click to toggle confirmation</a>
+	
+{% endblock %}
 
 
 {% block body_block %}
@@ -219,91 +214,106 @@ body {
 
 
 <script type="text/javascript">
-    $("#delete_question_step_btn").confirmation({
-        'title' : 'Are you sure you would like to delete this step?',
-        'placement': 'top', 
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            $("#question_modal").modal('hide');
-            $.post("/weave/delete_step/", {
-                'example_name': exampleName,
-                'step_number': currentStep,
-                'csrfmiddlewaretoken': csrftoken,
-            }).done(function(){
-                if(currentStep > 0){
-                    loadStep("back");
-                }
-                else{
-                    loadStep("this");
-                }
-            })
-        }
-    })
+$("#delete_question_step_btn").confirmation({
+    'title' : 'Are you sure you would like to delete this step?',
+    'placement': 'top', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        $("#question_modal").modal('hide');
+        $.post("/weave/delete_step/", {
+            'example_name': exampleName,
+            'step_number': currentStep,
+            'csrfmiddlewaretoken': csrftoken,
+        }).done(function(){
+            if(currentStep > 0){
+                loadStep("back");
+            }
+            else{
+                loadStep("this");
+            }
+        })
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){alert($(this).prop('tagName'));}
+})
 
-    $("#delete_step_btn").confirmation({
-        'title' : 'Are you sure you would like to delete this step?',
-        'placement': 'bottom', 
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            $.post("/weave/delete_step/", {
-                'example_name': exampleName,
-                'step_number': currentStep,
-                'csrfmiddlewaretoken': csrftoken,
-            }).done(function(){
-                if(currentStep > 0){
-                    loadStep("back");
-                }
-                else{
-                    loadStep("this");
-                }
-            })
-        }
-    })
-
-
-    $(".step_btn.store_example_btn").confirmation({
-        'title' : 'Are you sure you would like to save the example and go to the home page?',
-        'placement': 'bottom',
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            alert("code to go to the home page");
-        }
-    })
+$("#delete_step_btn").confirmation({
+    'title' : 'Are you sure you would like to delete this step?',
+    'placement': 'bottom', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        $.post("/weave/delete_step/", {
+            'example_name': exampleName,
+            'step_number': currentStep,
+            'csrfmiddlewaretoken': csrftoken,
+        }).done(function(){
+            if(currentStep > 0){
+                loadStep("back");
+            }
+            else{
+                loadStep("this");
+            }
+        })
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){}
+})
 
 
-    $(".question_step_btn.store_example_btn").confirmation({
-        'title' : 'Are you sure you would like to save the example and go to the home page?',
-        'placement': 'top',
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            alert("code to go to the home page");
-        }
-    })
+$(".step_btn.store_example_btn").confirmation({
+    'title' : 'Are you sure you would like to save the example and go to the home page?',
+    'placement': 'bottom', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        alert("code to go to the home page");
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){alert($(this).prop('tagName'));}
+})
+
+
+$(".question_step_btn.store_example_btn").confirmation({
+    'title' : 'Are you sure you would like to save the example and go to the home page?',
+    'placement': 'top', // How to position the confirmation - top | bottom | left | right
+    'btnOkLabel' : 'Yes',
+    'btnCancelLabel' : 'No',
+    'popout' : false,
+    'onConfirm' : function(){
+        alert("code to go to the home page");
+    }, // Set event when click at confirm button
+    //'onCancel' : function(){alert($(this).prop('tagName'));}
+})
 
 	//------------------------- code to initialise the editors
 
+    //$(".nicEdit-main").css("margin","100px");
     $("#panel_container" ).colResizable({ disable : true });
 
 
     $('textarea[id^="area"]').each(function(index) {
         $(this).height($("#outer_panel2").height()*0.71);
+        //$(this).css("margin","100px");
+
+        /*if(nicEditInstances[$(this).attr("id")] != undefined){
+            nicEditInstances[$(this).attr("id")].removeInstance(nicEditInstances[$(this).attr("id")]);
+            nicEditInstances[$(this).attr("id")] = undefined;
+        }*/
         textareaId = $(this).attr("id");
         if(nicEditInstances[$(this).attr("id")] == undefined){
             nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).addInstance($(this).attr("id")).setPanel("area_panel_" + index);                 
         }
     });
-
+    /*if(nicEditInstances["explanation_area"] != undefined){
+        nicEditInstances["explanation_area"].removeInstance(nicEditInstances["explanation_area"]);
+        nicEditInstances["explanation_area"] = undefined;
+    }*/
     if(nicEditInstances["explanation_area"] == undefined){
         nicEditInstances["explanation_area"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).addInstance("explanation_area").setPanel('explanation_area_panel');
     }
+    //$(".nicEdit-main").css("height",$("#area_container0").height() - $(".nicEdit-panel").height() - 20 + "px");
 
     $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
     $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");
@@ -312,6 +322,9 @@ body {
         currentFocusedEditor = $(this).parent().siblings("textarea").attr("id");
     })
 
+    //$("#panel_container").find($(".nicEdit-panelContain")).css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth() + "px");
+    //$("#panel_container").find($(".nicEdit-panel")).css("margin-right" , "0");
+    //$("#area_panel_0").css("width", $("#panel_container").find($(".nicEdit-main")).outerWidth( true ) + "px");
     $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
     $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
     $("#explanation_area_panel").css("width", $("#explanation_row2").find($(".nicEdit-main")).outerWidth( true ) + "px");
@@ -347,8 +360,13 @@ body {
 
 	handleNavigationVisibility();
 
+	// ------------ end of code to initialise the editors
+
+
+
 
 	$("#step_editor_confirmation_button").click(function(){
+		//$("#step_editor_modal").modal('hide');
 		stepEditor = nicEditors.findEditor("text_to_change_textarea");
 	    newStepText = stepEditor.getContent();
 	    stepEditorTitle = $("#step_editor_title").text();
@@ -379,20 +397,40 @@ body {
 		refreshDeleteOptionController();
 
 		if (option_type == "multiple_choice_with_comments"){
+			//alert("tuk");
             $('#option_' + option_number).append('<tr id = "comment_area_' + option_number + '"><td colspan = "4"><label>Answer comment:</label><textarea id="comment_textarea_' + option_number + '" style = "width:100%;"></textarea></td></tr>');
- 
+            /*if(nicEditInstances["comment_textarea_" + option_number] != undefined){
+            	nicEditInstances["comment_textarea_" + option_number].removeInstance(nicEditInstances["comment_textarea_" + option_number]);
+            	nicEditInstances["comment_textarea_" + option_number] = undefined;
+            }*/
+            //if(nicEditInstances["comment_textarea_" + option_number] == undefined){
             if(nicEditors.findEditor("comment_textarea_" + option_number) == undefined){
-            	nicEditInstances["comment_textarea_" + option_number] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + option_number);  
+            	nicEditInstances["comment_textarea_" + option_number] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance("comment_textarea_" + option_number);//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);   
             }
-            		}
+            //}
+		}
 		option_number++;
 
 		correctAnswerController();
 		
 	});
+	/*
+	$(document).on("click","td .nicEdit-main", function (event) {
+		currentFocusedEditor = $(event.target).parent().siblings('textarea').attr('id');
+	});
+	*/
+
+	/*$(".modal-dissmiss").click(function(){
+		$(this).parents(".modal").find("textarea").each(function(){
+			editorId = $(this).attr("id");
+			if(nicEditInstances[editorId] != undefined){
+				nicEditInstances[editorId].removeInstance(editorId);
+			}
+		})
+	})*/
 
 	//change the name of the function if it is being used
-	function resizeEditors() {
+	function repeatingfunction() {
 	    console.log("mouse down");
         $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
         $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");		
@@ -438,27 +476,68 @@ body {
         editEditor.setContent(rawText);
 
 	})
-
-    $('.modal').on('hidden.bs.modal', function () {
-    	$(this).removeData('bs.modal'); 
-    })
-
-
-    $("#step_editor_modal").on('shown.bs.modal',function(){
+	//var stepEditor;
+/*
+	$("#step_editor_modal").on('shown.bs.modal',function(){
+		//$("#step_editor_btn_prev").css('visibility', 'hidden');
+		stepToChangeIndex = -1;
+		if(exactMatchesBeingProcessed){
+			selectedMatchesLength = exactMatches.length;
+		}
+		else{
+			selectedMatchesLength = possibleMatches.length;
+		}
+		handleStepEditorControlVisibility("next" , stepToChangeIndex, selectedMatchesLength, ".step_editor_control");
+	 // if(nicEditInstances["text_to_change_textarea"] != undefined){
+     //    	nicEditInstances["text_to_change_textarea"].removeInstance(nicEditInstances["text_to_change_textarea"]);
+     //    	nicEditInstances["text_to_change_textarea"] = undefined;
+     // }
         if(nicEditInstances["text_to_change_textarea"] == undefined){
-    		nicEditInstances["text_to_change_textarea"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
-    	}
-    	confirmStepChange();
-    })
+			nicEditInstances["text_to_change_textarea"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
+		}
+		confirmStepChanges("next", true);
+	})
+
+	$('#step_editor_modal').on('hidden.bs.modal', function () {
+		//stepEditor.removeInstance('text_to_change_textarea');
+		if (exactMatchesBeingProcessed){
+			exactMatchesBeingProcessed = false;
+			if(possibleMatches.length > 0){
+				$("#step_editor_modal").modal('show');
+			}
+            //confirmStepChanges("next");
+		}
+		else{
+			exactMatchesBeingProcessed = true;
+		}
+		$(this).removeData('bs.modal'); 
+	})
+*/
+$('.modal').on('hidden.bs.modal', function () {
+	$(this).removeData('bs.modal'); 
+})
 
 
-    $('#step_editor_modal').on('hidden.bs.modal', function () {
-    	if(allMatches.length > 0){
-    		$("#step_editor_modal").modal('show');
-    	}
-    })
+$("#step_editor_modal").on('shown.bs.modal',function(){
+    if(nicEditInstances["text_to_change_textarea"] == undefined){
+		nicEditInstances["text_to_change_textarea"] = new nicEditor({"iconsPath" : nicEditorPath,"buttonList" : buttonList}).panelInstance("text_to_change_textarea");
+	}
+	confirmStepChange();
+})
+
+
+$('#step_editor_modal').on('hidden.bs.modal', function () {
+	if(allMatches.length > 0){
+		$("#step_editor_modal").modal('show');
+	}
+})
 
 </script>
+
+<!-- End of scripts for the text editor -->
+
+
+
 
 <script type="text/javascript">
 	$('input[type=radio][name=question_type_radio]').on('change', function(){
@@ -488,15 +567,31 @@ body {
 	            });
 
 		        $('textarea[id^="comment_textarea_"]').each(function(index) {
+		            //$(this).height($("#outer_panel2").height()*0.71);
+		            //$(this).css("margin","100px");
+		            //$(this).width($("#question_text_container").width());
+		            
+				    /*if(nicEditInstances[$(this).attr("id")] != undefined){
+			        	nicEditInstances[$(this).attr("id")].removeInstance(nicEditInstances[$(this).attr("id")]);
+			        	nicEditInstances[$(this).attr("id")] = undefined;
+			        }*/
 					if(nicEditors.findEditor($(this).attr("id")) == undefined){
 
 					nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));
 		            }
+		            //---->commentEditors[index] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));//.addInstance($(this).attr("id")).setPanel("comment_panel_" + index+1);  
+
+
+
+
 
 		        });
-
+	           //$("#multiple_choice_comment_container").show();
+	            //$("#question_type").after('<input id = "option1" class="form-control" type="text" placeholder="Option Text">');
 	            break;
 	        case 'open' :
+	        	//$("#multiple_choice_comment_container").hide();
+	        	//$("#open_comment_container").show();
 	       		$("#options_container").hide();
 	       		console.log("o");
 	            break;
@@ -509,6 +604,8 @@ body {
 	$(function() {
 		$("#plan_modal").modal('show');
 		$(".step").draggable();
+		//$(".draggable").draggable();
+		//$("#steps").sortable();
 	});
 
 	$(document).ready(function() {
@@ -520,92 +617,138 @@ body {
 
 	});
 </script>
+<!--<script type="text/javascript" src="{% static 'js/change.js' %}"></script>-->
 
+<!--
+<script type="text/javascript">
+	jQuery(function($) {
+		$('#widget').width("100%").height("100%");//.split({ position:'100%'});
+		$('#foo').split({orientation:'horizontal', resize:(function(){console.log("successsssssssss")})});
+
+  		$(window).resize(function() {
+		    var navHeight = $("#navigation_bar").height();
+		    $("#foo").height("100%");
+		});
+
+	});
+ </script>
+
+-->
 <script type="text/javascript" src="{% static 'js/applications.js' %}"></script>
 
-<script type="text/javascript" src="{% static 'js/jquery.browser.min.js' %}"></script>
+
+<!-- Scripts to deal with the plan modal -->
+
+
+
+<script type="text/javascript" src="{% static 'js/jquery.sortable.js' %}"></script>
+
+<script>
+    $('.sortable').sortable();
+</script>
+  <script type="text/javascript" src="{% static 'js/jquery.browser.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jQuery.splitter.js' %}"></script>
 <script type="text/javascript">
 
-    $().ready(function() {
+$().ready(function() {
 
-        var int00;
-    	$("#example_container").splitter({
-    		type: "h", 
-    		accessKey: "P"
-    	});
-    	$('.hsplitbar').mousedown(function(){
-    		    int00 = setInterval(function() { resizeEditors(); }, 1);
-    		    $("#explanation_area_panel").css("position","relative");
-    		})
-    	$(window).mouseup(function() { 
-    		    clearInterval(int00);
-    		    $("#explanation_area_panel").css("position","fixed");
-    	});
+var int00;
+	$("#example_container").splitter({
+		type: "h", 
+		accessKey: "P"
+	});
+	$('.hsplitbar').mousedown(function(){
+		    int00 = setInterval(function() { repeatingfunction(); }, 1);
+		    $("#explanation_area_panel").css("position","relative");
+		})
+	$(window).mouseup(function() { 
+		    clearInterval(int00);
+		    $("#explanation_area_panel").css("position","fixed");
+		});
+/*	$(".hsplitbar").mouseup(function(){
+	console.log("success3");
+	repeatingfunction();
+	})
+*/
+});
 
-    });
-
-    $(window).resize(function() {
-    	
-    	$("#outer_panel2").width($("#example_container").width() + "px");
-    	$("#explanation_row2").width($("#example_container").width() + "px");
-    	$("#panel_container").width($("#example_container").width() + "px");
-    	$(".hsplitbar").width($("#example_container").width() + "px");
-    	$("#explanation_row2").height($("#example_container").height() - $("#outer_panel2").height() - 4 + "px");
-
-
-    	 $('[id^="area_container"]').each(function(index) {
-    	    var container_width = $(this).parent().width();
-    	    console.log("id " + $(this).attr("id") + "width" + container_width);
-    	    $(this).width(container_width);
-    	    $(this).children().each(function(){
-    	        $(this).width(container_width);
-    	    })
-    	    $(this).find($(".nicEdit-main")).width(container_width - 24+ "px");
-    	    $(this).find($(".nicEdit-panelContain")).width(container_width - 20 + "px");
-    	    $(this).find($(".nicEdit-main")).css("min-height",$(this).height() - $(this).find($(".nicEdit-panel")).height() - 20 + "px");
-    	    $(this).find($(".nicEdit-main")).css("margin-top",$(this).find($(".nicEdit-panel")).height() + 5 + "px");
-
-    	 })   
-
-    	$("#explanation_row2").children().css("width", ($("#explanation_row2").width() - 20) + "px");
-    	$("#explanation_row2").find($(".nicEdit-main")).css("width",($("#explanation_row2").width() - 27) + "px");
-    	
+$(window).resize(function() {
+	
+	$("#outer_panel2").width($("#example_container").width() + "px");
+	$("#explanation_row2").width($("#example_container").width() + "px");
+	$("#panel_container").width($("#example_container").width() + "px");
+	$(".hsplitbar").width($("#example_container").width() + "px");
+	$("#explanation_row2").height($("#example_container").height() - $("#outer_panel2").height() - 4 + "px");
 
 
-        $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
-        $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");		
+	 $('[id^="area_container"]').each(function(index) {
+	    var container_width = $(this).parent().width();
+	    console.log("id " + $(this).attr("id") + "width" + container_width);
+	    $(this).width(container_width);
+	    $(this).children().each(function(){
+	        $(this).width(container_width);
+	    })
+	    $(this).find($(".nicEdit-main")).width(container_width - 24+ "px");
+	    $(this).find($(".nicEdit-panelContain")).width(container_width - 20 + "px");
+	    $(this).find($(".nicEdit-main")).css("min-height",$(this).height() - $(this).find($(".nicEdit-panel")).height() - 20 + "px");
+	    $(this).find($(".nicEdit-main")).css("margin-top",$(this).find($(".nicEdit-panel")).height() + 5 + "px");
 
-        $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
-        $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
-    	$( "#panel_container" ).colResizable({ disable : true });
-        //Re-init the plugin on the new elements
-        $("#panel_container").colResizable({
-            liveDrag: true,
-            gripInnerHtml: "<div class='grip'></div>",
-            draggingClass: "dragging",
-            onDrag: function (){
+	 })   
 
-                 $('[id^="area_container"]').each(function(index) {
-                    var container_width = $(this).parent().width();
-                    console.log("id " + $(this).attr("id") + "width" + container_width);
+	$("#explanation_row2").children().css("width", ($("#explanation_row2").width() - 20) + "px");
+	$("#explanation_row2").find($(".nicEdit-main")).css("width",($("#explanation_row2").width() - 27) + "px");
+	
+
+
+    $("#panel_container").find($(".nicEdit-main")).css("min-height",$("#area_container0").height() - $("#panel_container").find($(".nicEdit-panel")).height() - 20 + "px");
+    $("#panel_container").find($(".nicEdit-main")).css("margin-top",$("#panel_container").find($(".nicEdit-panel")).height() + 5 + "px");		
+
+    $("#explanation_row2").find($(".nicEdit-main")).css("min-height",$("#explanation_row2").height() - $("#explanation_row2").find($(".nicEdit-panel")).height() - 20 + "px");
+    $("#explanation_row2").find($(".nicEdit-main")).css("margin-top",$("#explanation_row2").find($(".nicEdit-panel")).height() + 5 + "px");
+	$( "#panel_container" ).colResizable({ disable : true });
+    //Re-init the plugin on the new elements
+    $("#panel_container").colResizable({
+        liveDrag: true,
+        gripInnerHtml: "<div class='grip'></div>",
+        draggingClass: "dragging",
+        onDrag: function (){
+
+             $('[id^="area_container"]').each(function(index) {
+                var container_width = $(this).parent().width();
+                console.log("id " + $(this).attr("id") + "width" + container_width);
+                $(this).width(container_width);
+                $(this).children().each(function(){
                     $(this).width(container_width);
-                    $(this).children().each(function(){
-                        $(this).width(container_width);
-                    })
-                    $(this).find($(".nicEdit-main")).width(container_width - 24+ "px");
-                    $(this).find($(".nicEdit-panelContain")).width(container_width - 20 + "px");
-                    $(this).find($(".nicEdit-main")).css("min-height",$(this).height() - $(this).find($(".nicEdit-panel")).height() - 20 + "px");
-                    $(this).find($(".nicEdit-main")).css("margin-top",$(this).find($(".nicEdit-panel")).height() + 5 + "px");
+                })
+                $(this).find($(".nicEdit-main")).width(container_width - 24+ "px");
+                $(this).find($(".nicEdit-panelContain")).width(container_width - 20 + "px");
+                $(this).find($(".nicEdit-main")).css("min-height",$(this).height() - $(this).find($(".nicEdit-panel")).height() - 20 + "px");
+                $(this).find($(".nicEdit-main")).css("margin-top",$(this).find($(".nicEdit-panel")).height() + 5 + "px");
 
-                 })   
+             })   
 
-            }
-        });
-
-    	$("#question_text_container").children().css("width", ($("#question_modal_body").width()) + "px");
-    	$("#question_text_container").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+        }
     });
+
+	$("#question_text_container").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#question_text_container").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+
+	/*$("#correct_answer_comment").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#correct_answer_comment").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+
+
+	$("#wrong_answer_comment").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#wrong_answer_comment").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+
+	$("#general_comment").children().css("width", ($("#question_modal_body").width()) + "px");
+	$("#general_comment").find($(".nicEdit-main")).css("width",($("#question_modal_body").width()) + "px");
+	*/
+/*
+	$("#comments_container").children().css("width", ($("#comments_container").width()) + "px");
+	$("#comments_container").find($(".nicEdit-main")).css("width",($("#comments_container").width()) + "px");
+*/
+});
+
 
 </script>
 
