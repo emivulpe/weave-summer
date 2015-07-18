@@ -21,6 +21,16 @@ from django.db.models import Avg
 from django.db.models import Count, Max, Sum, Min
 import lxml.html
 import xml.etree.ElementTree as ET
+import difflib
+from difflib import Differ
+from pprint import pprint
+import lxml.etree as et
+import re
+from django.utils.html import strip_tags, escape
+from xml.sax.saxutils import unescape
+from bs4 import BeautifulSoup
+
+
 
 
 
@@ -1327,6 +1337,50 @@ def get_next_step(request):
 	#else:
 	#	step_entry["question_text"] = ""
 	#	print "NOT A QUESTIOOOOOON"
+	# first find the differences in the plain text
+	# second find the 
+	#print(result)
+	
+
+	"""
+	#for r in result:
+	#	if r[0] == ' ' or r[0] == '+':
+	#		print r[1:]
+	test0 = '<span style="line-height: 15.3999996185303px;">this is step 2-panel 3</span><br>'
+	plain_test0 = lxml.html.fromstring(test0).text_content()
+	test = '<span style="line-height: 15.3999996185303px;">thi<span style="background-color: rgb(25, 7, 7);">s is a new step 2-pa</span>nel 3</span>'
+	plain_test = lxml.html.fromstring(test).text_content()
+	r = list(d.compare(plain_test0.split(),plain_test.split()))
+	#print r
+	#l = list(d.compare(test.split(),plain_test.split()))
+	##print l
+
+	combination = ""
+	#doc = et.fromstring(test)
+	for word in r:
+		print word
+		if word[0] is '+':
+			print "had +"
+			word = word[1:]
+			combination += word;
+		else:
+			if combination != '':
+				test = test.replace(combination, ('<div class ="style">' + combination + '</div>'))
+				combination = ""
+			else:
+				print "combination empty"
+	#print et.tostring(doc,pretty_print=True), "looookkkkkkkkkkkkkkkkkkkkkkkkkk"
+
+
+	print test, "cheeeeeeeeeeeeeeeck"
+	
+	soup = BeautifulSoup(test, "lxml")
+
+	for div in soup.findAll('div', 'style'):
+		div.replaceWithChildren()
+	print soup
+	"""
+
 	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
 
 @requires_csrf_token
@@ -1426,12 +1480,87 @@ def create_step(request):
 
 		# save the new step panel texts
 		for panel_id in panel_texts:
-			html = panel_texts[panel_id]
+
+			html = panel_texts[panel_id].replace("&nbsp;", " ")
+
+			# new code to deal with automatic highlighting
+			soup = BeautifulSoup(html, "lxml")
+			for div in soup.findAll('span', 'style'):
+				div.replaceWithChildren()
+			for div in soup.findAll('html', ''):
+				div.replaceWithChildren()
+			for div in soup.findAll('body', ''):
+				div.replaceWithChildren()
+			for div in soup.findAll('p', ''):
+				div.replaceWithChildren()
+			print soup, "souppppppppppppppppppppp"
+			html = str(soup)
+					
+			# check the code with the previous 
+			#current_step_text = lxml.html.fromstring(html).text_content().split()
+			current_step_text = keeptags(html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
+			previous_step_text = []
+			previous_step_number = step_number - 1
+			while previous_step_number >= 0 and previous_step_text == []:
+				previous_step = HTMLStep.objects.filter(example = example, step_number = previous_step_number, panel_id = panel_id)
+				if len(previous_step) != 0:
+					#print "there was a previous step"
+					#previous_step_text = lxml.html.fromstring(previous_step[0].html).text_content().split()
+					previous_step_text = keeptags(previous_step[0].html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
+				previous_step_number -= 1
+			#print previous_step_text, "previous step text"
+			if len(previous_step_text) == 0:
+				#print "previous step was empty"
+				html = '<span class ="style" style = "background-color:red;">' + html+ '</span>'
+			else:
+				d = Differ()
+				comparison_result = list(d.compare(previous_step_text, current_step_text))
+				print comparison_result, "interestedddddddddddddddddddddddddddddddddd"
+				combination = ""
+				after_div_tag = False
+				#doc = et.fromstring(test)
+				for word in comparison_result:
+					print "woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd"
+					if word[0] == '+' and "<div>" not in word and "</div>" not in word:
+						print "had +"
+						if not after_div_tag:
+							print "not after div"
+							word = word[1:]
+						else:
+							print "after div"
+							word = word[2:]	# the div tag added an extra space in front
+						combination += word;
+					else:
+						if combination != "":
+							print "combination NOT empty", len(combination), combination
+							#print html
+							#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
+							#print "combination NOT empty", combination
+							html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+							print html
+							combination = ""
+						else:
+							print "combination empty"
+					if "<div>" not in word and "</div>" not in word:
+						after_div_tag = False
+					else:
+						print "after div"
+						after_div_tag = True
+				if combination != "":
+					print "combination NOT empty2", len(combination)
+					print html
+					#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
+					#print "combination NOT empty2", combination
+					html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+					print html
+					combination = ""
+
+
 			save_panel_text(html, example_name, step_number,panel_id)
 
 		# save the new step explanation
 
-		print "explanation html ", html
+		#print "explanation html ", html
 		html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
 		html_explanation.html = explanation
 		html_explanation.save() #Save the changes
@@ -1741,8 +1870,6 @@ def keeptags(value, tags):
     
     Usage: keeptags:"strong em ul li"
     """
-    import re
-    from django.utils.html import strip_tags, escape
     tags = [re.escape(tag) for tag in tags.split()]
     tags_re = '(%s)' % '|'.join(tags)
     singletag_re = re.compile(r'<(%s\s*/?)>' % tags_re)
@@ -1759,5 +1886,61 @@ def keeptags(value, tags):
 
 def remove_tags(text):
     return ''.join(ET.fromstring(text).itertext())
+"""
+
+def highlight_new_text(raw_old_text, raw_new_text):
+	d = Differ()
+	plain_old_text = lxml.html.fromstring(raw_old_text).text_content()
+	plain_new_text = lxml.html.fromstring(raw_new_text).text_content()
+	plain_old_text_list_form = plain_old_text.split()
+	plain_new_text_list_form = plain_new_text.split()
+	raw_new_text_list_form = raw_new_text.split()
+
+	# compare the plain old and the raw new texts
+	comparison_result = list(d.compare(plain_old_text_list_form, raw_new_text_list_form))
+
+	word_index = 0
+	in_style_tag = False
+	between_style_tag = False
+	style_tag = None
+	while word_index < len(comparison_result):
+		word = comparison_result[word_index] 
+		if word[0] == ' ' or word[0] == '+':
+			# currently not in style tag so the word is valid unless it is entering a style tag now
+			if not in_style_tag:
+				if '<span' in word:
+					style_tag = "span"
+					tag_index = word.index('<span')
+				elif '<b' in word:
+					style_tag = 'b'
+					tag_index = word.index('<b')
+				elif '<font' in word:
+					style_tag = 'font'
+					tag_index = word.index('<font')
+				elif '<i' in word:
+					style_tag = 'i'
+					tag_index = word.index('<i')
+				else:
+					style_tag = None
+				# enters a style tag
+				if style_tag != None:
+					in_style_tag = True
+					ending_symbol_index = getLastOccurrence(word, '>')
+					if ending_symbol_index > tag_index:
+						# escape the style details and get the appropriate word
+						word = word[ending_symbol_index + 1:]
+						in_style_tag = False
+						between_style_tag = True
 
 
+
+	print(result)
+
+"""
+def getLastOccurrence(l, element):
+	for index, val in enumerate(l):
+		lastIndex = -1
+		if val==element:
+			lastIndex = index
+
+	return lastIndex

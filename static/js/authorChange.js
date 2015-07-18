@@ -644,6 +644,20 @@ function saveStep(insertBefore, insertAfter){
     }).done(function(){
         handleNavigationVisibility();
     });
+    //clearAutomaticHighlighting();
+    $(".style").replaceWith(function() { return $(".style").contents(); });
+
+}
+
+function clearAutomaticHighlighting(){
+    $('textarea[id^="area"]').each(function(index) {
+        var panelId = $(this).attr("id");
+        var panelArea = nicEditors.findEditor(panelId);
+        var panelContent = panelArea.getContent();
+        alert(panelContent);
+        $(".style").replaceWith(function() { return $(".style").contents(); });
+        alert(panelContent);
+    });
 }
 
 /*
