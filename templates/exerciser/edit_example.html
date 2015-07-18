@@ -214,79 +214,13 @@ body {
 <!-- Scripts for the text editor -->
 <script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
 <script type="text/javascript" src=" {% static 'js/nicEdit plugin/src/nicExample/nicEdit.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/deleteStepHandler.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/saveExampleHandler.js' %}"></script>
 
 
 
 
 <script type="text/javascript">
-    $("#delete_question_step_btn").confirmation({
-        'title' : 'Are you sure you would like to delete this step?',
-        'placement': 'top', 
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            $("#question_modal").modal('hide');
-            $.post("/weave/delete_step/", {
-                'example_name': exampleName,
-                'step_number': currentStep,
-                'csrfmiddlewaretoken': csrftoken,
-            }).done(function(){
-                if(currentStep > 0){
-                    loadStep("back");
-                }
-                else{
-                    loadStep("this");
-                }
-            })
-        }
-    })
-
-    $("#delete_step_btn").confirmation({
-        'title' : 'Are you sure you would like to delete this step?',
-        'placement': 'bottom', 
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            $.post("/weave/delete_step/", {
-                'example_name': exampleName,
-                'step_number': currentStep,
-                'csrfmiddlewaretoken': csrftoken,
-            }).done(function(){
-                if(currentStep > 0){
-                    loadStep("back");
-                }
-                else{
-                    loadStep("this");
-                }
-            })
-        }
-    })
-
-
-    $(".step_btn.store_example_btn").confirmation({
-        'title' : 'Are you sure you would like to save the example and go to the home page?',
-        'placement': 'bottom',
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            alert("code to go to the home page");
-        }
-    })
-
-
-    $(".question_step_btn.store_example_btn").confirmation({
-        'title' : 'Are you sure you would like to save the example and go to the home page?',
-        'placement': 'top',
-        'btnOkLabel' : 'Yes',
-        'btnCancelLabel' : 'No',
-        'popout' : false,
-        'onConfirm' : function(){
-            alert("code to go to the home page");
-        }
-    })
 
 	//------------------------- code to initialise the editors
 

@@ -60,8 +60,8 @@ body {
 	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-	<li><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
-	<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>		
+	<li id = "delete_step_btn"><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
+	<li class = "step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
 {% endblock %}
 
 
@@ -111,8 +111,8 @@ body {
 						<li><a id="btn_create_step_after"  class = "create_step_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
 						<li><a id="btn_create_question_before" class = "create_question_btn before question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
 						<li><a id="btn_create_question_after" class = "create_question_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-					    <li><a id="delete_question" class = "delete_step_btn question_step_btn" href="#" style=" top: 2px; color : #777;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>
-						<li><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
+					    <li id = "delete_question_step_btn" ><a id="delete_question" class = "delete_step_btn question_step_btn" href="#" style=" top: 2px; color : #777;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>
+						<li class = "question_step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>
 						<li><a id="create_question_step" href="#" style="top: 2px; color : #777;" title = "Save the question step"><i class="fa fa-check fa-lg landing-icon fa"></i></a></li>
                 </ul>      
                 <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
@@ -293,6 +293,10 @@ body {
 <!-- Scripts for the text editor -->
 <script type="text/javascript" src=" {% static 'js/nicEdit.js' %}"></script>
 <script type="text/javascript" src=" {% static 'js/nicEdit plugin/src/nicExample/nicEdit.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap-tooltip.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap-confirmation.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/deleteStepHandler.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/saveExampleHandler.js' %}"></script>
 
 
 <script type="text/javascript">
@@ -398,7 +402,6 @@ body {
 
 	});
 </script>
-<script type="text/javascript" src="{% static 'js/bootstrap-confirmation.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/authorChange.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/colResizable-1.4.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
