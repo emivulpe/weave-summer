@@ -1830,7 +1830,7 @@ def view_example(request, example_name_url):
 		steps = HTMLStep.objects.filter(example=example)
 		# get the first non-question step to determine the number of panels
 		first_non_question_step = steps.aggregate(Min('step_number'))['step_number__min']
-		steps = steps.filter(step_number = first_non_question_step)
+		steps = steps.filter(step_number = first_non_question_step).order_by('panel_id')
 		panels = []
 		if first_non_question_step != 0: # the first step is a question!
 			context_dict['explanation'] = ''
@@ -1854,6 +1854,7 @@ def view_example(request, example_name_url):
 
 	# Change to something more sensible!
 	except Example.DoesNotExist:
+		print "example doesn't exist"
 		return HttpResponseRedirect('/weave/')
 
 	# Go render the response and return it to the client.
