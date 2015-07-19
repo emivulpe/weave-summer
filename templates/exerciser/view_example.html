@@ -61,7 +61,7 @@ body {
 				{% for panel in panels %}
                 <td id = "panel_area_{{ panel.panel_number }}" class = "panel" valign="top" style = "border-right: 3px solid black;">
                 	<div id = "area_container{{ panel.panel_number }}" class="panel" style="margin:0px; float: left;word-wrap:break-word;overflow-y:scroll; overflow-x:hidden;">
-                		<div id = "{{ panel.panel_id }}" class="panel">{{ panel.html }}</div>
+                		<div id = "{{ panel.panel_id }}">{{ panel.html }}</div>
                 	</div>
                 </td>
 				{% endfor %}

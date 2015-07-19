@@ -83,13 +83,19 @@ function manageExampleAreas(data, direction) {
 
                 if (key == "options"){
                     var questionOptions = data[key];
-
-                    for (var i = 0; i < questionOptions.length; i++){
-                        opt_number = i + 1;
-                        option = questionOptions[i];
-                        var optionText = option["option_text"];     
-                        $("#options_list").append('<li class ="option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td style = "width:1%;white-space:nowrap;"><input type="checkbox"></td><td class = "option_number" style = "width:1%;white-space:nowrap; padding : 10px;">' + opt_number + '.</td><td>' + optionText + '</td></tr></table></li>');
+                    if(questionOptions.length > 0){
+                        for (var i = 0; i < questionOptions.length; i++){
+                            opt_number = i + 1;
+                            option = questionOptions[i];
+                            var optionText = option["option_text"];     
+                            $("#options_list").append('<li class ="option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td style = "width:1%;white-space:nowrap;"><input type="checkbox"></td><td class = "option_number" style = "width:1%;white-space:nowrap; padding : 10px;">' + opt_number + '.</td><td>' + optionText + '</td></tr></table></li>');
+                        }
                     }
+                    else{
+                        $("#options_list").append('<li><label id = "answer_area_label" for = "answer_area">Please enter your answer below:</label></li>');
+                        $("#options_list").append('<li><textarea id = "answer_area" style = "width:100%; resize: none;"></textarea></li>');
+                    }
+
 
                 }
 
@@ -123,7 +129,9 @@ function resetQuestionModal(){
 
     $(".option").each(function(){
         $(this).remove();
-    })
+    });
+    $("#answer_area").remove();
+    $("#answer_area_label").remove();
     //option_number = 1;
     $("#options_container").show();
 }
