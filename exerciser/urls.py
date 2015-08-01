@@ -51,5 +51,8 @@ urlpatterns = patterns('',
 		url(r'^edit_example/(?P<example_name_url>\w+)/$', views.edit_example, name='edit_example'),
 		url(r'^example_viewer', views.example_viewer, name='example_viewer'),
 		url(r'^view_example/(?P<example_name_url>\w+)/$', views.view_example, name='view_example'),
+		#url(r'^get_answer', views.get_answer, name='get_answer'),
+		url(r'^student_interface', views.student_interface_index, name='student_interface_index'),
+
 
 		) 

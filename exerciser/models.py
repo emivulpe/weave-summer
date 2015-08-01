@@ -293,6 +293,11 @@ class ExampleQuestion(ExampleStep):
 	def __unicode__(self):
 		return " ".join((self.example.name , self.question_text, str(self.step_number)))
 
+class PupilAnswer(models.Model):
+	example = models.ForeignKey(Example, unique = False)
+
+
+
 """
 class HTMLStep(models.Model):
 	example = models.ForeignKey(Example, unique = False)
@@ -358,3 +363,47 @@ class OptionComment(models.Model):
 
 	def __unicode__(self):
 		return self.comment
+
+class ExampleUsageRecord(models.Model):
+	# A class for a usage data of a step
+	example = models.ForeignKey(Example, unique = False)
+	teacher = models.ForeignKey(Teacher, blank=True, null=True, unique = False)
+	group = models.ForeignKey(Group, blank=True, null=True, unique = False)
+	student = models.ForeignKey(Student, blank=True, null=True, unique = False)
+	step = models.ForeignKey(ExampleStep, unique = False)
+	session_id = models.CharField(max_length=100, blank=True, null=True)
+	time_on_step = models.FloatField(default=0)
+	direction = models.CharField(max_length=10)
+	step_number = models.IntegerField()
+	
+	def __unicode__(self):
+		if self.teacher != None:
+			teacher=self.teacher.user.username
+		else:
+			teacher="No teacher"
+		if self.group != None:
+			group=self.group.name
+		else:
+			group="No group"
+		if self.student != None:
+			student=self.student.student_id
+		else:
+			student="No student id"
+		return " ".join((self.example.name ," teacher: ",teacher," group: ",group," student: ",student, "step", str(self.step.step_number)))
+		
+
+	def save(self, *args, **kwargs):	
+		self.step_number = self.step.step_number
+		super(ExampleUsageRecord, self).save(*args, **kwargs)
+
+
+
+class ExampleQuestionRecord(models.Model):
+	example = models.ForeignKey(Example, unique = False)
+	question = models.ForeignKey(ExampleQuestion, unique = False)
+	teacher = models.ForeignKey(Teacher, blank=True, null=True, unique = False)
+	group = models.ForeignKey(Group, blank=True, null=True, unique = False)
+	student = models.ForeignKey(Student, blank=True, null=True, unique = False)
+	session_id = models.CharField(max_length=100, blank=True, null=True)
+	answer_text=models.TextField()
+	

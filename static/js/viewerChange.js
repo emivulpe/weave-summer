@@ -17,6 +17,9 @@ var exactMatchesEdits = {};
 var possibleMatchesEdits = {};
 var currentFocusedEditor = undefined;
 var loadingQuestionStep = false;
+var d = new Date();
+var lastTime = d.getTime();
+
 
 
 
@@ -28,6 +31,20 @@ $("#btn_reset").css('visibility', 'hidden');
 
 
 function loadStep(direction){
+
+    if (currentStep > 0) {
+        alert("in");
+        var now = new Date().getTime();
+        $.post("/weave/log_info_db/", {
+            'time': (now - lastTime) / 1000,
+            'step_number': currentStep,
+            'direction': direction,
+            'csrfmiddlewaretoken': csrftoken,
+            'example_name': exampleName
+        });
+        lastTime = now;
+    }
+
     if (direction != "this"){
         if (direction == "next"){
             currentStep++;
@@ -234,5 +251,19 @@ function handleNavigationVisibility(){
             //hide next
             $(".next_btn").css('visibility', 'hidden');
         }
+    })
+}
+
+
+function showAnswer(){
+    explanation = $("#explanation_area").html();
+    var request = $.get("/weave/get_answer/", {
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'csrfmiddlewaretoken': csrftoken,
+    });
+    request.done(function(answer) {
+        $("#explanation_area").html(answer + "<br>" + explanation);
+
     })
 }

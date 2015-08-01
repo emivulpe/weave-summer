@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
+from exerciser.models import ExampleUsageRecord, Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
 import json 
 import simplejson 
 import datetime
@@ -52,7 +52,7 @@ def create_student_ids(teacher,group,number_students_needed):
 
 
 @requires_csrf_token
-def log_info_db(request):
+def log_info_db_old(request):
 	""" 
 	This method logs the time spent on a step, when the user moves forwards or backwards to the next/previous step.
 	"""
@@ -62,6 +62,7 @@ def log_info_db(request):
 		direction = request.POST['direction']
 		application_name = request.POST['example_name']
 	except KeyError:
+		print "key error in log info db"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	session_id = request.session.session_key
 
@@ -108,7 +109,7 @@ def log_info_db(request):
 	
 
 @requires_csrf_token
-def log_question_info_db(request):
+def log_question_info_db_old(request):
 	"""
 	This method stores the answer chosen for a question at a particular step.
 	"""
@@ -324,7 +325,7 @@ def save_session_ids(request):
 	"""
 	
 	request.session['student_registered']=True
-	return HttpResponseRedirect('/weave/')
+	return HttpResponseRedirect('/weave/student_interface')
 	
 @requires_csrf_token
 def group_sheet_confirm(request):
@@ -1793,9 +1794,27 @@ def example_viewer(request):
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
 	return render_to_response('exerciser/example_viewer.html', context_dict, context)
+"""
+def get_answer(request):
+	try:
+		example_name = request.GET['example']
+		step_number = request.GET['step_number']
+		# !!!!!!!!!!!! when I add accounts to associate a viewing of the example to a user uncomment this and add it to the filter for the example
 
 
 
+	except KeyError:
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+	try:
+		example = Example.objects.filter(name = example_name)[0]
+	except IndexError:
+		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+
+	# !!!!!!!!!!!! when I add accounts to associate a viewing of the example to a user uncomment this and add it to the filter for the example
+	answer = 
+
+
+"""
 
 def view_example(request, example_name_url):
 
@@ -1945,3 +1964,142 @@ def getLastOccurrence(l, element):
 			lastIndex = index
 
 	return lastIndex
+
+def student_interface_index(request):
+	"""
+	A function to load the main page for the pupil interface
+	"""
+	# Request the context of the request.
+	# The context contains information such as the client's machine details, for example.
+	context = RequestContext(request)
+
+	example_list = Example.objects.all()
+	academic_years = AcademicYear.objects.all()
+	
+	# Construct a dictionary to pass to the template engine as its context.
+	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
+	context_dict = {'examples' : example_list, 'academic_years':academic_years}
+
+	for example in example_list:
+		example.url = example.name.replace(' ', '_')
+	
+	# Return a rendered response to send to the client.
+	# We make use of the shortcut function to make our lives easier.
+	# Note that the first parameter is the template we wish to use.
+	return render_to_response('exerciser/student_interface_home.html', context_dict, context)
+
+
+
+@requires_csrf_token
+def log_info_db(request):
+	""" 
+	This method logs the time spent on a step, when the user moves forwards or backwards to the next/previous step.
+	"""
+	try:
+		time_on_step = request.POST['time']
+		step_number = int(request.POST['step_number'])
+		direction = request.POST['direction']
+		example_name = request.POST['example_name']
+	except KeyError:
+		print "key error in log info db"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	session_id = request.session.session_key
+
+	if direction == "back":
+		step_number = int(step_number) + 1
+
+	try:
+		example = Example.objects.filter(name = example_name)[0]
+		step = ExampleStep.objects.filter(example = example, step_number = step_number)[0]
+
+	except IndexError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+		
+	record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)
+	
+	teacher_name=request.session.get("teacher",None)
+	if teacher_name != None:
+	
+		user=User.objects.filter(username=teacher_name)
+		teacher=Teacher.objects.filter(user=user)
+		
+		if len(teacher)>0:
+			teacher=teacher[0]
+			record.teacher = teacher
+			group_name=request.session.get("group",None)
+			year = request.session.get("year",None)
+			if group_name != None and year != None:
+				academic_year = AcademicYear.objects.filter(start = year)[0]
+				group = Group.objects.filter(teacher=teacher, academic_year = academic_year, name = group_name)
+				if len(group) > 0:
+					group=group[0]
+					record.group = group
+					student_name=request.session.get("student", None)
+					if student_name != None:
+						student = Student.objects.filter(teacher=teacher,group=group,student_id=student_name)
+						if len(student) > 0:
+							student=student[0]
+							record.student = student
+
+	record.save()
+	return HttpResponse("{}",content_type = "application/json")
+
+	
+	
+
+@requires_csrf_token
+def log_question_info_db(request):
+	"""
+	This method stores the answer chosen for a question at a particular step.
+	"""
+	
+	try:
+		time_on_question = request.POST['time']
+		step_number = request.POST['step_number']
+		example_name = request.POST['example_name']
+		answer_text = request.POST['answer']
+		multiple_choice_question = request.POST['multiple_choice']
+	except KeyError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	teacher_name=request.session.get("teacher",None)
+	session_id = request.session.session_key
+	answer_text = answer_text.replace('<', '&lt')
+	answer_text = answer_text.replace('>', '&gt')
+	try:
+		example = Example.objects.filter(name = example_name)[0]
+		step = ExampleStep.objects.filter(example = example, step_number = step_number)[0]
+		question = ExampleQuestion.objects.filter(example = example, step_number = step_number)[0]
+	except IndexError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	usage_record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_question, step = step, direction = "next")
+	question_record = ExampleQuestionRecord(example = example, question = question, answer_text = answer_text)
+	if teacher_name != None:
+		user=User.objects.filter(username=teacher_name)
+		teacher=Teacher.objects.filter(user=user)
+		if len(teacher)>0:
+			teacher=teacher[0]
+			question_record.teacher = teacher
+			usage_record.teacher = teacher
+			year=request.session.get("year",None)
+			group_name=request.session.get("group",None)
+			if group_name != None and year != None:
+				academic_year = AcademicYear.objects.filter(start=year)
+				if len(academic_year) > 0:
+					academic_year = academic_year[0]
+					group = Group.objects.filter(teacher=teacher, academic_year = academic_year, name = group_name)
+					if len(group) > 0:
+						group=group[0]
+						usage_record.group = group
+						question_record.group = group
+						
+						student_name=request.session.get("student", None)
+						if student_name != None:
+							student = Student.objects.filter(teacher=teacher,group=group,student_id=student_name)
+							if len(student) > 0:
+								student=student[0]
+								usage_record.student = student
+								question_record.student = student
+	usage_record.save()
+	question_record.save()
+	return HttpResponse("{}",content_type = "application/json")
+	
