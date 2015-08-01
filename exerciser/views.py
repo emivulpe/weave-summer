@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import ExampleUsageRecord, Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
+from exerciser.models import ExampleUsageRecord, ExampleQuestionRecord, Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
 import json 
 import simplejson 
 import datetime
@@ -2058,7 +2058,6 @@ def log_question_info_db(request):
 		step_number = request.POST['step_number']
 		example_name = request.POST['example_name']
 		answer_text = request.POST['answer']
-		multiple_choice_question = request.POST['multiple_choice']
 	except KeyError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	teacher_name=request.session.get("teacher",None)

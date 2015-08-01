@@ -1,5 +1,5 @@
 from django.contrib import admin
-from exerciser.models import ExampleUsageRecord, Document, Fragment, Step, Change, Explanation, Question, Option, Application, Panel, UsageRecord, QuestionRecord, Group, Teacher, Student, AcademicYear, FragmentStyle , Example, HTMLExplanation, HTMLStep, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
+from exerciser.models import ExampleUsageRecord, ExampleQuestionRecord, Document, Fragment, Step, Change, Explanation, Question, Option, Application, Panel, UsageRecord, QuestionRecord, Group, Teacher, Student, AcademicYear, FragmentStyle , Example, HTMLExplanation, HTMLStep, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
 admin.site.register(Document)
 admin.site.register(Fragment)
 admin.site.register(Step)
@@ -24,3 +24,4 @@ admin.site.register(ExampleOption)
 admin.site.register(OptionComment)
 admin.site.register(ExampleStep)
 admin.site.register(ExampleUsageRecord)
+admin.site.register(ExampleQuestionRecord)

@@ -30,18 +30,44 @@ $("#btn_reset").css('visibility', 'hidden');
 
 
 
-function loadStep(direction){
+function loadStep(direction, isQuestion){
+    if (isQuestion == null){
+        isQuestion = false;
+    }
 
     if (currentStep > 0) {
-        alert("in");
         var now = new Date().getTime();
-        $.post("/weave/log_info_db/", {
-            'time': (now - lastTime) / 1000,
-            'step_number': currentStep,
-            'direction': direction,
-            'csrfmiddlewaretoken': csrftoken,
-            'example_name': exampleName
-        });
+        if (isQuestion == true){
+
+        // !!!!!!!!!!!!
+        
+        // The answer should be the answered selected/written by the user!
+        // !!!!!!!!!!!!    
+        /*
+        if (multipleChoiceQuestion) {
+            answer = $(".options input:checked + label").text();
+        } else {
+            answer = $("#textarea_" + textareaNum).val();
+            textareaNum++;
+        }*/
+            answer= "answer";
+            $.post("/weave/log_question_info_db/", {
+                'time': (now - lastTime) / 1000,
+                'step_number': currentStep,
+                'answer': answer,
+                'example_name': exampleName,
+                'csrfmiddlewaretoken': csrftoken,
+            });
+        }
+        else{
+            $.post("/weave/log_info_db/", {
+                'time': (now - lastTime) / 1000,
+                'step_number': currentStep,
+                'direction': direction,
+                'csrfmiddlewaretoken': csrftoken,
+                'example_name': exampleName
+            });            
+        }
         lastTime = now;
     }
 
@@ -174,13 +200,13 @@ function doReset() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
-    loadStep("next");
+    loadStep("next", false);
 });
 
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
-    loadStep("back");
+    loadStep("back", false);
 });
 
 
@@ -193,7 +219,7 @@ $('#question_btn_next').click(function() {
         $(this).removeData('bs.modal');
     });
     resetQuestionModal();  
-    loadStep("next");
+    loadStep("next", true);
 });
 
 
@@ -204,7 +230,7 @@ $('#question_btn_prev').click(function() {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal();
-    loadStep("back");
+    loadStep("back", true);
 });
 
 
