@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from exerciser.models import ExampleUsageRecord, ExampleQuestionRecord, Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
+from exerciser.models import PupilAnswer, ExampleUsageRecord, ExampleQuestionRecord, Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
 import json 
 import simplejson 
 import datetime
@@ -1254,6 +1254,7 @@ def save_question(request):
 def get_next_step(request):
 	print "in get next step"
 	context = RequestContext(request)
+	session_id = request.session.session_key
 	# Get the requested example and step number
 	try:
 		example_name = request.GET['example_name']
@@ -1299,22 +1300,34 @@ def get_next_step(request):
 		print "no explanation exists"
 	if len(question) > 0:
 		question = question[0]
-		print "QUESTIOOOOOON" , question.question_text
-		step_entry["question_text"] = question.question_text
-		step_entry["question_type"] = question.kind
+		question_record = ExampleQuestionRecord.objects.filter(question = question, session_id = session_id)
 		options = ExampleOption.objects.filter(question = question)
-		question_options = []
-		for i in range(0, len(options)):
-			print i
-			print len(options)
-			print options[i].option_text
-			option = options[i]
-			question_options.append({"option_text" : option.option_text, "correct": option.correct})
-			option_comment = OptionComment.objects.filter(option = option)
-			if len(option_comment) > 0:
-				option_comment = option_comment[0]
-				question_options[len(question_options) - 1]["comment"] = option_comment.comment
-		step_entry["options"] = question_options
+		if len(question_record) == 0:
+			print "QUESTIOOOOOON" , question.question_text
+			step_entry["question_text"] = question.question_text
+			step_entry["question_type"] = question.kind
+			question_options = []
+			for i in range(0, len(options)):
+				print i
+				print len(options)
+				print options[i].option_text
+				option = options[i]
+				question_options.append({"option_text" : option.option_text, "correct": option.correct})
+				option_comment = OptionComment.objects.filter(option = option)
+				if len(option_comment) > 0:
+					option_comment = option_comment[0]
+					question_options[len(question_options) - 1]["comment"] = option_comment.comment
+			step_entry["options"] = question_options
+		else:
+			question_record = question_record[0]
+
+			explanation = "<div>You have answered: " + question_record.answer_text + "</div><div><b>Question: </b>" + question.question_text + "</div><ul style = 'list-style-type:none;'>"
+			for i in range(0, len(options)):
+				option = options[i]
+				explanation += "<li><b>" + str(option.number + 1) + ".</b> " + option.option_text + "</li>"
+
+			explanation += "</ul></div>"
+			step_entry["explanation_area"] = explanation
 		"""
 		correct_answer_comment = CorrectAnswerComment.objects.filter(question = question)
 		
@@ -1807,14 +1820,16 @@ def get_answer(request):
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	try:
 		example = Example.objects.filter(name = example_name)[0]
+		question = ExampleQuestion.objects.filter(example = example, step_number = step_number)[0]
 	except IndexError:
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 
 	# !!!!!!!!!!!! when I add accounts to associate a viewing of the example to a user uncomment this and add it to the filter for the example
-	answer = 
-
-
+	answer = PupilAnswer.objects.filter(question = question) #, pupil = pupil)
+	
 """
+
+
 
 def view_example(request, example_name_url):
 
@@ -2015,8 +2030,8 @@ def log_info_db(request):
 	except IndexError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 		
-	record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)
-	
+	#record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)
+	record = ExampleUsageRecord.objects.get_or_create(example = example, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)[0]
 	teacher_name=request.session.get("teacher",None)
 	if teacher_name != None:
 	
@@ -2055,10 +2070,16 @@ def log_question_info_db(request):
 	
 	try:
 		time_on_question = request.POST['time']
+		print time_on_question
 		step_number = request.POST['step_number']
+		print step_number
 		example_name = request.POST['example_name']
+		print example_name
 		answer_text = request.POST['answer']
+		print answer_text
+		direction = request.POST['direction']
 	except KeyError:
+		print "key error in log question info db"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	teacher_name=request.session.get("teacher",None)
 	session_id = request.session.session_key
@@ -2069,9 +2090,12 @@ def log_question_info_db(request):
 		step = ExampleStep.objects.filter(example = example, step_number = step_number)[0]
 		question = ExampleQuestion.objects.filter(example = example, step_number = step_number)[0]
 	except IndexError:
+		print "index error in log question info db"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	usage_record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_question, step = step, direction = "next")
-	question_record = ExampleQuestionRecord(example = example, question = question, answer_text = answer_text)
+	#usage_record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_question, step = step, direction = "next")
+	#question_record = ExampleQuestionRecord(example = example, question = question, answer_text = answer_text)
+	usage_record = ExampleUsageRecord.objects.get_or_create(example = example, session_id = session_id, time_on_step = time_on_question, step = step, direction = direction)[0]
+	question_record = ExampleQuestionRecord.objects.get_or_create(question = question, answer_text = answer_text, session_id = session_id)[0]
 	if teacher_name != None:
 		user=User.objects.filter(username=teacher_name)
 		teacher=Teacher.objects.filter(user=user)
@@ -2092,6 +2116,9 @@ def log_question_info_db(request):
 						question_record.group = group
 						
 						student_name=request.session.get("student", None)
+
+						print student_name, "studeeeeeeeeeeeent"
+
 						if student_name != None:
 							student = Student.objects.filter(teacher=teacher,group=group,student_id=student_name)
 							if len(student) > 0:

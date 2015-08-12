@@ -294,7 +294,9 @@ class ExampleQuestion(ExampleStep):
 		return " ".join((self.example.name , self.question_text, str(self.step_number)))
 
 class PupilAnswer(models.Model):
-	example = models.ForeignKey(Example, unique = False)
+	question = models.ForeignKey(ExampleQuestion, unique = False)
+	student = models.ForeignKey(Student, blank=True, null=True, unique = False)
+
 
 
 
@@ -399,7 +401,6 @@ class ExampleUsageRecord(models.Model):
 
 
 class ExampleQuestionRecord(models.Model):
-	example = models.ForeignKey(Example, unique = False)
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	teacher = models.ForeignKey(Teacher, blank=True, null=True, unique = False)
 	group = models.ForeignKey(Group, blank=True, null=True, unique = False)
@@ -407,3 +408,17 @@ class ExampleQuestionRecord(models.Model):
 	session_id = models.CharField(max_length=100, blank=True, null=True)
 	answer_text=models.TextField()
 	
+	def __unicode__(self):
+		if self.teacher != None:
+			teacher=self.teacher.user.username
+		else:
+			teacher="No teacher"
+		if self.group != None:
+			group=self.group.name
+		else:
+			group="No group"
+		if self.student != None:
+			student=self.student.student_id
+		else:
+			student="No student id"
+		return " ".join((" teacher: ",teacher," group: ",group," student: ",student, "step", str(self.question.step_number), "question", self.question.question_text, "answer", self.answer_text))

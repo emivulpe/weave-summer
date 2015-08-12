@@ -19,6 +19,7 @@ var currentFocusedEditor = undefined;
 var loadingQuestionStep = false;
 var d = new Date();
 var lastTime = d.getTime();
+var multipleChoiceQuestion = false;
 
 
 
@@ -30,33 +31,23 @@ $("#btn_reset").css('visibility', 'hidden');
 
 
 
-function loadStep(direction, isQuestion){
-    if (isQuestion == null){
-        isQuestion = false;
-    }
+function loadStep(direction, answer){
 
     if (currentStep > 0) {
         var now = new Date().getTime();
-        if (isQuestion == true){
+        if (answer != null){
 
         // !!!!!!!!!!!!
         
         // The answer should be the answered selected/written by the user!
         // !!!!!!!!!!!!    
-        /*
-        if (multipleChoiceQuestion) {
-            answer = $(".options input:checked + label").text();
-        } else {
-            answer = $("#textarea_" + textareaNum).val();
-            textareaNum++;
-        }*/
-            answer= "answer";
             $.post("/weave/log_question_info_db/", {
                 'time': (now - lastTime) / 1000,
                 'step_number': currentStep,
                 'answer': answer,
                 'example_name': exampleName,
                 'csrfmiddlewaretoken': csrftoken,
+                'direction': direction,
             });
         }
         else{
@@ -109,7 +100,7 @@ function loadStep(direction, isQuestion){
             });
         }
         else{
-            manageExampleAreas(data, direction);
+            manageExampleAreas(data, direction, answer);
         }
 
     });
@@ -118,7 +109,7 @@ function loadStep(direction, isQuestion){
 
 
 
-function manageExampleAreas(data, direction) {
+function manageExampleAreas(data, direction, answer) {
     resetQuestionModal();
     if (!("error" in data)) {
         for (var key in data) {
@@ -127,21 +118,23 @@ function manageExampleAreas(data, direction) {
                 if (key == "options"){
                     var questionOptions = data[key];
                     if(questionOptions.length > 0){
+                        multipleChoiceQuestion = true;
                         for (var i = 0; i < questionOptions.length; i++){
                             opt_number = i + 1;
                             option = questionOptions[i];
                             var optionText = option["option_text"];     
-                            $("#options_list").append('<li class ="option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td style = "width:1%;white-space:nowrap;"><input type="checkbox"></td><td class = "option_number" style = "width:1%;white-space:nowrap; padding : 10px;">' + opt_number + '.</td><td>' + optionText + '</td></tr></table></li>');
+                            $("#options_list").append('<li class ="option"><table id = "option_' + opt_number +'" style = "width:100%;"><tr><td style = "width:1%;white-space:nowrap;"><input type="checkbox" class = "answer_checkbox"></td><td class = "option_number" style = "width:1%;white-space:nowrap; padding : 10px;">' + opt_number + '.</td><td class = "option_text">' + optionText + '</td></tr></table></li>');
                         }
                     }
                     else{
+                        multipleChoiceQuestion = false;
                         $("#options_list").append('<li><label id = "answer_area_label" for = "answer_area">Please enter your answer below:</label></li>');
                         $("#options_list").append('<li><textarea id = "answer_area" style = "width:100%; resize: none;"></textarea></li>');
                     }
-
-
                 }
-
+                else if(key == "explanation_area" && direction == "next" && answer != null){
+                    $("#" + key).html("<div>You have answered: " + answer + "</div>" + data[key]);
+                }
                 else { 
                     $("#" + key).html(data[key]);
                 }
@@ -200,13 +193,13 @@ function doReset() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
-    loadStep("next", false);
+    loadStep("next");
 });
 
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
-    loadStep("back", false);
+    loadStep("back");
 });
 
 
@@ -214,12 +207,14 @@ $('#btn_prev').click(function() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#question_btn_next').click(function() {
+    answer = getAnswer();
+    alert(answer);
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal');
     });
     resetQuestionModal();  
-    loadStep("next", true);
+    loadStep("next", answer);
 });
 
 
@@ -230,7 +225,7 @@ $('#question_btn_prev').click(function() {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal();
-    loadStep("back", true);
+    loadStep("back");
 });
 
 
@@ -280,7 +275,7 @@ function handleNavigationVisibility(){
     })
 }
 
-
+/*
 function showAnswer(){
     explanation = $("#explanation_area").html();
     var request = $.get("/weave/get_answer/", {
@@ -288,8 +283,28 @@ function showAnswer(){
         'step_number': currentStep,
         'csrfmiddlewaretoken': csrftoken,
     });
-    request.done(function(answer) {
+    request.done(function(outcome) {
+        if ("answer" in outcome){
+            answer = "You have selected " + outcome['answer'] + "<br>";
+        }
+        else{
+            answer = "";
+        }
         $("#explanation_area").html(answer + "<br>" + explanation);
 
     })
+}
+*/
+function getAnswer(){
+    if (multipleChoiceQuestion) {
+        answer = "";
+        $("input:checked").each(function(){
+            alert($(this).parent().siblings(".option_text").length);
+            answer += $(this).parent().siblings(".option_text").text() + ";";
+        })
+    }
+    else {
+        answer = $("#answer_area").val();
+    }
+    return answer;
 }
