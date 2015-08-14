@@ -7,6 +7,14 @@
 </a>
 {% endblock %}
 
+{% block logout %} 
+    {% if user.is_authenticated %}
+        <li>
+            <a href="/weave/logout/"><i class="fa fa-lock fa-lg landing-icon fa-2x"></i><class="landing-text">&nbspLogout</span></a>
+        </li>       
+    {% endif %}
+{% endblock %}
+
 {% block links %} 
 	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/teacher_interface.css' %}" />
