@@ -959,6 +959,8 @@ def register(request):
 			except ValueError:
 				pass
 			teacher.save()
+			user = authenticate(username=request.POST['username'], password=request.POST['password'])
+			login(request, user)
 
 			# Update our variable to tell the template registration was successful.
 			registered = True
@@ -1396,6 +1398,9 @@ def get_next_step(request):
 	"""
 
 	return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
+
+
+
 
 @requires_csrf_token
 def edit_step(request):

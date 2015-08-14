@@ -42,3 +42,18 @@ $("#delete_step_btn").confirmation({
         })
     }
 })
+
+$("#question_step_close_button").click(function(){
+    $.post("/weave/delete_step/", {
+        'example_name': exampleName,
+        'step_number': currentStep,
+        'csrfmiddlewaretoken': csrftoken,
+    }).done(function(){
+        if(currentStep > 0){
+            loadStep("back");
+        }
+        else{
+            loadStep("this");
+        }
+    })
+})

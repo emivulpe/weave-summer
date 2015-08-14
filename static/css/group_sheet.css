@@ -15,3 +15,5 @@
 
 * {display:none;}
 #student_table {display:table;}
+
+@page{size:auto; margin-bottom:5mm;margin-top: 5mm;}

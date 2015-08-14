@@ -21,7 +21,7 @@
 	
 	
 		<table id="student_table" border="1" style="width:90%;border: 1px solid black;border-collapse: collapse; margin: 0 auto; ">
-			<caption style = "text-align: center;"><strong>Academic Year: {{ year }}, Group: {{ group }}</strong> </caption>
+			<caption style = "text-align: center;"><h3>Academic Year: {{ year }}, Group: {{ group }}</h3> </caption>
 			<tr>
 				<th>Firstname</th>
 				<th>Lastname</th> 
@@ -49,6 +49,7 @@
 		width: $(window).width()*0.9,
 		modal: true,
 		autoOpen: true,
+		resizable: false,
 		buttons: {
 			"OK": function() {
 			$( this ).dialog( "close" );
