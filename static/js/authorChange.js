@@ -653,7 +653,11 @@ function saveStep(insertBefore, insertAfter){
         handleNavigationVisibility();
     });
     //clearAutomaticHighlighting();
-    $(".style").replaceWith(function() { return $(".style").contents(); });
+    $(".style").each(function(){
+        $(this).replaceWith(function() { 
+            return $(".style").contents(); 
+        });
+    })
 
 }
 

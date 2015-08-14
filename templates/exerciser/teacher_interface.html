@@ -1,5 +1,11 @@
-{% extends 'exerciser/teacher_interface_base.html' %}
+{% extends 'exerciser/base_combined.html' %}
 {% load static %}
+
+{% block home_icon %}
+<a class="navbar-brand" href="/weave/teacher_interface">
+    <i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
+</a>
+{% endblock %}
 
 {% block links %} 
 	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
@@ -138,11 +144,14 @@
 					<br>
 					<strong id="student_success_message"></strong>
 				</div>
-				<div class="col-md-3 text-center">
-					<h1 class="brand-heading"><a href="/weave/statistics/"><i class="fa fa-bar-chart landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">View Progress</span></a></h1>
+				<div class="col-md-2 text-center">
+					<h1 class="brand-heading"><a href="/weave/statistics/"><i class="fa fa-bar-chart landing-icon fa-lg"></i><br><br><span class="landing-text">View Progress</span></a></h1>
 				</div>
-				<div class="col-md-3 text-center">
-					<h1 class="brand-heading"><a href="/weave/example_creator/"><i class="fa fa-bar-chart landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">Author Interface</span></a></h1>
+				<div class="col-md-2 text-center">
+					<h1 class="brand-heading"><a href="/weave/example_creator/"><i class="fa fa-bar-chart landing-icon fa-lg"></i><br><br><span class="landing-text">Create Example</span></a></h1>
+				</div>
+				<div class="col-md-2 text-center">
+					<h1 class="brand-heading"><a href="/weave/example_editor/"><i class="fa fa-bar-chart landing-icon fa-lg"></i><br><br><span class="landing-text">Edit Example</span></a></h1>
 				</div>
 			</div>			
 		</div>
@@ -358,4 +367,7 @@
 		}
 
 	</script>
+
+	<script type="text/javascript" src="{% static 'js/teacher_interface_base.js' %}"></script>
+
 {% endblock %}

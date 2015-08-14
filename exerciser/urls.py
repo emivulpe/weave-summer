@@ -2,8 +2,8 @@ from django.conf.urls import patterns, url
 from exerciser import views
 
 urlpatterns = patterns('',
-		url(r'^$', views.index, name='index'),
-		url(r'^application/(?P<application_name_url>\w+)/$', views.application, name='application'),
+		#url(r'^$', views.index, name='index'),
+		#url(r'^application/(?P<application_name_url>\w+)/$', views.application, name='application'),
 		url(r'^log_info_db', views.log_info_db, name='log_info_db'),
 		url(r'^log_question_info_db', views.log_question_info_db, name='log_question_info_db'),
 		url(r'^register_group_with_session', views.register_group_with_session, name='register_group_with_session'),
@@ -38,7 +38,7 @@ urlpatterns = patterns('',
 		url(r'^save_question/$', views.save_question, name='save_question'),
 		url(r'^save_explanation/$', views.save_explanation, name='save_explanation'),
 		url(r'^get_next_step/$', views.get_next_step, name='get_next_step'),
-		url(r'^author_interface/', views.author_interface, name='author_interface'),
+		#url(r'^author_interface/', views.author_interface, name='author_interface'),
 		url(r'^example_creator', views.example_creator, name='example_creator'),
 		url(r'^create_example', views.create_example, name='create_example'),
 		url(r'^edit_steps', views.edit_steps, name='edit_steps'),
@@ -52,7 +52,7 @@ urlpatterns = patterns('',
 		url(r'^example_viewer', views.example_viewer, name='example_viewer'),
 		url(r'^view_example/(?P<example_name_url>\w+)/$', views.view_example, name='view_example'),
 		#url(r'^get_answer', views.get_answer, name='get_answer'),
-		url(r'^student_interface', views.student_interface_index, name='student_interface_index'),
+		url(r'^student_interface', views.student_interface, name='student_interface'),
 
 
 		) 

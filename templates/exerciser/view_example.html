@@ -4,6 +4,12 @@
     <link href="{% static 'css/jquery.splitter.css' %}" rel="stylesheet"/>
 {% endblock %}
 
+{% block home_icon %}
+<a class="navbar-brand" href="/weave/student_interface">
+	<i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
+</a>
+{% endblock %}
+
 {% block example_name %}<label id = "example_name_label">{{ example.name }}{% endblock %}
 {% block style %}
 
@@ -39,11 +45,6 @@ body {
 
 {% endblock %}
 
-{% block home_icon %}
-<a class="navbar-brand" href="/weave/example_viewer">
-    <i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
-</a>
-{% endblock %}
 
 {% block navigation_controls %}
 

@@ -466,11 +466,11 @@ def del_session_variable(request):
 	return HttpResponseRedirect('/weave/')
 	
 
-
+"""
 def index(request):
-	"""
-	A function to load the main page for the pupil interface
-	"""
+	
+	#A function to load the main page for the pupil interface
+		
 	# Request the context of the request.
 	# The context contains information such as the client's machine details, for example.
 	context = RequestContext(request)
@@ -490,12 +490,12 @@ def index(request):
 	# Note that the first parameter is the template we wish to use.
 	return render_to_response('exerciser/index.html', context_dict, context)
 
-
-
+"""
+"""
 def application(request, application_name_url):
-	"""
-	A function to load the viewing page for a selected application. The name of the application is passed as the second parameter of the example.
-	"""
+	
+	# A function to load the viewing page for a selected application. The name of the application is passed as the second parameter of the example.
+	
 	
 	context = RequestContext(request)
 	if 'student_registered' in request.session:
@@ -549,7 +549,7 @@ def application(request, application_name_url):
 		return HttpResponseRedirect('/weave/')
 
 
-
+"""
 
 def get_students(request):
 	"""
@@ -1058,12 +1058,12 @@ def user_logout(request):
 	# Take the user back to the homepage.
 	return HttpResponseRedirect('/weave/teacher_interface')
 
-
+"""
 @requires_csrf_token
 def author_interface(request):
-	"""
-	A function to load the main page for the author interface.
-	"""
+	
+	#A function to load the main page for the author interface.
+	
 	# Request the context of the request.
 	# The context contains information such as the client's machine details, for example.
 	context = RequestContext(request)
@@ -1073,7 +1073,7 @@ def author_interface(request):
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
 	return render_to_response('exerciser/author_interface.html', {}, context)
-
+"""
 
 @requires_csrf_token
 def example_creator(request):
@@ -1985,7 +1985,7 @@ def getLastOccurrence(l, element):
 
 	return lastIndex
 
-def student_interface_index(request):
+def student_interface(request):
 	"""
 	A function to load the main page for the pupil interface
 	"""

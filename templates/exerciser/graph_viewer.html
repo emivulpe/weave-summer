@@ -1,10 +1,18 @@
-{% extends 'exerciser/teacher_interface_base.html' %}
+{% extends 'exerciser/base_combined.html' %}
 {% load static %}
+
+{% block home_icon %}
+<a class="navbar-brand" href="/weave/teacher_interface">
+    <i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
+</a>
+{% endblock %}
+
 {% block links %} 	
 	<link rel="stylesheet" type="text/css" href="{% static 'css/ui.dropdownchecklist.themeroller.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui-1.8.4.custom.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'css/graph_viewer.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'css/highslide.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/teacher_interface.css' %}" />
 {% endblock %}
 
 
