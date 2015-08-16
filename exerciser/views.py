@@ -1427,6 +1427,7 @@ def edit_steps(request):
 		raw_text_to_change = request.POST['text_to_change']
 		plain_text_to_change = lxml.html.fromstring(raw_text_to_change).text_content()
 		print raw_text_to_change, " RAW"
+		print raw_new_text, " NEW"
 		print plain_text_to_change, " PLAIN"
 	except KeyError:
 		print "key error in edit steps"		
@@ -1435,17 +1436,25 @@ def edit_steps(request):
 	possible_matches = []
 	all_matches = []
 	if plain_text_to_change != "":
-		example_name = request.POST['example_name']
 		try:
-			example = Example.objects.filter(name = example_name)[0]
+			example_name = request.POST['example_name']
 		except KeyError:
 			print "key error in edit steps"
 			return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
-		this_step = HTMLStep.objects.filter(example = example, step_number = step_number)
+		try:
+			example = Example.objects.filter(name = example_name)[0]
+		except IndexError:
+			print "index error in edit steps"
+			return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
+
+		this_step = HTMLStep.objects.filter(example = example, step_number = step_number, panel_id = panel_id)
 		if len(this_step) > 0:
 			this_step = this_step[0]
 			this_step_new_text = this_step.html.replace(raw_text_to_change, raw_new_text)
+			print this_step_new_text, " THIS NEW "
 			save_panel_text(this_step_new_text, example_name, step_number, panel_id)
+			ts = HTMLStep.objects.filter(example = example, step_number = step_number, panel_id = panel_id)[0]
+			print ts.html, " after change "
 		steps = HTMLStep.objects.filter(example = example, panel_id = panel_id).order_by('step_number')
 		for step in steps:
 			if step.step_number != step_number:
@@ -1536,10 +1545,11 @@ def create_step(request):
 				comparison_result = list(d.compare(previous_step_text, current_step_text))
 				print comparison_result, "interestedddddddddddddddddddddddddddddddddd"
 				combination = ""
-				after_div_tag = False
+				after_div_tag = True
 				#doc = et.fromstring(test)
 				for word in comparison_result:
 					print "woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd"
+					print after_div_tag, " after div tag"
 					if word[0] == '+' and "<div>" not in word and "</div>" not in word:
 						print "had +"
 						if not after_div_tag:
@@ -1547,7 +1557,7 @@ def create_step(request):
 							word = word[1:]
 						else:
 							print "after div"
-							word = word[2:]	# the div tag added an extra space in front
+							word = word[1:].lstrip()	# the div tag added an extra space in front
 						combination += word;
 					else:
 						if combination != "":
@@ -1561,7 +1571,8 @@ def create_step(request):
 						else:
 							print "combination empty"
 					if "<div>" not in word and "</div>" not in word:
-						after_div_tag = False
+						if word[0] == "+":
+							after_div_tag = False
 					else:
 						print "after div"
 						after_div_tag = True

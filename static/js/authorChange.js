@@ -145,8 +145,7 @@ $('#create_question_step').click(function(){
         else{
             $('#question_modal').modal('hide');
             // ?????????? do I need to set the booleans somehow??????????
-            saveQuestion();
-            loadStep("next");
+            saveQuestion("next");
             $("#create_question_step").hide();
             //$("#delete_question").show();
 
@@ -155,8 +154,7 @@ $('#create_question_step').click(function(){
     else{
         $('#question_modal').modal('hide');
         // ?????????? do I need to set the booleans somehow??????????
-        saveQuestion();
-        loadStep("next");
+        saveQuestion("next");
         $("#create_question_step").hide();
         //$("#delete_question").show();
 
@@ -210,7 +208,6 @@ function editText(textToChange, newText) {
                 'step_number' : currentStep
             }).done(
                 function(affectedSteps){
-
                     /*
                     exactMatches = affectedSteps['exact_matches'];
                     possibleMatches = affectedSteps['possible_matches'];
@@ -226,6 +223,7 @@ function editText(textToChange, newText) {
                     */
                     loadStep("this");
                     allMatches = affectedSteps['all_matches'];
+
                     if(allMatches.length > 0){
                         $("#step_editor_modal").modal('show');
                     }
@@ -313,7 +311,7 @@ function storeNewStepText(){
 // A function defining the actions the student interface needs to undertake at a particular step
 
 
-function saveQuestion(isQuestionBefore, isQuestionAfter){
+function saveQuestion(isQuestionBefore, isQuestionAfter, direction){
     if (isQuestionBefore == undefined){
         isQuestionBefore = false;
     }
@@ -366,6 +364,9 @@ function saveQuestion(isQuestionBefore, isQuestionAfter){
         //'comments' : JSON.stringify(comments_dict)
     }).done(function(){
         handleNavigationVisibility();
+        if(direction != null){
+            loadStep(direction);
+        }
     }); 
     resetQuestionModal(true);
 }
@@ -549,15 +550,13 @@ function doReset() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#btn_next').click(function() {
-    saveStep("false", "false");
-    loadStep("next");
+    saveStep("false", "false", "next");
 });
 
 
 // Bind an event to the previous button.
 $('#btn_prev').click(function() {
-    saveStep("false", "false");
-    loadStep("back");
+    saveStep("false", "false", "back");
 });
 
 /*------
@@ -609,6 +608,14 @@ $('.create_step_btn.after').click(function() {
 });
 
 $('.create_step_btn.before').click(function() {
+        var request = $.get('/weave/get_next_step/', {
+            'example_name' : exampleName,
+            'step_number' : currentStep-1
+        });
+
+        request.done(function(data) {
+            manageExampleAreas(data, "this"); 
+        })
     if($(this).hasClass("question_step_btn")){
         saveQuestion("true", "false");
         $("#question_modal").modal('hide');
@@ -620,7 +627,7 @@ $('.create_step_btn.before').click(function() {
 
 
 
-function saveStep(insertBefore, insertAfter){
+function saveStep(insertBefore, insertAfter, direction){
     if (insertBefore == undefined){
         insertBefore = false;
     }
@@ -651,6 +658,9 @@ function saveStep(insertBefore, insertAfter){
         'insert_before' : insertBefore
     }).done(function(){
         handleNavigationVisibility();
+        if(direction != null){
+            loadStep(direction);
+        }
     });
     //clearAutomaticHighlighting();
     $(".style").each(function(){
@@ -688,25 +698,25 @@ $('#step_editor_btn_prev').click(function() {
 
 // Use JQuery to pick up when the user pushes the next button.
 $('#question_btn_next').click(function() {
-    saveQuestion();
+    saveQuestion("next");
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal(true);  
-    loadStep("next");
+    //loadStep("next");
 });
 
 
 // Bind an event to the previous button.
 $('#question_btn_prev').click(function() {
-    saveQuestion();
+    saveQuestion("back");
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal')
     });
     resetQuestionModal(true);
-    loadStep("back");
+    //loadStep("back");
 });
 
 // // Reset the example on click of the reset button
@@ -720,14 +730,6 @@ $('.create_question_btn').click(function(){
     if($(this).hasClass("before")){
         isQuestionBefore = true;
         isQuestionAfter = false;
-        var request = $.get('/weave/get_next_step/', {
-            'example_name' : exampleName,
-            'step_number' : currentStep-1
-        });
-
-        request.done(function(data) {
-            manageExampleAreas(data, "this"); 
-        })
     }
     else{
         isQuestionBefore = false;

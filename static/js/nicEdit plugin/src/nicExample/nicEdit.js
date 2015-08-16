@@ -61,6 +61,7 @@ function getSelText()
 $("#apply_changes_button").click(function(){
     var editEditor = nicEditors.findEditor("new_text_textarea");
     newText = editEditor.getContent();
+    alert(newText + "newwwww");
     editText(rawText, newText);
     $("#edit_modal").modal('hide');
 });
