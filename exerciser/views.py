@@ -1570,6 +1570,8 @@ def create_step(request):
 							combination = ""
 						else:
 							print "combination empty"
+					if after_div_tag == True:
+						after_div_tag = False
 					if "<div>" not in word and "</div>" not in word:
 						if word[0] == "+":
 							after_div_tag = False

@@ -260,7 +260,7 @@ function saveYear() {
 }
 
 // this method should be deleted for the new version!
-$('#application_search_box').keyup(function() {
+$('#example_search_box').keyup(function() {
     var valThis = $(this).val().toLowerCase();
     $('.navList>li').each(function() {
         var text = $(this).text().toLowerCase();
