@@ -1,7 +1,7 @@
 
-$(document).ready(function() {
+//$(document).ready(function() {
     $(".nicEdit-main").css("white-space", "pre");
-})
+//})
 
 
 $("#accept_all_changes_button").click(function(){

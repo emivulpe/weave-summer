@@ -1261,6 +1261,7 @@ def get_next_step(request):
 	try:
 		example_name = request.GET['example_name']
 		step_number = int(request.GET['step_number'])
+		print step_number
 		use_to_create_new_step = json.loads(request.GET['use_to_create_new_step'])
 
 	except KeyError:
@@ -1814,7 +1815,7 @@ def create_step_old(request):
 
 @requires_csrf_token
 def create_step(request):
-	print "in create step"
+	print "in create steppppppppp"
 
 	try:
 		example_name = request.POST['example_name']
@@ -1862,7 +1863,7 @@ def create_step(request):
 
 			# this is the very first step so everything needs to be highlighted
 			if len(previous_step_text) == 0:
-				new_text = '<span class ="style" style = "background-color:red;">' + original_text + '</span>'
+				new_text = '<span class ="style" style = "background-color:red; white-space:pre;">' + original_text + '</span>'
 			# there is a previous step so we need to compare the previous and the new step
 			else:
 
@@ -1981,13 +1982,15 @@ def create_step(request):
 
 					    	# find the text that needs to be highlighted
 					    	to_highlight = ""
-					    	while added_text_ptr < len(added_text):
+					    	while added_text_ptr < len(added_text) and original_text_ptr < len(original_text):
 					    		# <Add the text in the diff entry to newText, using same technique as above to ensure HTML tags/symbols are copied over from originalText>
 					    		
 					    		# don't highlight tags
+					    		print len(original_text), "len orig text"
+					    		print original_text_ptr, "orig text ptr"
 					    		if original_text[original_text_ptr] == '<':
 					    			# highlight everything before the tag
-					    			new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					    			new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
 					    			# reset the text to highlight
 					    			to_highlight = ""
 					    			while original_text[original_text_ptr] != '>':
@@ -2013,7 +2016,7 @@ def create_step(request):
 					    			added_text_ptr += 1
 					    			original_text_ptr += 1
 					    	#add the highlighted text to newText
-					       	new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					       	new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
 					        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
 					     	if diffs_ptr < len(diffs)-1:
 						        diffs_ptr += 1
@@ -2033,6 +2036,9 @@ def create_step(request):
 		html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
 		html_explanation.html = explanation
 		html_explanation.save() #Save the changes
+
+		if insert_before:
+			update_step_number_after_insertion(example, step_number)
 
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
 
