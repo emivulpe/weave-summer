@@ -1842,7 +1842,7 @@ def create_step(request):
 		for panel_id in panel_texts:
 
 			# SET originalText TO <the raw text including HTML for step n>
-			original_text = panel_texts[panel_id].replace("&nbsp;", " ")
+			original_text = panel_texts[panel_id].replace("&nbsp;", " ").replace("<br>", "\n")
 			print original_text, "original text"
 
 			# SET plainText TO <the text with all HTML removed, again for step n>
@@ -1889,16 +1889,15 @@ def create_step(request):
 
 					# Scan over the plainText
 					#WHILE <not at the end of the plainText> DO
-					while plain_text_ptr < len(current_step_plain_text):
+					while plain_text_ptr < len(current_step_plain_text) and original_text_ptr < len(original_text):
 
 					    #IF <current position in the originalText is an < (e.g HTML tag)> THEN
 					    # We've found an HTML tag, so we need to copy it into newText
 					    if original_text[original_text_ptr] == '<':
 					    	# <add the whole tag to newText>
-					    	while original_text[original_text_ptr] != '>':
+					    	while original_text[original_text_ptr] != '>' and original_text_ptr < len(original_text):
 					    		new_text += original_text[original_text_ptr]
 					    		original_text_ptr += 1
-					    	new_text += original_text[original_text_ptr]
 					    	# <update origPntr to point to the end of the tag in originalText>
 					    	original_text_ptr += 1
    						# ELIF <the diff pointed at by diffsPntr is a match with the same-length string starting at plainPntr>
@@ -1913,14 +1912,13 @@ def create_step(request):
 					    	eq_text_ptr = 0
 
 					    	# WHILE <not at the end of the eqText> DO
-					    	while eq_text_ptr < len(eq_text):
+					    	while eq_text_ptr < len(eq_text) and original_text_ptr < len(original_text):
 					    		# IF <current position in the originalText is a < (e.g HTML tag)> THEN
 					    		if original_text[original_text_ptr] == '<':
 					    			# <add the whole tag to newText>
-					    			while original_text[original_text_ptr] != '>':
+					    			while original_text[original_text_ptr] != '>' and original_text_ptr < len(original_text):
 					    				new_text += original_text[original_text_ptr]
 					    				original_text_ptr += 1
-					    			new_text += original_text[original_text_ptr]
 					    			# <update origPntr to point to the end of the tag in originalText>
 					    			original_text_ptr += 1
 					    			# don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
@@ -1932,7 +1930,7 @@ def create_step(request):
                						# We have found some kind of symbol that has been escaped - e.g &gt for the greater than symbol
 							    	html_symbol = original_text[original_text_ptr]
 							    	# <copy over the HMTL text for the symbol into newText>  #Unsure how hard it is to do this!!!
-							    	while original_text[original_text_ptr] != ";":
+							    	while original_text[original_text_ptr] != ";" and original_text_ptr < len(original_text):
 							    		html_symbol += original_text[original_text_ptr]
 							    		original_text_ptr += 1
 							    	html_symbol += original_text[original_text_ptr]
@@ -1981,7 +1979,7 @@ def create_step(request):
 
 					    	# find the text that needs to be highlighted
 					    	to_highlight = ""
-					    	while added_text_ptr < len(added_text):
+					    	while added_text_ptr < len(added_text) and original_text_ptr < len(original_text):
 					    		# <Add the text in the diff entry to newText, using same technique as above to ensure HTML tags/symbols are copied over from originalText>
 					    		
 					    		# don't highlight tags
@@ -1990,16 +1988,15 @@ def create_step(request):
 					    			new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
 					    			# reset the text to highlight
 					    			to_highlight = ""
-					    			while original_text[original_text_ptr] != '>':
+					    			while original_text[original_text_ptr] != '>' and original_text_ptr < len(original_text):
 					    				new_text += original_text[original_text_ptr]
 					    				original_text_ptr += 1
-					    			new_text += original_text[original_text_ptr]
 					    			original_text_ptr += 1
 					    		elif original_text[original_text_ptr] == "&" and original_text_ptr < len(original_text) - 2 and original_text[original_text_ptr + 1] != "&":
 							    	html_symbol = original_text[original_text_ptr]
 
 							    	# find the end of the html symbol- assuming it always ends in ;
-							    	while original_text[original_text_ptr] != ";":
+							    	while original_text[original_text_ptr] != ";" and original_text_ptr < len(original_text):
 							    		html_symbol += original_text[original_text_ptr]
 							    		original_text_ptr += 1
 							    	html_symbol += original_text[original_text_ptr]
