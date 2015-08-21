@@ -14,3 +14,4 @@ $(document).ready(function() {
 $('#question_modal').on('shown.bs.modal', function () {
 	$('#question_text').css("width", "100%");	
 })
+
