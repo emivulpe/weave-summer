@@ -1,6 +1,5 @@
 
 $(document).ready(function() {
-    alert("here");
     $(".nicEdit-main").css("white-space", "pre");
 })
 
