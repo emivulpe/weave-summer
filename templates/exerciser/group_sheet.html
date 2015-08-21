@@ -57,21 +57,7 @@
 
 {% block javascripts %}
 
-<script>
-	var csrftoken = getCookie('csrftoken');
+<script type="text/javascript" src="{% static 'js/groupSheet.js' %}"></script>
 
-	$( "#information_dialog" ).dialog({
-		width: $(window).width()*0.9,
-		modal: true,
-		autoOpen: true,
-		resizable: false,
-		buttons: {
-			"OK": function() {
-			$( this ).dialog( "close" );
-				request = $.post("/weave/group_sheet_confirm/",{'csrfmiddlewaretoken' : csrftoken});
-			}
-		}
-	});
-</script>
 
 {% endblock %}

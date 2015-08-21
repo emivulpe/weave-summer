@@ -77,7 +77,8 @@ function loadStep(direction, answer){
     //else show an empty text area
     var request = $.get('/weave/get_next_step/', {
         'example_name' : exampleName,
-        'step_number' : currentStep
+        'step_number' : currentStep,
+        'use_to_create_new_step' : "false"
     });
 
     request.done(function(data) {
@@ -90,7 +91,6 @@ function loadStep(direction, answer){
             $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");   
             $("#question_modal").modal('show');
 
-           // alert("THIS STEP IS A QUESTION!!!!!!!!");
            loadingQuestionStep = true;
             $('#question_modal').on('shown.bs.modal', function (e) {
                 if(loadingQuestionStep){
@@ -208,7 +208,6 @@ $('#btn_prev').click(function() {
 // Use JQuery to pick up when the user pushes the next button.
 $('#question_btn_next').click(function() {
     answer = getAnswer();
-    alert(answer);
     $("#question_modal").modal('hide');
     $('#question_modal').on('hidden.bs.modal', function () {
         $(this).removeData('bs.modal');
@@ -299,7 +298,6 @@ function getAnswer(){
     if (multipleChoiceQuestion) {
         answer = "";
         $("input:checked").each(function(){
-            alert($(this).parent().siblings(".option_text").length);
             answer += $(this).parent().siblings(".option_text").text() + ";";
         })
     }

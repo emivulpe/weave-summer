@@ -29,7 +29,7 @@ import re
 from django.utils.html import strip_tags, escape
 from xml.sax.saxutils import unescape
 from bs4 import BeautifulSoup
-
+import diff_match_patch
 
 
 
@@ -1261,6 +1261,8 @@ def get_next_step(request):
 	try:
 		example_name = request.GET['example_name']
 		step_number = int(request.GET['step_number'])
+		use_to_create_new_step = json.loads(request.GET['use_to_create_new_step'])
+
 	except KeyError:
 		print "key error in get next step"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
@@ -1283,16 +1285,45 @@ def get_next_step(request):
 		panel_entry = html_steps.filter(panel_id = panel_id)
 		if len(panel_entry) > 0:
 			# there has been a text saved for this panel so return the first one
-			step_entry[panel_id] = panel_entry[0].html
+			panel_html = panel_entry[0].html
+			if use_to_create_new_step:
+				soup = BeautifulSoup(panel_html, "lxml")
+				for div in soup.findAll('span', 'style'):
+					div.replaceWithChildren()
+				for div in soup.findAll('html', ''):
+					div.replaceWithChildren()
+				for div in soup.findAll('body', ''):
+					div.replaceWithChildren()
+				for div in soup.findAll('p', ''):
+					div.replaceWithChildren()
+				print soup, "souppppppppppppppppppppp"
+				panel_html = str(soup)
+
+			step_entry[panel_id] = panel_html
 			print "something in panel exists"
 		else:
-			previous_html_steps = HTMLStep.objects.filter(example = example, step_number = step_number - 1,panel_id = panel_id)
-			if len(previous_html_steps) > 0:
-				step_entry[panel_id] = previous_html_steps[0].html
-			else:
-				# there was no previously inserted text for this panel so return empty string
-				step_entry[panel_id] = ""
-				print "nothing in panel exists"
+
+			previous_step_number = step_number - 1
+			previous_step_text = ""
+			while previous_step_number >= 0 and previous_step_text == "":
+				previous_step = HTMLStep.objects.filter(example = example, step_number = previous_step_number, panel_id = panel_id)
+				if len(previous_step) != 0:
+					#print "there was a previous step"
+					#previous_step_text = lxml.html.fromstring(previous_step[0].html).text_content().split()
+					previous_step_text = previous_step[0].html
+					previous_text_soup = BeautifulSoup(previous_step_text, "lxml")
+					for div in previous_text_soup.findAll('span', 'style'):
+						div.replaceWithChildren()
+					for div in previous_text_soup.findAll('html', ''):
+						div.replaceWithChildren()
+					for div in previous_text_soup.findAll('body', ''):
+						div.replaceWithChildren()
+					for div in previous_text_soup.findAll('p', ''):
+						div.replaceWithChildren()
+					previous_step_text = str(previous_text_soup)
+				previous_step_number -= 1
+			step_entry[panel_id] = previous_step_text
+			print "nothing in panel exists"
 	# Add the html for the explanation if it existed else add an empty string
 	if len(html_explanation) > 0:
 		step_entry["explanation_area"] = html_explanation[0].html
@@ -1300,36 +1331,37 @@ def get_next_step(request):
 	else:
 		step_entry["explanation_area"] = ""
 		print "no explanation exists"
-	if len(question) > 0:
-		question = question[0]
-		question_record = ExampleQuestionRecord.objects.filter(question = question, session_id = session_id)
-		options = ExampleOption.objects.filter(question = question)
-		if len(question_record) == 0:
-			print "QUESTIOOOOOON" , question.question_text
-			step_entry["question_text"] = question.question_text
-			step_entry["question_type"] = question.kind
-			question_options = []
-			for i in range(0, len(options)):
-				print i
-				print len(options)
-				print options[i].option_text
-				option = options[i]
-				question_options.append({"option_text" : option.option_text, "correct": option.correct})
-				option_comment = OptionComment.objects.filter(option = option)
-				if len(option_comment) > 0:
-					option_comment = option_comment[0]
-					question_options[len(question_options) - 1]["comment"] = option_comment.comment
-			step_entry["options"] = question_options
-		else:
-			question_record = question_record[0]
+	if not use_to_create_new_step:
+		if len(question) > 0:
+			question = question[0]
+			question_record = ExampleQuestionRecord.objects.filter(question = question, session_id = session_id)
+			options = ExampleOption.objects.filter(question = question)
+			if len(question_record) == 0:
+				print "QUESTIOOOOOON" , question.question_text
+				step_entry["question_text"] = question.question_text
+				step_entry["question_type"] = question.kind
+				question_options = []
+				for i in range(0, len(options)):
+					print i
+					print len(options)
+					print options[i].option_text ,"optiooooooooooooon teeeeeeeeeeeext"
+					option = options[i]
+					question_options.append({"option_text" : option.option_text, "correct": option.correct})
+					option_comment = OptionComment.objects.filter(option = option)
+					if len(option_comment) > 0:
+						option_comment = option_comment[0]
+						question_options[len(question_options) - 1]["comment"] = option_comment.comment
+				step_entry["options"] = question_options
+			else:
+				question_record = question_record[0]
 
-			explanation = "<div>You have answered: " + question_record.answer_text + "</div><div><b>Question: </b>" + question.question_text + "</div><ul style = 'list-style-type:none;'>"
-			for i in range(0, len(options)):
-				option = options[i]
-				explanation += "<li><b>" + str(option.number + 1) + ".</b> " + option.option_text + "</li>"
+				explanation = "<div>You have answered: " + question_record.answer_text + "</div><div><b>Question: </b>" + question.question_text + "</div><ul style = 'list-style-type:none;'>"
+				for i in range(0, len(options)):
+					option = options[i]
+					explanation += "<li><b>" + str(option.number + 1) + ".</b> " + option.option_text + "</li>"
 
-			explanation += "</ul></div>"
-			step_entry["explanation_area"] = explanation
+				explanation += "</ul></div>"
+				step_entry["explanation_area"] = explanation
 		"""
 		correct_answer_comment = CorrectAnswerComment.objects.filter(question = question)
 		
@@ -1478,7 +1510,7 @@ def edit_steps(request):
 
 
 
-
+"""
 # A method to create a new html step
 @requires_csrf_token
 def create_step(request):
@@ -1604,6 +1636,531 @@ def create_step(request):
 
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
 
+"""
+
+
+# A method to create a new html step
+@requires_csrf_token
+def create_step_old(request):
+	print "in create step"
+
+	try:
+		example_name = request.POST['example_name']
+		step_number = int(request.POST['step_number'])
+		panel_texts = json.loads(request.POST['panel_texts'])
+		explanation = request.POST['explanation']
+		insert_after = json.loads(request.POST['insert_after'])
+		insert_before = json.loads(request.POST['insert_before'])
+	except KeyError:
+		print "key error in save step texts"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	try:
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		print "index error in save explanation"
+		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
+	if step_number >= 0:
+		if insert_after:
+			# move each of the following steps by 1 step forward
+			# when it should be > step_number use step_number + 1!
+			update_step_number_after_insertion(example, (step_number + 1))
+
+		# save the new step panel texts
+		for panel_id in panel_texts:
+
+			print panel_texts[panel_id], "nothing escaped"
+			html = panel_texts[panel_id].replace("&nbsp;", " ")
+
+			original_html = html
+			print original_html, "originallllll"
+			print html, "spaces escaped"
+
+			# new code to deal with automatic highlighting
+			soup = BeautifulSoup(html, "lxml")
+			for div in soup.findAll('span', 'style'):
+				div.replaceWithChildren()
+			for div in soup.findAll('html', ''):
+				div.replaceWithChildren()
+			for div in soup.findAll('body', ''):
+				div.replaceWithChildren()
+			for div in soup.findAll('p', ''):
+				div.replaceWithChildren()
+			print soup, "souppppppppppppppppppppp"
+			html = str(soup)
+			
+			current_text = stripAllTags(html.replace("<br>", "/n"))
+			print current_text, "test html"	
+			print html, "after soup"
+			current_html = ""
+
+			# check the code with the previous 
+			#current_step_text = lxml.html.fromstring(html).text_content().split()
+			current_step_text = keeptags(html,"div br").replace("<div>", " <div> ").replace("</div>", " </div> ").replace("<br/>", " <br/>").split()
+			print current_step_text, "after keeptags"
+			previous_step_text = []
+			previous_step_number = step_number - 1
+			while previous_step_number >= 0 and previous_step_text == []:
+				previous_step = HTMLStep.objects.filter(example = example, step_number = previous_step_number, panel_id = panel_id)
+				if len(previous_step) != 0:
+					#print "there was a previous step"
+					#previous_step_text = lxml.html.fromstring(previous_step[0].html).text_content().split()
+					previous_step_html = previous_step[0].html
+					previous_step_text = keeptags(previous_step_html,"div br").replace("<div>", " <div> ").replace("</div>", " </div> ").replace("<br/>", " <br/>").split()
+				previous_step_number -= 1
+			#print previous_step_text, "previous step text"
+			if len(previous_step_text) == 0:
+				#print "previous step was empty"
+				html = '<span class ="style" style = "background-color:red;">' + html+ '</span>'
+			else:
+				previous_text = stripAllTags(previous_step_html)
+				diff_obj = diff_match_patch.diff_match_patch()
+				diffs = diff_obj.diff_main(previous_text, current_text)
+				diff_obj.diff_cleanupSemantic(diffs)
+				print diffs
+				"""
+				d = Differ()
+				comparison_result = list(d.compare(previous_step_text, current_step_text))
+				print comparison_result, "interestedddddddddddddddddddddddddddddddddd"
+				combination = ""
+				after_div_tag = True
+				#doc = et.fromstring(test)
+				for word in comparison_result:
+					#print "woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd"
+					#print after_div_tag, " after div tag"
+					if word[0] == '+' and "<div>" not in word and "</div>" not in word:
+						#print "had +"
+						if not after_div_tag:
+							#print "not after div"
+							word = word[1:]
+						else:
+							#print "after div"
+							word = word[1:].lstrip()	# the div tag added an extra space in front
+						combination += word;
+					else:
+						if combination != "":
+							combination = combination.replace(" <br/>", "<br>"). replace("&#39;","'")
+							print "combination NOT empty", len(combination), combination
+							#print html
+							#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
+							#print "combination NOT empty", combination
+							html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+							#print html
+							combination = ""
+						else:
+							print "combination empty"
+					if after_div_tag == True:
+						after_div_tag = False
+					if "<div>" not in word and "</div>" not in word:
+						if word[0] == "+":
+							after_div_tag = False
+					else:
+						print "after div"
+						after_div_tag = True
+				if combination != "":
+					combination = combination.replace(" <br/>", "<br>"). replace("&#39;","'")
+					print "combination NOT empty2", len(combination), combination
+					print html
+					#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
+					#print "combination NOT empty2", combination
+					html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+					print html
+					combination = ""
+				"""
+				position_in_original = 0
+				for diff in diffs:
+					if diff[0] == 0:
+						current_html += diff[1]
+						print 0,"00000000"
+					if diff[0] == 1:
+
+
+						current_html += '<span class ="style" style = "background-color:red;">' + diff[1] + '</span>'
+						print 1, "111111111111"
+						html = html.replace(diff[1],'<span class ="style" style = "background-color:red;">' + diff[1] + '</span>')
+
+
+			save_panel_text(html, example_name, step_number,panel_id)
+
+		# save the new step explanation
+
+		#print "explanation html ", html
+		html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
+		html_explanation.html = explanation
+		html_explanation.save() #Save the changes
+
+
+		if insert_before:
+			update_step_number_after_insertion(example, step_number)
+
+	old_string = """I'm selfish, impatient and a little insecure. I make mistakes,
+	I am out of control and at times hard to handle. But if you can't handle me at my worst,
+	then you sure as hell don't deserve me at my best."""
+
+	new_string = """I'm selfish, impatient and a little secure. I don't make mistakes,
+	I am out of control and at times hard to handle difficult things. But if you can't handle me at my worst,
+	then you sure as hell don't deserve me at my best."""
+
+	#diff_obj = diff_match_patch.diff_match_patch()
+	#diffs = diff_obj.diff_wordMode(old_string, new_string)
+	#diff_obj.diff_cleanupSemantic(diffs)
+
+	#print diffs
+	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
+
+
+
+
+
+@requires_csrf_token
+def create_step(request):
+	print "in create step"
+
+	try:
+		example_name = request.POST['example_name']
+		step_number = int(request.POST['step_number'])
+		panel_texts = json.loads(request.POST['panel_texts'])
+		explanation = request.POST['explanation']
+		insert_after = json.loads(request.POST['insert_after'])
+		insert_before = json.loads(request.POST['insert_before'])
+	except KeyError:
+		print "key error in save step texts"
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	try:
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		print "index error in save explanation"
+		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
+	if step_number >= 0:
+		if insert_after:
+			# move each of the following steps by 1 step forward
+			# when it should be > step_number use step_number + 1!
+			update_step_number_after_insertion(example, (step_number + 1))
+
+		# save the new step panel texts
+		for panel_id in panel_texts:
+
+			print panel_texts[panel_id], "nothing escaped"
+			#SET originalText TO <the raw text including HTML for step n>
+			original_text = panel_texts[panel_id].replace("&nbsp;", " ")
+			print original_text, "original text"
+
+
+			#SET plainText TO <the text with all HTML removed, again for step n>
+			current_step_plain_text = stripAllTags(original_text)
+			print current_step_plain_text, "plain text"
+			
+			new_text = ""
+
+			previous_step_number = step_number - 1
+			previous_step_text = ""
+			while previous_step_number >= 0 and previous_step_text == "":
+				previous_step = HTMLStep.objects.filter(example = example, step_number = previous_step_number, panel_id = panel_id)
+				if len(previous_step) != 0:
+					#print "there was a previous step"
+					#previous_step_text = lxml.html.fromstring(previous_step[0].html).text_content().split()
+					previous_step_text = previous_step[0].html
+				previous_step_number -= 1
+			#print previous_step_text, "previous step text"
+			if len(previous_step_text) == 0:
+				#print "previous step was empty"
+				new_text = '<span class ="style" style = "background-color:red;">' + original_text + '</span>'
+			else:
+				previous_step_text_plain = stripAllTags(previous_step_text)
+				diff_obj = diff_match_patch.diff_match_patch()
+
+				#SET diffs TO <a list of tuples produced by diff-match-patch against the plaintext for step n-1>
+				diffs = diff_obj.diff_main(previous_step_text_plain, current_step_plain_text)
+				diff_obj.diff_cleanupSemantic(diffs)
+				print diffs
+				if len(diffs) > 0:
+					#SET newText TO ""
+					#SET origPntr TO 0 # index into the original string with HTML
+					original_text_ptr = 0
+					#SET plainPntr TO 0  # index into the plain text string
+					plain_text_ptr = 0
+					#SET diffsPntr TO <the first entry in the diffs list that is either an equality (0) or an insertion (1) >
+					diffs_ptr = 0
+
+					next_diff = diffs[diffs_ptr]
+
+					# Scan over the plainText
+					#WHILE <not at the end of the plainText> DO
+					while plain_text_ptr < len(current_step_plain_text):
+					    #IF <current position in the originalText is an < (e.g HTML tag)> THEN
+					    # ???????????????????????????????? what if it is just < for less than...
+
+					    if original_text[original_text_ptr] == '<':
+					    	while original_text[original_text_ptr] != '>':
+					    		new_text += original_text[original_text_ptr]
+					    		original_text_ptr += 1
+					    	original_text_ptr += 1
+					    elif next_diff[0] == 0:
+
+					    	eq_text = next_diff[1]
+
+					    	eq_text_ptr = 0
+					    	while eq_text_ptr < len(eq_text):
+					    		if original_text[original_text_ptr] == '<':
+					    			while original_text[original_text_ptr] != '>':
+					    				new_text += original_text[original_text_ptr]
+					    				original_text_ptr += 1
+					    			original_text_ptr += 1
+					    		else:
+					    			new_text += current_step_plain_text[plain_text_ptr]
+					    			plain_text_ptr += 1 
+					    			eq_text_ptr += 1
+					     	if diffs_ptr < len(diffs) - 1:
+						        diffs_ptr += 1
+						        next_diff = diffs[diffs_ptr]
+						        while diffs_ptr < len(diffs) and next_diff[0] < 0:
+						        	diffs_ptr += 1
+						        	next_diff = diffs[diffs_ptr]
+
+					       	"""
+					    	# We've found a matching piece of text in both step n-1 and step n
+					        # We need to scan through this matching text, adding in any of the original HTML tags
+					        #@ Could probably write a neat recursive function to do this, but let's for now just repeat some code
+					        #SET eqText TO <the equal text in the diffs list>
+					       	eq_text = next_diff[1]
+					        #SET eqTextPntr TO 0
+					        eq_text_ptr = 0
+					        #WHILE <not at the end of the eqText> DO
+					        while eq_text_ptr < len(eq_text):
+					            #IF <current position in the originalText is an < (e.g HTML tag)> THEN
+					            if original_text[original_text_ptr] == "<":
+					            	#<add the whole tag to newText>
+					                #<update origPntr to point to the end of the tag in originalText>
+							        while original_text[original_text_ptr] != ">":
+							        	new_text += original_text[original_text_ptr]
+							        	original_text_ptr += 1
+							        # point to the char after >
+							        original_text_ptr += 1
+
+					                # don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
+					            	#ELSE
+					        	else:
+					                # I think we can assume that the text in eqText will be the same as the text in plainText
+					                # You could put a check in here to test whether this assertion is true!
+					                #<copy a single character from plainText across to newText>
+					                new_text += current_step_plain_text[plain_text_ptr]
+					                #<increment plainPntr by one position>
+					                plain_text_ptr += 1
+					                #<increment eqTextPntr by one position>
+					                eq_text_ptr += 1
+					            #END IF
+					        
+					        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+					        diffs_ptr += 1
+					        next_diff = diffs[diffs_ptr]
+					        while next_diff[0] < 0 && diffs_ptr < len(diffs):
+					        	diffs_ptr += 1
+					        	next_diff = diffs[diffs_ptr]
+					        """
+					    elif next_diff[0] == 1:
+					    	added_text = next_diff[1]
+					    	added_text_ptr = 0
+					    	to_highlight = ""
+					    	while added_text_ptr < len(added_text):
+					    		if original_text[original_text_ptr] == '<':
+					    			new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					    			to_highlight = ""
+					    			while original_text[original_text_ptr] != '>':
+					    				new_text += original_text[original_text_ptr]
+					    				original_text_ptr += 1
+					    			original_text_ptr += 1
+					    		else:
+					    			to_highlight += current_step_plain_text[plain_text_ptr]
+					    			plain_text_ptr += 1
+					    			added_text_ptr += 1
+					    		#add the highlighted text to newText
+					       	new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+					     	if diffs_ptr < len(diffs)-1:
+						        diffs_ptr += 1
+						        next_diff = diffs[diffs_ptr]
+						        while diffs_ptr < len(diffs) and next_diff[0] < 0:
+						        	diffs_ptr += 1
+						        	next_diff = diffs[diffs_ptr]
+					    """
+					    #ELSE
+						elif next_diff[0] == 1:
+					        # I think there's only one other situation that's possible
+					        # We must have found an addition, a new fragment of text in step n
+					        # You could check this assertion by comparing the current entry in diffs with the string fragment pointed at by plainPntr
+					        # Assuming the assertion is correct
+
+					        # Challenge though - the inserted text fragment may include HTML tags
+					        #<Add a highlighting tag to newText - the whole point of the exercise!!!>
+					        #<Add the text in the diff entry to newText, using the same technique as above to ensure that HTML tags are copied over from originalText>
+					        #<Add a closing highlighting tag in newText>
+					        #<Update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+
+							added_text = next_diff[1]
+					        #SET eqTextPntr TO 0
+					        added_text_ptr = 0
+					        to_highlight = ""
+					        #WHILE <not at the end of the eqText> DO
+					        while added_text_ptr < len(added_text):
+					            #IF <current position in the originalText is an < (e.g HTML tag)> THEN
+					            if original_text[original_text_ptr] == "<":
+					            	#highlight the text outside the tag and reset the text to highlight
+					            	new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					            	to_highlight = ""
+					            	#<add the whole tag to newText>
+					                #<update origPntr to point to the end of the tag in originalText>
+							        while original_text[original_text_ptr] != ">":
+							        	new_text += original_text[original_text_ptr]
+							        	original_text_ptr += 1
+							        # point to the char after >
+							        original_text_ptr += 1
+
+					                # don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
+					            #ELSE
+					        	else:
+					                # I think we can assume that the text in eqText will be the same as the text in plainText
+					                # You could put a check in here to test whether this assertion is true!
+					                #<copy a single character from plainText across to newText>
+					                to_highlight += current_step_plain_text[plain_text_ptr]
+					                #<increment plainPntr by one position>
+					                plain_text_ptr += 1
+					                #<increment eqTextPntr by one position>
+					                added_text_ptr += 1
+					            #END IF
+					        #add the highlighted text to newText
+					       	new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+					        diffs_ptr += 1
+					        next_diff = diffs[diffs_ptr]
+					        while next_diff[0] < 0 && diffs_ptr < len(diffs):
+					        	diffs_ptr += 1
+					        	next_diff = diffs[diffs_ptr]
+
+
+					   
+					    if original_text[original_text_ptr] == '<': 
+					        # We've found an HTML tag, so we need to copy it into newText
+					        #<add the whole tag to newText>
+					        #<update origPntr to point to the end of the tag in originalText>
+					        while original_text[original_text_ptr] != ">":
+					        	new_text += original_text[original_text_ptr]
+					        	original_text_ptr += 1
+					        # point to the char after >
+					        original_text_ptr += 1
+					    #ELIF <the diff pointed at by diffsPntr is a match with the same-length string starting at plainPntr>
+						if next_diff[0] == 0:
+					        # We've found a matching piece of text in both step n-1 and step n
+					        # We need to scan through this matching text, adding in any of the original HTML tags
+					        #@ Could probably write a neat recursive function to do this, but let's for now just repeat some code
+					        #SET eqText TO <the equal text in the diffs list>
+					       	eq_text = next_diff[1]
+					        #SET eqTextPntr TO 0
+					        eq_text_ptr = 0
+					        #WHILE <not at the end of the eqText> DO
+					        while eq_text_ptr < len(eq_text):
+					            #IF <current position in the originalText is an < (e.g HTML tag)> THEN
+					            if original_text[original_text_ptr] == "<":
+					            	#<add the whole tag to newText>
+					                #<update origPntr to point to the end of the tag in originalText>
+							        while original_text[original_text_ptr] != ">":
+							        	new_text += original_text[original_text_ptr]
+							        	original_text_ptr += 1
+							        # point to the char after >
+							        original_text_ptr += 1
+
+					                # don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
+					            #ELSE
+					        	else:
+					                # I think we can assume that the text in eqText will be the same as the text in plainText
+					                # You could put a check in here to test whether this assertion is true!
+					                #<copy a single character from plainText across to newText>
+					                new_text += current_step_plain_text[plain_text_ptr]
+					                #<increment plainPntr by one position>
+					                plain_text_ptr += 1
+					                #<increment eqTextPntr by one position>
+					                eq_text_ptr += 1
+					            #END IF
+					        
+					        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+					        diffs_ptr += 1
+					        next_diff = diffs[diffs_ptr]
+					        while next_diff[0] < 0 && diffs_ptr < len(diffs):
+					        	diffs_ptr += 1
+					        	next_diff = diffs[diffs_ptr]
+					    #ELSE
+						elif next_diff[0] == 1:
+					        # I think there's only one other situation that's possible
+					        # We must have found an addition, a new fragment of text in step n
+					        # You could check this assertion by comparing the current entry in diffs with the string fragment pointed at by plainPntr
+					        # Assuming the assertion is correct
+
+					        # Challenge though - the inserted text fragment may include HTML tags
+					        #<Add a highlighting tag to newText - the whole point of the exercise!!!>
+					        #<Add the text in the diff entry to newText, using the same technique as above to ensure that HTML tags are copied over from originalText>
+					        #<Add a closing highlighting tag in newText>
+					        #<Update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+
+							added_text = next_diff[1]
+					        #SET eqTextPntr TO 0
+					        added_text_ptr = 0
+					        to_highlight = ""
+					        #WHILE <not at the end of the eqText> DO
+					        while added_text_ptr < len(added_text):
+					            #IF <current position in the originalText is an < (e.g HTML tag)> THEN
+					            if original_text[original_text_ptr] == "<":
+					            	#highlight the text outside the tag and reset the text to highlight
+					            	new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					            	to_highlight = ""
+					            	#<add the whole tag to newText>
+					                #<update origPntr to point to the end of the tag in originalText>
+							        while original_text[original_text_ptr] != ">":
+							        	new_text += original_text[original_text_ptr]
+							        	original_text_ptr += 1
+							        # point to the char after >
+							        original_text_ptr += 1
+
+					                # don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
+					            #ELSE
+					        	else:
+					                # I think we can assume that the text in eqText will be the same as the text in plainText
+					                # You could put a check in here to test whether this assertion is true!
+					                #<copy a single character from plainText across to newText>
+					                to_highlight += current_step_plain_text[plain_text_ptr]
+					                #<increment plainPntr by one position>
+					                plain_text_ptr += 1
+					                #<increment eqTextPntr by one position>
+					                added_text_ptr += 1
+					            #END IF
+					        #add the highlighted text to newText
+					       	new_text += '<span class ="style" style = "background-color:red;">' + to_highlight + '</span>'
+					        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+					        diffs_ptr += 1
+					        next_diff = diffs[diffs_ptr]
+					        while next_diff[0] < 0 && diffs_ptr < len(diffs):
+					        	diffs_ptr += 1
+					        	next_diff = diffs[diffs_ptr]
+					    """
+
+					    #END IF
+					#END WHILE
+				
+			save_panel_text(new_text, example_name, step_number,panel_id)
+
+		# save the new step explanation
+
+		#print "explanation html ", html
+		html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
+		html_explanation.html = explanation
+		html_explanation.save() #Save the changes
+
+	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
+
+
+
+
+
+
 
 # A method to create a new html step
 @requires_csrf_token
@@ -1699,14 +2256,15 @@ def check_steps(request):
 	print "in check steppps"
 	try:
 		example_name = request.GET['example_name']
+		print example_name
 		step_number = int(request.GET['step_number'])
 	except KeyError:
-		print "key error in delete step"
+		print "key error in check steps"
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	try:
 		example = Example.objects.filter(name = example_name)[0]
 	except IndexError:
-		print "index error in delete step"
+		print "index error in check steps"
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	previous_steps = ExampleStep.objects.filter(example = example, step_number__lt = step_number)
 	next_steps = ExampleStep.objects.filter(example = example, step_number__gt = step_number)
@@ -2146,4 +2704,193 @@ def log_question_info_db(request):
 	usage_record.save()
 	question_record.save()
 	return HttpResponse("{}",content_type = "application/json")
-	
+
+
+def automatic_highlighter(example_name, step_number):
+	try:
+		example = Example.objects.filter(name=example_name)[0]
+
+	except IndexError:
+		print "index error in automatic highlighter"
+		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
+
+	step_panel_texts = {}
+	steps = HTMLStep.objects.filter(example = example, step_number = step_number)
+	for index in range(len(steps)):
+		step_panel = steps[index]
+		panel_id = step_panel.panel_id
+		panel_html = step_panel.html
+
+		panel_html = panel_html.replace("&nbsp;", " ")
+
+		# new code to deal with automatic highlighting
+		soup = BeautifulSoup(panel_html, "lxml")
+		for div in soup.findAll('span', 'style'):
+			div.replaceWithChildren()
+		for div in soup.findAll('html', ''):
+			div.replaceWithChildren()
+		for div in soup.findAll('body', ''):
+			div.replaceWithChildren()
+		for div in soup.findAll('p', ''):
+			div.replaceWithChildren()
+		print soup, "souppppppppppppppppppppp"
+		panel_html = str(soup)
+
+		current_step_text = keeptags(html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
+
+		previous_step_text = []
+		previous_step_number = step_number - 1
+		while previous_step_number >= 0 and previous_step_text == []:
+			previous_step = HTMLStep.objects.filter(example = example, step_number = previous_step_number, panel_id = panel_id)
+			if len(previous_step) != 0:
+				#print "there was a previous step"
+				#previous_step_text = lxml.html.fromstring(previous_step[0].html).text_content().split()
+				previous_step_text = keeptags(previous_step[0].html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
+			previous_step_number -= 1
+		#print previous_step_text, "previous step text"
+		if len(previous_step_text) == 0:
+			#print "previous step was empty"
+			panel_html = '<span class ="style" style = "background-color:red;">' + panel_html+ '</span>'
+		else:
+			d = Differ()
+			comparison_result = list(d.compare(previous_step_text, current_step_text))
+			print comparison_result, "interestedddddddddddddddddddddddddddddddddd"
+			combination = ""
+			after_div_tag = True
+			#doc = et.fromstring(test)
+			for word in comparison_result:
+				print "woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd"
+				print after_div_tag, " after div tag"
+				if word[0] == '+' and "<div>" not in word and "</div>" not in word:
+					print "had +"
+					if not after_div_tag:
+						print "not after div"
+						word = word[1:]
+					else:
+						print "after div"
+						word = word[1:].lstrip()	# the div tag added an extra space in front
+					combination += word;
+				else:
+					if combination != "":
+						print "combination NOT empty", len(combination), combination
+						#print html
+						#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
+						#print "combination NOT empty", combination
+						panel_html = panel_html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+						print panel_html
+						combination = ""
+					else:
+						print "combination empty"
+				if after_div_tag == True:
+					after_div_tag = False
+				if "<div>" not in word and "</div>" not in word:
+					if word[0] == "+":
+						after_div_tag = False
+				else:
+					print "after div"
+					after_div_tag = True
+			if combination != "":
+				print "combination NOT empty2", len(combination)
+				print panel_html
+				#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
+				#print "combination NOT empty2", combination
+				panel_html = panel_html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+				print panel_html
+				combination = ""
+		step_panel_texts[panel_id] = panel_html
+
+	return step_panel_texts
+
+
+
+def automatic_paneltext_highlighter(current_step_panel_text, previous_step_panel_text):
+	current_step_panel_text = current_step_panel_text.replace("&nbsp;", " ")
+
+	# new code to deal with automatic highlighting
+	soup = BeautifulSoup(current_step_panel_text, "lxml")
+	for div in soup.findAll('span', 'style'):
+		div.replaceWithChildren()
+	for div in soup.findAll('html', ''):
+		div.replaceWithChildren()
+	for div in soup.findAll('body', ''):
+		div.replaceWithChildren()
+	for div in soup.findAll('p', ''):
+		div.replaceWithChildren()
+	print soup, "souppppppppppppppppppppp"
+	current_step_panel_text = str(soup)
+
+	current_step_text = keeptags(current_step_panel_text,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
+
+	previous_step_text = []
+	previous_step_text = keeptags(previous_step_panel_text,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
+
+	#print previous_step_text, "previous step text"
+	if len(previous_step_text) == 0:
+		#print "previous step was empty"
+		current_step_panel_text = '<span class ="style" style = "background-color:red;">' + current_step_panel_text + '</span>'
+	else:
+		d = Differ()
+		comparison_result = list(d.compare(previous_step_text, current_step_text))
+		print comparison_result, "interestedddddddddddddddddddddddddddddddddd"
+		combination = ""
+		after_div_tag = True
+		#doc = et.fromstring(test)
+		for word in comparison_result:
+			print "woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd"
+			print after_div_tag, " after div tag"
+			if word[0] == '+' and "<div>" not in word and "</div>" not in word:
+				print "had +"
+				if not after_div_tag:
+					print "not after div"
+					word = word[1:]
+				else:
+					print "after div"
+					word = word[1:].lstrip()	# the div tag added an extra space in front
+				combination += word;
+			else:
+				if combination != "":
+					print "combination NOT empty", len(combination), combination
+					#print html
+					#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
+					#print "combination NOT empty", combination
+					current_step_panel_text = current_step_panel_text.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+					print current_step_panel_text
+					combination = ""
+				else:
+					print "combination empty"
+			if after_div_tag == True:
+				after_div_tag = False
+			if "<div>" not in word and "</div>" not in word:
+				if word[0] == "+":
+					after_div_tag = False
+			else:
+				print "after div"
+				after_div_tag = True
+		if combination != "":
+			print "combination NOT empty2", len(combination)
+			print current_step_panel_text
+			#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
+			#print "combination NOT empty2", combination
+			current_step_panel_text = current_step_panel_text.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+			print current_step_panel_text
+			combination = ""
+
+	return current_step_panel_text
+
+def stripAllTags( html ):
+        if html is None:
+                return None
+        return ''.join( BeautifulSoup( html ).findAll( text = True ) ) 
+
+def diff_wordMode(text1, text2):
+  	#dmp = new diff_match_patch()
+  	dmp = diff_match_patch.diff_match_patch()
+  	a = dmp.diff_linesToWords_(text1, text2)
+  	lineText1 = a[0]
+  	lineText2 = a[1]
+  	lineArray = a[2]
+
+  	diffs = dmp.diff_main(lineText1, lineText2, false)
+
+  	dmp.diff_charsToLines_(diffs, lineArray)
+  	return diffs

@@ -1,0 +1,1 @@
+var buttonList = ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','indent','outdent','image','upload','link','unlink','forecolor','bgcolor', 'edit', 'unhighlight'];

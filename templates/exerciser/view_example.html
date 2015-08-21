@@ -62,7 +62,7 @@ body {
 				{% for panel in panels %}
                 <td id = "panel_area_{{ panel.panel_number }}" class = "panel" valign="top" style = "border-right: 3px solid black;">
                 	<div id = "area_container{{ panel.panel_number }}" class="panel" style="margin:0px; float: left;word-wrap:break-word;overflow-y:scroll; overflow-x:hidden;">
-                		<div id = "{{ panel.panel_id }}">{{ panel.html }}</div>
+                		<div id = "{{ panel.panel_id }}" style = "white-space: pre;">{{ panel.html }}</div>
                 	</div>
                 </td>
 				{% endfor %}
@@ -83,7 +83,8 @@ body {
                 <h4 id = "question_modal_title" class="modal-title"></h4>
             </div>
             <div id = "question_modal_body" class="modal-body">
-                <div id="question_text"></div>
+                <div id="question_text">
+                </div>
 				<div id = "options_container" style = "padding-top : 30px;">
 					<ol id = "options_list" class="list-group" style = "list-style: none;">
 					</ol>
@@ -110,6 +111,9 @@ body {
 <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.splitter-0.15.0.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/viewerChange.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/modals.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/exampleViewerResizeHandler.js' %}"></script>
+
 
 <script type="text/javascript">
 	var exampleName = "{{ example.name }}";
@@ -118,124 +122,18 @@ body {
 </script>
 
 
-<script type="text/javascript">
-
-
-    $("#panel_container" ).colResizable({ disable : true });
-
-
-
-    //Re-init the plugin on the new elements
-    $("#panel_container").colResizable({
-        liveDrag: true,
-        gripInnerHtml: "<div class='grip'></div>",
-        draggingClass: "dragging",
-        onDrag: function (){
-
-             $('[id^="area_container"]').each(function(index) {
-                var container_width = $(this).parent().width();
-                console.log("id " + $(this).attr("id") + "width" + container_width);
-                $(this).width(container_width);
-                $(this).children().each(function(){
-                    $(this).width(container_width);
-                })
-             })   
-
-        }
-    });
-
-	handleNavigationVisibility();
-
-
-</script>
-
-
-<script type="text/javascript">
-
-
-$('.modal').on('hidden.bs.modal', function () {
-	$(this).removeData('bs.modal'); 
-})
-
-</script>
-
-
-<script type="text/javascript">
+<!--<script type="text/javascript">
 	$(function() {
 		$(".step").draggable();
 	});
 
-	$(document).ready(function() {
-		$(".modal-content").each(function(i) {
-		    $(this).draggable({
-		        handle: ".modal-header"  
-		    });
-		});
 
-	});
 </script>
+
+-->
 <script type="text/javascript" src="{% static 'js/applications.js' %}"></script>
 
 <script type="text/javascript" src="{% static 'js/jquery.browser.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jQuery.splitter.js' %}"></script>
-<script type="text/javascript">
-
-$().ready(function() {
-
-    var int00;
-	$("#example_container").splitter({
-		type: "h", 
-		accessKey: "P"
-	});
-});
-
-$(window).resize(function() {
-	
-	$("#outer_panel2").width($("#example_container").width() + "px");
-	$("#explanation_row2").width($("#example_container").width() + "px");
-	$("#panel_container").width($("#example_container").width() + "px");
-	$(".hsplitbar").width($("#example_container").width() + "px");
-	$("#explanation_row2").height($("#example_container").height() - $("#outer_panel2").height() - 4 + "px");
-
-
-	 $('[id^="area_container"]').each(function(index) {
-	    var container_width = $(this).parent().width();
-	    console.log("id " + $(this).attr("id") + "width" + container_width);
-	    $(this).width(container_width);
-	    $(this).children().each(function(){
-	        $(this).width(container_width);
-	    })
-	 })   
-
-	$("#explanation_row2").children().css("width", ($("#explanation_row2").width() - 20) + "px");
-
-
-
-	$( "#panel_container" ).colResizable({ disable : true });
-    //Re-init the plugin on the new elements
-    $("#panel_container").colResizable({
-        liveDrag: true,
-        gripInnerHtml: "<div class='grip'></div>",
-        draggingClass: "dragging",
-        onDrag: function (){
-
-             $('[id^="area_container"]').each(function(index) {
-                var container_width = $(this).parent().width();
-                console.log("id " + $(this).attr("id") + "width" + container_width);
-                $(this).width(container_width);
-                $(this).children().each(function(){
-                    $(this).width(container_width);
-                })
-             })   
-
-        }
-    });
-
-	$("#question_text").css("width", ($("#question_modal_body").width()) + "px");
-
-});
-
-
-</script>
 
 {% endblock %}
