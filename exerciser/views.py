@@ -1254,7 +1254,7 @@ def save_question(request):
 
 
 def get_next_step(request):
-	print "in get next step"
+	print "in get next steppppppppppp"
 	context = RequestContext(request)
 	session_id = request.session.session_key
 	# Get the requested example and step number
@@ -1263,6 +1263,7 @@ def get_next_step(request):
 		step_number = int(request.GET['step_number'])
 		print step_number
 		use_to_create_new_step = json.loads(request.GET['use_to_create_new_step'])
+		print use_to_create_new_step, "new steeeep"
 
 	except KeyError:
 		print "key error in get next step"
@@ -1326,7 +1327,7 @@ def get_next_step(request):
 			step_entry[panel_id] = previous_step_text
 			print "nothing in panel exists"
 	# Add the html for the explanation if it existed else add an empty string
-	if len(html_explanation) > 0:
+	if len(html_explanation) > 0 and not use_to_create_new_step :
 		step_entry["explanation_area"] = html_explanation[0].html
 		print "explanation exists"
 	else:
