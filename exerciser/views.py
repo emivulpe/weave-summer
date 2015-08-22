@@ -1863,168 +1863,168 @@ def create_step(request):
 				previous_step_number -= 1
 
 			# this is the very first step so everything needs to be highlighted
-			if len(previous_step_text) == 0:
-				new_text = '<span class ="style" style = "background-color:red; white-space:pre;">' + original_text + '</span>'
+			#if len(previous_step_text) == 0:
+			#	new_text = '<span class ="style" style = "background-color:red; white-space:pre;">' + original_text + '</span>'
 			# there is a previous step so we need to compare the previous and the new step
-			else:
+			#else:
 
-				# find the previous step plain text
-				previous_step_text_plain = stripAllTags(previous_step_text)
+			# find the previous step plain text
+			previous_step_text_plain = stripAllTags(previous_step_text)
 
-				#SET diffs TO <a list of tuples produced by diff-match-patch against the plaintext for step n-1>
-				diff_obj = diff_match_patch.diff_match_patch()
-				diffs = diff_obj.diff_main(previous_step_text_plain, current_step_plain_text)
-				diff_obj.diff_cleanupSemantic(diffs)
-				print diffs, "result from diff-match-patch"
+			#SET diffs TO <a list of tuples produced by diff-match-patch against the plaintext for step n-1>
+			diff_obj = diff_match_patch.diff_match_patch()
+			diffs = diff_obj.diff_main(previous_step_text_plain, current_step_plain_text)
+			diff_obj.diff_cleanupSemantic(diffs)
+			print diffs, "result from diff-match-patch"
 
-				# only check if the steps are not identical
-				if len(diffs) > 0:
-					#SET origPntr TO 0 # index into the original string with HTML
-					original_text_ptr = 0
-					#SET plainPntr TO 0  # index into the plain text string
-					plain_text_ptr = 0
-					#SET diffsPntr TO <the first entry in the diffs list that is either an equality (0) or an insertion (1) >
-					diffs_ptr = 0
+			# only check if the steps are not identical
+			if len(diffs) > 0:
+				#SET origPntr TO 0 # index into the original string with HTML
+				original_text_ptr = 0
+				#SET plainPntr TO 0  # index into the plain text string
+				plain_text_ptr = 0
+				#SET diffsPntr TO <the first entry in the diffs list that is either an equality (0) or an insertion (1) >
+				diffs_ptr = 0
 
-					# 
-					next_diff = diffs[diffs_ptr]
+				# 
+				next_diff = diffs[diffs_ptr]
 
-					# Scan over the plainText
-					#WHILE <not at the end of the plainText> DO
-					while plain_text_ptr < len(current_step_plain_text):
+				# Scan over the plainText
+				#WHILE <not at the end of the plainText> DO
+				while plain_text_ptr < len(current_step_plain_text):
 
-					    #IF <current position in the originalText is an < (e.g HTML tag)> THEN
-					    # We've found an HTML tag, so we need to copy it into newText
-					    if original_text[original_text_ptr] == '<':
-					    	# <add the whole tag to newText>
-					    	while original_text[original_text_ptr] != '>':
-					    		new_text += original_text[original_text_ptr]
-					    		original_text_ptr += 1
-					    	new_text += original_text[original_text_ptr]
-					    	# <update origPntr to point to the end of the tag in originalText>
-					    	original_text_ptr += 1
-   						# ELIF <the diff pointed at by diffsPntr is a match with the same-length string starting at plainPntr>
-					    elif next_diff[0] == 0:
-       						# We've found a matching piece of text in both step n-1 and step n
-					    	# We need to scan through this matching text, adding in any of the original HTML tags
+				    #IF <current position in the originalText is an < (e.g HTML tag)> THEN
+				    # We've found an HTML tag, so we need to copy it into newText
+				    if original_text[original_text_ptr] == '<':
+				    	# <add the whole tag to newText>
+				    	while original_text[original_text_ptr] != '>':
+				    		new_text += original_text[original_text_ptr]
+				    		original_text_ptr += 1
+				    	new_text += original_text[original_text_ptr]
+				    	# <update origPntr to point to the end of the tag in originalText>
+				    	original_text_ptr += 1
+						# ELIF <the diff pointed at by diffsPntr is a match with the same-length string starting at plainPntr>
+				    elif next_diff[0] == 0:
+   						# We've found a matching piece of text in both step n-1 and step n
+				    	# We need to scan through this matching text, adding in any of the original HTML tags
 
-					    	# SET eqText TO <the equal text in the diffs list>
-					    	eq_text = next_diff[1]
+				    	# SET eqText TO <the equal text in the diffs list>
+				    	eq_text = next_diff[1]
 
-							# SET eqTextPntr TO 0
-					    	eq_text_ptr = 0
+						# SET eqTextPntr TO 0
+				    	eq_text_ptr = 0
 
-					    	# WHILE <not at the end of the eqText> DO
-					    	while eq_text_ptr < len(eq_text):
-					    		# IF <current position in the originalText is a < (e.g HTML tag)> THEN
-					    		if original_text[original_text_ptr] == '<':
-					    			# <add the whole tag to newText>
-					    			while original_text[original_text_ptr] != '>':
-					    				new_text += original_text[original_text_ptr]
-					    				original_text_ptr += 1
-					    			new_text += original_text[original_text_ptr]
-					    			# <update origPntr to point to the end of the tag in originalText>
-					    			original_text_ptr += 1
-					    			# don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
-					    		
+				    	# WHILE <not at the end of the eqText> DO
+				    	while eq_text_ptr < len(eq_text):
+				    		# IF <current position in the originalText is a < (e.g HTML tag)> THEN
+				    		if original_text[original_text_ptr] == '<':
+				    			# <add the whole tag to newText>
+				    			while original_text[original_text_ptr] != '>':
+				    				new_text += original_text[original_text_ptr]
+				    				original_text_ptr += 1
+				    			new_text += original_text[original_text_ptr]
+				    			# <update origPntr to point to the end of the tag in originalText>
+				    			original_text_ptr += 1
+				    			# don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
+				    		
 
-           						# ELSIF <current pos in originalText is a &> THEN
-					    		elif original_text[original_text_ptr] == "&" and original_text_ptr < len(original_text) - 2 and original_text[original_text_ptr + 1] != "&":
-							    	
-               						# We have found some kind of symbol that has been escaped - e.g &gt for the greater than symbol
-							    	html_symbol = original_text[original_text_ptr]
-							    	# <copy over the HMTL text for the symbol into newText>  #Unsure how hard it is to do this!!!
-							    	while original_text[original_text_ptr] != ";":
-							    		html_symbol += original_text[original_text_ptr]
-							    		original_text_ptr += 1
-							    	html_symbol += original_text[original_text_ptr]
-							    	original_text_ptr += 1
-							    	new_text += html_symbol
-							    	# <update plainPntr to step past the symbol in plainText>
-							    	plain_text_ptr += 1
-							    	# <update eqTextPntr to step past the symbol in eqText>
-							    	eq_text_ptr += 1
-							    	# <update origPntr to step past the HTML text for the symbol in originalText>
-							    	original_text_ptr += 1
+       						# ELSIF <current pos in originalText is a &> THEN
+				    		elif original_text[original_text_ptr] == "&" and original_text_ptr < len(original_text) - 2 and original_text[original_text_ptr + 1] != "&":
+						    	
+           						# We have found some kind of symbol that has been escaped - e.g &gt for the greater than symbol
+						    	html_symbol = original_text[original_text_ptr]
+						    	# <copy over the HMTL text for the symbol into newText>  #Unsure how hard it is to do this!!!
+						    	while original_text[original_text_ptr] != ";":
+						    		html_symbol += original_text[original_text_ptr]
+						    		original_text_ptr += 1
+						    	html_symbol += original_text[original_text_ptr]
+						    	original_text_ptr += 1
+						    	new_text += html_symbol
+						    	# <update plainPntr to step past the symbol in plainText>
+						    	plain_text_ptr += 1
+						    	# <update eqTextPntr to step past the symbol in eqText>
+						    	eq_text_ptr += 1
+						    	# <update origPntr to step past the HTML text for the symbol in originalText>
+						    	original_text_ptr += 1
 
-							    # ELSE
-					    		else:
-					    			# I think we can assume that the text in eqText will be the same as the text in plainText
-               						# You could put a check in here to test whether this assertion is true!
-					    			
-									# <copy a single character from plainText across to newText>
-					    			new_text += current_step_plain_text[plain_text_ptr]
-					    			# <increment plainPntr by one position>
-					    			plain_text_ptr += 1 
-					    			# <increment eqTextPntr by one position>
-					    			eq_text_ptr += 1
-					    			# <increment origPntr by one position>
-					    			original_text_ptr += 1
-					    		# <update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
-						     	if diffs_ptr < len(diffs) - 1:
-							        diffs_ptr += 1
-							        next_diff = diffs[diffs_ptr]
-
-							        while diffs_ptr < len(diffs) - 1 and next_diff[0] < 0:
-							        	diffs_ptr += 1
-							        	next_diff = diffs[diffs_ptr]
-					    # ELSE
-					    elif next_diff[0] == 1:
-					    	# I think there's only one other situation that's possible
-						    # We must have found an addition, a new fragment of text in step n
-						    # You could check this assertion by comparing the current entry in diffs with the string fragment pointed at by plainPntr
-						    # Assuming the assertion is correct
-
-						    # Challenge though - the inserted text fragment may include HTML tags and also the HTML version of symbols
-					    	
-						    # get the new text from the comparison results
-					    	added_text = next_diff[1]
-					    	added_text_ptr = 0
-
-					    	# find the text that needs to be highlighted
-					    	to_highlight = ""
-					    	while added_text_ptr < len(added_text) and original_text_ptr < len(original_text):
-					    		# <Add the text in the diff entry to newText, using same technique as above to ensure HTML tags/symbols are copied over from originalText>
-					    		
-					    		# don't highlight tags
-					    		print len(original_text), "len orig text"
-					    		print original_text_ptr, "orig text ptr"
-					    		if original_text[original_text_ptr] == '<':
-					    			# highlight everything before the tag
-					    			new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
-					    			# reset the text to highlight
-					    			to_highlight = ""
-					    			while original_text[original_text_ptr] != '>':
-					    				new_text += original_text[original_text_ptr]
-					    				original_text_ptr += 1
-					    			new_text += original_text[original_text_ptr]
-					    			original_text_ptr += 1
-					    		elif original_text[original_text_ptr] == "&" and original_text_ptr < len(original_text) - 2 and original_text[original_text_ptr + 1] != "&":
-							    	html_symbol = original_text[original_text_ptr]
-
-							    	# find the end of the html symbol- assuming it always ends in ;
-							    	while original_text[original_text_ptr] != ";":
-							    		html_symbol += original_text[original_text_ptr]
-							    		original_text_ptr += 1
-							    	html_symbol += original_text[original_text_ptr]
-							    	to_highlight += current_step_plain_text[plain_text_ptr]
-							    	plain_text_ptr += 1
-							    	added_text_ptr += 1
-							    	original_text_ptr += 1
-					    		else:
-					    			to_highlight += current_step_plain_text[plain_text_ptr]
-					    			plain_text_ptr += 1
-					    			added_text_ptr += 1
-					    			original_text_ptr += 1
-					    	#add the highlighted text to newText
-					       	new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
-					        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
-					     	if diffs_ptr < len(diffs)-1:
+						    # ELSE
+				    		else:
+				    			# I think we can assume that the text in eqText will be the same as the text in plainText
+           						# You could put a check in here to test whether this assertion is true!
+				    			
+								# <copy a single character from plainText across to newText>
+				    			new_text += current_step_plain_text[plain_text_ptr]
+				    			# <increment plainPntr by one position>
+				    			plain_text_ptr += 1 
+				    			# <increment eqTextPntr by one position>
+				    			eq_text_ptr += 1
+				    			# <increment origPntr by one position>
+				    			original_text_ptr += 1
+				    		# <update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+					     	if diffs_ptr < len(diffs) - 1:
 						        diffs_ptr += 1
 						        next_diff = diffs[diffs_ptr]
-						        while diffs_ptr < len(diffs) and next_diff[0] < 0:
+
+						        while diffs_ptr < len(diffs) - 1 and next_diff[0] < 0:
 						        	diffs_ptr += 1
 						        	next_diff = diffs[diffs_ptr]
+				    # ELSE
+				    elif next_diff[0] == 1:
+				    	# I think there's only one other situation that's possible
+					    # We must have found an addition, a new fragment of text in step n
+					    # You could check this assertion by comparing the current entry in diffs with the string fragment pointed at by plainPntr
+					    # Assuming the assertion is correct
+
+					    # Challenge though - the inserted text fragment may include HTML tags and also the HTML version of symbols
+				    	
+					    # get the new text from the comparison results
+				    	added_text = next_diff[1]
+				    	added_text_ptr = 0
+
+				    	# find the text that needs to be highlighted
+				    	to_highlight = ""
+				    	while added_text_ptr < len(added_text) and original_text_ptr < len(original_text):
+				    		# <Add the text in the diff entry to newText, using same technique as above to ensure HTML tags/symbols are copied over from originalText>
+				    		
+				    		# don't highlight tags
+				    		print len(original_text), "len orig text"
+				    		print original_text_ptr, "orig text ptr"
+				    		if original_text[original_text_ptr] == '<':
+				    			# highlight everything before the tag
+				    			new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
+				    			# reset the text to highlight
+				    			to_highlight = ""
+				    			while original_text[original_text_ptr] != '>':
+				    				new_text += original_text[original_text_ptr]
+				    				original_text_ptr += 1
+				    			new_text += original_text[original_text_ptr]
+				    			original_text_ptr += 1
+				    		elif original_text[original_text_ptr] == "&" and original_text_ptr < len(original_text) - 2 and original_text[original_text_ptr + 1] != "&":
+						    	html_symbol = original_text[original_text_ptr]
+
+						    	# find the end of the html symbol- assuming it always ends in ;
+						    	while original_text[original_text_ptr] != ";":
+						    		html_symbol += original_text[original_text_ptr]
+						    		original_text_ptr += 1
+						    	html_symbol += original_text[original_text_ptr]
+						    	to_highlight += current_step_plain_text[plain_text_ptr]
+						    	plain_text_ptr += 1
+						    	added_text_ptr += 1
+						    	original_text_ptr += 1
+				    		else:
+				    			to_highlight += current_step_plain_text[plain_text_ptr]
+				    			plain_text_ptr += 1
+				    			added_text_ptr += 1
+				    			original_text_ptr += 1
+				    	#add the highlighted text to newText
+				       	new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
+				        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+				     	if diffs_ptr < len(diffs)-1:
+					        diffs_ptr += 1
+					        next_diff = diffs[diffs_ptr]
+					        while diffs_ptr < len(diffs) and next_diff[0] < 0:
+					        	diffs_ptr += 1
+					        	next_diff = diffs[diffs_ptr]
 
 					    #END IF
 					#END WHILE
