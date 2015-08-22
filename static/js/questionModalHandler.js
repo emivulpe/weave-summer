@@ -1,4 +1,9 @@
 $('#add_option_button').click(function(){
+    addOption();
+});
+
+
+function addOption(){
     var option_type = $('input[type=radio][name=question_type_radio]:checked').val();
     console.log(option_type + "OPTION TYPE");
     option_number = $("#options_list").find($(".option")).length + 1;
@@ -17,8 +22,7 @@ $('#add_option_button').click(function(){
 
     correctAnswerController();
     $('.modal').data('bs.modal').handleUpdate();
-
-});
+}
 
 $("#question_modal").on('shown.bs.modal',function(){
     $("#question_text").width($("#question_text_container").width());
@@ -41,7 +45,10 @@ $('input[type=radio][name=question_type_radio]').on('change', function(){
                 $(this).remove();
                 console.log("to remove");
             })
-
+            while($("#options_list").children().length < 2){
+                addOption();
+            }
+            //alert($("#options_list").children().length);
             break;
         case 'multiple_choice_with_comments' :
             $("#options_container").show();
@@ -59,10 +66,15 @@ $('input[type=radio][name=question_type_radio]').on('change', function(){
                 nicEditInstances[$(this).attr("id")] = new nicEditor({"iconsPath" : nicEditorPath, "buttonList" : buttonList,}).panelInstance($(this).attr("id"));
                 }
             });
+            while($("#options_list").children().length < 2){
+                addOption();
+            }
+            alert($("#options_list").children().length);
             break;
         case 'open' :
             $("#options_container").hide();
             console.log("o");
+            //alert($("#options_list").children().length);
             break;
     }            
 });

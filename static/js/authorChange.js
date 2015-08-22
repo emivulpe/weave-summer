@@ -301,7 +301,6 @@ function loadStep(direction){
     else if (direction == "back"){
         currentStep --;
     }
-    handleNavigationVisibility();
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
     //get request to see if there is entry for that step
     //if there is- fill the textarea with it
@@ -313,6 +312,7 @@ function loadStep(direction){
     });
 
     request.done(function(data) {
+        handleNavigationVisibility();
         if (data.hasOwnProperty("question_text")) {
             //alert("here is a question dialog");
             $("#create_question_step").hide();
@@ -348,8 +348,14 @@ function manageExampleAreas(data, direction) {
         resetQuestionModal(true);
     }
     if (!("error" in data)) {
+        if (data.hasOwnProperty("question_type")) {
+
+            questionType = data["question_type"];
+            $("[name=question_type_radio][value="+ questionType +"]").prop('checked', true);
+        }
         for (var key in data) {
-            if (data.hasOwnProperty(key)) {
+
+            if (data.hasOwnProperty(key) && key != "question_type") {
                 //alert(key);
                 console.log(key + 1);
                 console.log(data[key] + 2);
@@ -402,11 +408,6 @@ function manageExampleAreas(data, direction) {
                         //correctAnswerController();
                         console.log("OPTIOOOOOOOOOOOOOONSSSSSSS");
                     }
-                    else if (key == "question_type"){
-                        questionType = data[key];
-                        $("[name=question_type_radio][value="+ questionType +"]").prop('checked', true);// + data[key] + "]")
-                    }
-
                     else if (key != "question_text"){ 
                         text_area = nicEditors.findEditor(key);
                         text_area.setContent(data[key]);
@@ -538,7 +539,7 @@ $('.create_step_btn.after').click(function() {
     }
     currentStep ++;
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
-    handleNavigationVisibility();
+    //handleNavigationVisibility();
 });
 
 $('.create_step_btn.before').click(function() {
