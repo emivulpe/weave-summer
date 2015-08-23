@@ -11,8 +11,13 @@
 var nicEditOptions = {
     buttons : {
         'edit' : {name : __('Edit'), type : 'nicEditorEditButton'},
-        'unhighlight' : {name : __('Unhighlight'), type : 'nicEditorUnhighlightButton'}
-    }/* NICEDIT_REMOVE_START */,iconFiles : {'edit' : editGif, 'unhighlight' : unhighlightGif}/* NICEDIT_REMOVE_END */
+        'unhighlight' : {name : __('Unhighlight'), type : 'nicEditorUnhighlightButton'},
+        'custom_indent' : {name : __('Indent'), type : 'nicEditorIndentButton'},
+        'custom_outdent' : {name : __('Outdent'), type : 'nicEditorOutdentButton'}
+    },/* NICEDIT_REMOVE_START */
+    iconFiles : {'edit' : editGif, 'unhighlight' : unhighlightGif}
+    
+/* NICEDIT_REMOVE_END */
 };
 /* END CONFIG */
  
@@ -20,6 +25,42 @@ var nicEditorEditButton = nicEditorButton.extend({
   mouseClick : function() {
     getSelText();
     getSelectionHtml();
+  }
+});
+
+var nicEditorIndentButton = nicEditorButton.extend({   
+  mouseClick : function() {
+    var selectedText = getSelectionHtml();
+    if (selectedText == ""){
+        BootstrapDialog.alert('Please select the whole line you would like to indent! The easiest way to do so is by double clicking the line with the mouse.');
+    }
+    else{
+        var focusedEditor = nicEditors.findEditor(currentFocusedEditor);
+        var textInFocusedEditor =  focusedEditor.getContent();    //Save the explanation for this step
+        var indentedText = "    " + textInFocusedEditor;
+        focusedEditor.setContent(textInFocusedEditor.replace(selectedText, indentedText));
+    }
+  }
+});
+
+
+var nicEditorOutdentButton = nicEditorButton.extend({   
+  mouseClick : function() {
+    var selectedText = getSelectionHtml();
+    if (selectedText == ""){
+        BootstrapDialog.alert('Please select the whole line you would like to indent! The easiest way to do so is by double clicking the line with the mouse.');
+    }
+    else{
+        var focusedEditor = nicEditors.findEditor(currentFocusedEditor);
+        var textInFocusedEditor =  focusedEditor.getContent();    //Save the explanation for this step
+        var spacesRemoved = 0;
+        var outdentedText = selectedText;
+        while (spacesRemoved < 4 && selectedText.charAt(0) === " "){
+            outdentedText = outdentedText.substring(1);
+            spacesRemoved++;
+        }
+        focusedEditor.setContent(textInFocusedEditor.replace(selectedText, outdentedText));
+    }
   }
 });
  
@@ -84,3 +125,4 @@ function getSelectionHtml() {
     }
     return html;
 }
+
