@@ -1459,7 +1459,7 @@ def edit_steps(request):
 		print panel_id, "iddddddddddddddddddddddddddddddddddddddd"
 		raw_new_text = request.POST['new_text']
 		raw_text_to_change = request.POST['text_to_change']
-		plain_text_to_change = stripAllTags(raw_text_to_change)#lxml.html.fromstring(raw_text_to_change).text_content()
+		plain_text_to_change = lxml.html.fromstring(raw_text_to_change).text_content()
 		print raw_text_to_change, " RAW"
 		print raw_new_text, " NEW"
 		print plain_text_to_change, " PLAIN"
@@ -1493,7 +1493,7 @@ def edit_steps(request):
 		for step in steps:
 			if step.step_number != step_number:
 				raw_step_html = step.html;
-				plain_step_html = stripAllTags(step.html) #lxml.html.fromstring(step.html).text_content()
+				plain_step_html = lxml.html.fromstring(step.html).text_content()
 				proposed_text = None
 				if raw_text_to_change in raw_step_html:
 					proposed_text = raw_step_html.replace(raw_text_to_change, raw_new_text)
