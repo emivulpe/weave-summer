@@ -861,3 +861,35 @@ function handleNavigationVisibility(){
         }
     })
 }
+
+
+// Specify the shortcut keys for transition between examples
+document.onkeydown = function(e) {
+    switch (e.keyCode) {
+        case 37:
+            var request = $.get("/weave/check_steps/", {
+                'example_name': exampleName,
+                'step_number': (currentStep),
+                'csrfmiddlewaretoken': csrftoken,
+            });
+            request.done(function(outcome) {
+                if (outcome['previous_steps'] > 0){
+                    loadStep("back");
+                }
+            });
+
+            break;
+        case 39:
+            var request = $.get("/weave/check_steps/", {
+                'example_name': exampleName,
+                'step_number': (currentStep),
+                'csrfmiddlewaretoken': csrftoken,
+            });
+            request.done(function(outcome) {
+                if (outcome['next_steps'] > 0){
+                    loadStep("next");
+                }
+            });
+            break;
+    }
+};
