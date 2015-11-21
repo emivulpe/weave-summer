@@ -1,0 +1,5 @@
+1. When creating/editing an example, when there is a highlighted section and if you continue to type, the new stuff are highlighted too- should be white
+2. When editing text if it is "hi" it will change it in "this". Example: you want to change "hi" to "hey" then "this" will become "theys
+5. Sometimes the question textarea doesn't appear properly- maybe wait for the page to load before specifying the width (it gets better when you change the window size)
+6. In create/edit example when there is a previously created open question the "add option button" appears when reviewing the question
+8. Edit example is not working

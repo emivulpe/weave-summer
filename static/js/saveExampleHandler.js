@@ -5,7 +5,7 @@ $(".step_btn.store_example_btn").confirmation({
     'btnCancelLabel' : 'No',
     'popout' : false,
     'onConfirm' : function(){
-        alert("code to go to the home page");
+        window.location.href = "/weave/teacher_interface";
     }
 })
 
@@ -17,6 +17,6 @@ $(".question_step_btn.store_example_btn").confirmation({
     'btnCancelLabel' : 'No',
     'popout' : false,
     'onConfirm' : function(){
-        alert("code to go to the home page");
+        window.location.href = "/weave/teacher_interface";
     }
 })

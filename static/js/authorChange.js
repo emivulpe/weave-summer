@@ -295,12 +295,14 @@ function saveQuestion(isQuestionBefore, isQuestionAfter, direction, newStep){
 
 
 function loadStep(direction){
+
     if (direction == "next"){
         currentStep++;
     }
     else if (direction == "back"){
         currentStep --;
     }
+
     $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));
     //get request to see if there is entry for that step
     //if there is- fill the textarea with it
@@ -576,6 +578,7 @@ $('.create_step_btn.before').click(function() {
 
 
 function saveStep(insertBefore, insertAfter, direction, newStep){
+
     if (insertBefore == undefined){
         insertBefore = false;
     }
@@ -589,7 +592,7 @@ function saveStep(insertBefore, insertAfter, direction, newStep){
     explanationArea.setContent("");
     // Save the entries for each panel for the step
     $('textarea[id^="area"]').each(function(index) {
-        console.log($(this).attr("id"));
+        console.log($(this).attr("id") + " in save step");
         var panelId = $(this).attr("id");
         var panelArea = nicEditors.findEditor(panelId);
         var panelContent = panelArea.getContent();

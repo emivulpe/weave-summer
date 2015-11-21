@@ -2,8 +2,8 @@ from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from exerciser.models import PupilAnswer, ExampleUsageRecord, ExampleQuestionRecord, Application, Panel, Document, Change, Step, Explanation, UsageRecord, QuestionRecord, Group, Teacher, Question, Option, Student, AcademicYear, HTMLStep, Example, HTMLExplanation, ExampleQuestion, ExampleOption, OptionComment, ExampleStep
-import json 
-import simplejson 
+import json
+import simplejson
 import datetime
 import string
 import random
@@ -53,7 +53,7 @@ def create_student_ids(teacher,group,number_students_needed):
 
 @requires_csrf_token
 def log_info_db_old(request):
-	""" 
+	"""
 	This method logs the time spent on a step, when the user moves forwards or backwards to the next/previous step.
 	"""
 	try:
@@ -75,15 +75,15 @@ def log_info_db_old(request):
 
 	except IndexError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 	record = UsageRecord(application = application, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)
-	
+
 	teacher_name=request.session.get("teacher",None)
 	if teacher_name != None:
-	
+
 		user=User.objects.filter(username=teacher_name)
 		teacher=Teacher.objects.filter(user=user)
-		
+
 		if len(teacher)>0:
 			teacher=teacher[0]
 			record.teacher = teacher
@@ -105,15 +105,15 @@ def log_info_db_old(request):
 	record.save()
 	return HttpResponse("{}",content_type = "application/json")
 
-	
-	
+
+
 
 @requires_csrf_token
 def log_question_info_db_old(request):
 	"""
 	This method stores the answer chosen for a question at a particular step.
 	"""
-	
+
 	try:
 		time_on_question = request.POST['time']
 		current_step = request.POST['step']
@@ -158,7 +158,7 @@ def log_question_info_db_old(request):
 						group=group[0]
 						usage_record.group = group
 						question_record.group = group
-						
+
 						student_name=request.session.get("student", None)
 						if student_name != None:
 							student = Student.objects.filter(teacher=teacher,group=group,student_id=student_name)
@@ -169,10 +169,10 @@ def log_question_info_db_old(request):
 	usage_record.save()
 	question_record.save()
 	return HttpResponse("{}",content_type = "application/json")
-	
+
 
 def student_group_list(request):
-	""" 
+	"""
 	This method retrieves the list of students for a particular group.
 	"""
 	context = RequestContext(request)
@@ -194,7 +194,7 @@ def student_group_list(request):
 	selected_year = selected_year +'/'+ str(int(selected_year)+1)
 	request.session['information_shown'] = True
 	return render_to_response('exerciser/group_sheet.html', {'students':students, 'group':group_name, 'year':selected_year}, context)
-	
+
 
 
 @requires_csrf_token
@@ -202,7 +202,7 @@ def create_group(request):
 	"""
 	This method creates a group for a particular teacher and year with the specified number of students.
 	"""
-	
+
 	success = False
 	try:
 		teacher_username = request.POST['teacher']
@@ -213,7 +213,7 @@ def create_group(request):
 		return HttpResponse(simplejson.dumps(success), content_type="application/json")
 	if num_students == '' or group_name == '':
 		return HttpResponse(simplejson.dumps(success), content_type="application/json")
-	
+
 	try:
 		user = User.objects.filter(username = teacher_username)[0]
 		teacher = Teacher.objects.filter(user=user)[0]
@@ -228,9 +228,9 @@ def create_group(request):
 		success = True
 
 	return HttpResponse(simplejson.dumps(success),content_type = "application/json")
-	
 
-	
+
+
 @requires_csrf_token
 def delete_group(request):
 	"""
@@ -243,7 +243,7 @@ def delete_group(request):
 		selected_year = request.POST['year']
 	except KeyError:
 		return HttpResponse(simplejson.dumps(success), content_type="application/json")
-	
+
 	try:
 		user = User.objects.filter(username = teacher_username)[0]
 		teacher = Teacher.objects.filter(user=user)[0]
@@ -264,7 +264,7 @@ def update_group(request):
 	"""
 	This method adds the required number of students to a selected group
 	"""
-	
+
 	success = False
 	try:
 		group_name = request.POST['group']
@@ -295,7 +295,7 @@ def register_group_with_session(request):
 	"""
 	This method handles registration of a group for a particular teacher.
 	"""
-	
+
 	success=False
 	try:
 		teacher_username = request.session['teacher']
@@ -303,7 +303,7 @@ def register_group_with_session(request):
 		group_name = request.POST['group']
 	except KeyError:
 		return HttpResponse(simplejson.dumps(success), content_type="application/json")
-		
+
 	try:
 		user = User.objects.filter(username=teacher_username)[0]
 		teacher = Teacher.objects.filter(user=user)[0]
@@ -311,28 +311,28 @@ def register_group_with_session(request):
 		group = Group.objects.filter(teacher=teacher, academic_year = academic_year, name=group_name)[0]
 	except IndexError:
 		return HttpResponse(simplejson.dumps(success), content_type="application/json")
-		
+
 	request.session['group'] = group_name
 	success = True
 	return HttpResponse(simplejson.dumps(success),content_type = "application/json")
 
-	
+
 
 @requires_csrf_token
 def save_session_ids(request):
-	""" 
+	"""
 	This method saves the session ids.
 	"""
-	
+
 	request.session['student_registered']=True
 	return HttpResponseRedirect('/weave/student_interface')
-	
+
 @requires_csrf_token
 def group_sheet_confirm(request):
 	"""
 	This method ensures that the information shown to the teachers explaining that they need to print the table of the students is shown once in a session only.
 	"""
-	
+
 	request.session['information_seen']=True
 	return HttpResponse(simplejson.dumps(True),content_type = "application/json")
 
@@ -425,7 +425,7 @@ def register_year_with_session(request):
 	request.session['year'] = year
 	success = True
 	return HttpResponse(simplejson.dumps(success),content_type = "application/json")
-	
+
 
 
 @requires_csrf_token
@@ -443,14 +443,14 @@ def reset_session(request):
 		del request.session['student']
 	if 'student_registered' in request.session:
 		del request.session['student_registered']
-	
+
 	request.session.delete()
 	request.session.modified = True
-	
-	return HttpResponseRedirect('/weave/')
-	
 
-	
+	return HttpResponseRedirect('/weave/')
+
+
+
 @requires_csrf_token
 def del_session_variable(request):
 	"""
@@ -464,27 +464,27 @@ def del_session_variable(request):
 		del request.session[to_delete]
 
 	return HttpResponseRedirect('/weave/')
-	
+
 
 """
 def index(request):
-	
+
 	#A function to load the main page for the pupil interface
-		
+
 	# Request the context of the request.
 	# The context contains information such as the client's machine details, for example.
 	context = RequestContext(request)
 
 	application_list = Application.objects.all()
 	academic_years = AcademicYear.objects.all()
-	
+
 	# Construct a dictionary to pass to the template engine as its context.
 	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
 	context_dict = {'applications' : application_list, 'academic_years':academic_years}
 
 	for application in application_list:
 		application.url = application.name.replace(' ', '_')
-	
+
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
@@ -493,13 +493,13 @@ def index(request):
 """
 """
 def application(request, application_name_url):
-	
+
 	# A function to load the viewing page for a selected application. The name of the application is passed as the second parameter of the example.
-	
-	
+
+
 	context = RequestContext(request)
 	if 'student_registered' in request.session:
-		
+
 
 		# Change underscores in the category name to spaces.
 		# URLs don't handle spaces well, so we encode them as underscores.
@@ -509,14 +509,14 @@ def application(request, application_name_url):
 		# Create a context dictionary which we can pass to the template rendering engine.
 		# We start by containing the name of the category passed by the user.
 		context_dict = {'application_name': application_name}
-		
-		
+
+
 
 		try:
 
 			application = Application.objects.get(name=application_name)
 			context_dict['application'] = application
-			
+
 			panels = Panel.objects.filter(application = application).order_by('number')
 			context_dict['panels'] = panels
 
@@ -560,7 +560,7 @@ def get_students(request):
 		year = request.GET['year']
 	except KeyError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 	teacher_username = request.user
 	try:
 		user=User.objects.filter(username=teacher_username)[0]
@@ -573,8 +573,8 @@ def get_students(request):
 	students=Student.objects.filter(group=selected_group)
 	students = map(str, students)
 	return HttpResponse(simplejson.dumps(students), content_type="application/json")
-	
-	
+
+
 def get_largest_step(request):
 	"""
 	A function to get the largest step for a chosen example.
@@ -586,7 +586,7 @@ def get_largest_step(request):
 	application = Application.objects.filter(name = app_name)
 	total_steps=application.aggregate(num_steps=Count('step'))['num_steps']
 	return HttpResponse(simplejson.dumps({'steps':total_steps}), content_type="application/json")
-	
+
 
 def get_groups(request):
 	"""
@@ -600,7 +600,7 @@ def get_groups(request):
 		year = int(year)
 	except ValueError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied Value'}), content_type="application/json")
-	
+
 	teacher_username = request.user
 	try:
 		user=User.objects.filter(username=teacher_username)[0]
@@ -612,7 +612,7 @@ def get_groups(request):
 	groups = Group.objects.filter(teacher=teacher,academic_year=academic_year)
 	groups = map(str,groups)
 	return HttpResponse(simplejson.dumps(groups), content_type="application/json")
-	
+
 
 def get_steps(request):
 	"""
@@ -622,7 +622,7 @@ def get_steps(request):
 		app_name = request.GET['app_name']
 	except KeyError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	
+
 	try:
 		application = Application.objects.filter(name=app_name)[0]
 	except IndexError:
@@ -634,7 +634,7 @@ def get_steps(request):
 
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
-@login_required		
+@login_required
 def get_question_data(request):
 	"""
 	A function to get the data recorded for answers of a question of a particular example. It only retrieves information about a selected group belonging to the logged in teacher.
@@ -664,7 +664,7 @@ def get_question_data(request):
 			question=Question.objects.filter(application=application,step=step)[0]
 	except IndexError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 
 	selected_data={}
 	quest_text=question.question_text
@@ -695,9 +695,9 @@ def get_question_data(request):
 		sd.append({option.content:times_chosen,'students':student_list})
 	selected_data['question']=quest_text
 	selected_data['data']=sd
-	return HttpResponse(simplejson.dumps(selected_data), content_type="application/json")	
+	return HttpResponse(simplejson.dumps(selected_data), content_type="application/json")
 
-	
+
 def update_time_graph(request):
 	"""
 	A function to retrieve the data for the time spent at each step of an example.
@@ -706,26 +706,26 @@ def update_time_graph(request):
 	"""
 	app_name=request.GET.get('app_name', None)
 	group_name=request.GET.get('group', None)
-	year = request.GET.get('year', None)		
+	year = request.GET.get('year', None)
 	student_id = request.GET.get('student', None)
-	
+
 	if app_name is None or group_name is None or year is None:
-	    return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+
 	teacher_username = request.user
-	
+
 	try:
 		user=User.objects.filter(username=teacher_username)[0]
 		teacher=Teacher.objects.filter(user=user)[0]
 		academic_year = AcademicYear.objects.filter(start=year)[0]
 		selected_group = Group.objects.filter(name = group_name,teacher=teacher,academic_year=academic_year)[0]
 		selected_application=Application.objects.filter(name=app_name)[0]
-		
+
 		if student_id is not None:
 			student = Student.objects.filter(student_id=student_id)[0]
 	except IndexError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	
+
 	selected_data={}
 	usage_records = UsageRecord.objects.filter(application=selected_application,teacher=teacher,group=selected_group)
 	if student_id is not None:
@@ -763,7 +763,7 @@ def update_time_graph(request):
 						explanation_text_start=explanation_text[:100]
 
 				records = usage_records.filter(step = step)
-				
+
 				# If student ID is none, assume an average result, else SUM everything
 				if student_id is None:
 					time = records.aggregate(time = Avg('time_on_step'))
@@ -777,7 +777,7 @@ def update_time_graph(request):
 		selected_data["question_steps"]=question_steps
 
 	return HttpResponse(simplejson.dumps(selected_data), content_type="application/json")
-	
+
 
 def update_class_steps_graph(request):
 	"""
@@ -856,13 +856,13 @@ def populate_summary_table(request):
 		total_app_time=student_records.aggregate(time_on_step=Sum('time_on_step'))
 		if total_app_time['time_on_step'] == None:
 			total_app_time = 0
-		else: 
+		else:
 			total_app_time = total_app_time['time_on_step']
 
 		revisited_steps_count=student_records.filter(direction='back').aggregate(count_revisits=Count('id'))['count_revisits']
 
 		selected_data[student_id]={'last_step':last_step_reached,'total_time':total_app_time,'num_steps_revisited':revisited_steps_count}
-	return HttpResponse(simplejson.dumps({"selected_data":selected_data,"total_steps":total_steps}), content_type="application/json")	
+	return HttpResponse(simplejson.dumps({"selected_data":selected_data,"total_steps":total_steps}), content_type="application/json")
 
 def get_application_questions(request):
 	"""
@@ -910,8 +910,8 @@ def teacher_interface(request):
 			groups[academic_year.start]= group_names
 
 	context_dict = {'applications' : application_list,'user_form': user_form, 'groups': groups,'academic_years':academic_years}
-	
-	
+
+
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
@@ -924,7 +924,7 @@ def register(request):
 	"""
 	A function to deal with the registration of a new teacher.
 	"""
-	
+
 	# Like before, get the request's context.
 	context = RequestContext(request)
 
@@ -974,7 +974,7 @@ def register(request):
 	request.session['registered'] = registered
 	# Render the template depending on the context.
 	return HttpResponseRedirect('/weave/teacher_interface')
-	
+
 
 
 def user_login(request):
@@ -1010,7 +1010,7 @@ def user_login(request):
 					teacher=Teacher.objects.filter(user=user)[0]
 				except IndexError:
 					pass
-					
+
 
 	request.session['successful_login'] = successful_login
 	return HttpResponseRedirect('/weave/teacher_interface')
@@ -1034,7 +1034,7 @@ def statistics(request):
 	questions={}
 	for application in applications:
 		application_names.append(str(application.name))
-		
+
 		app_questions = Question.objects.filter(application=application)
 		if len(app_questions)>0:
 			questions_text=[]
@@ -1061,14 +1061,14 @@ def user_logout(request):
 """
 @requires_csrf_token
 def author_interface(request):
-	
+
 	#A function to load the main page for the author interface.
-	
+
 	# Request the context of the request.
 	# The context contains information such as the client's machine details, for example.
 	context = RequestContext(request)
 
-	
+
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
@@ -1084,7 +1084,7 @@ def example_creator(request):
 	# The context contains information such as the client's machine details, for example.
 	context = RequestContext(request)
 
-	
+
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
@@ -1101,12 +1101,12 @@ def create_example(request):
 		number_of_panels = request.POST['number_of_panels']
 	except KeyError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	
+
 	example = Example.objects.filter(name=example_name)
 	if len(example) != 0:
 		# such example already exists so to avoid overwriting of it ask the user for another name
 		return HttpResponse(simplejson.dumps({'disallowed': True}), content_type="application/json")
-	else: 
+	else:
 		example = Example(name = example_name, number_of_panels = number_of_panels)
 		example.save()
 	return HttpResponse("{}",content_type = "application/json")
@@ -1123,7 +1123,7 @@ def save_explanation(request):
 	except KeyError:
 		print "key error in save explanation"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 
@@ -1149,7 +1149,7 @@ def save_step2(request):
 	except KeyError:
 		print "key error in save step"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 	try:
 		print example_name
 		example = Example.objects.filter(name=example_name)[0]
@@ -1224,7 +1224,7 @@ def save_question(request):
 	except KeyError:
 		print "key error in save question"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 	try:
 		print example_name
 		example = Example.objects.filter(name=example_name)[0]
@@ -1237,7 +1237,7 @@ def save_question(request):
 	question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
 	question_options = ExampleOption.objects.filter(question = question).delete()
 	question.question_text = question_text
-	question.kind = question_type 
+	question.kind = question_type
 	question.save()
 	for index in range(len(options)):
 		print index, " heeeere"
@@ -1366,7 +1366,7 @@ def get_next_step(request):
 				step_entry["explanation_area"] = explanation
 		"""
 		correct_answer_comment = CorrectAnswerComment.objects.filter(question = question)
-		
+
 		if len(correct_answer_comment) > 0:
 			step_entry["correct_answer_comment"] = correct_answer_comment[0].comment
 		else:
@@ -1388,9 +1388,9 @@ def get_next_step(request):
 	#	step_entry["question_text"] = ""
 	#	print "NOT A QUESTIOOOOOON"
 	# first find the differences in the plain text
-	# second find the 
+	# second find the
 	#print(result)
-	
+
 
 	"""
 	#for r in result:
@@ -1423,7 +1423,7 @@ def get_next_step(request):
 
 
 	print test, "cheeeeeeeeeeeeeeeck"
-	
+
 	soup = BeautifulSoup(test, "lxml")
 
 	for div in soup.findAll('div', 'style'):
@@ -1464,7 +1464,7 @@ def edit_steps(request):
 		print raw_new_text, " NEW"
 		print plain_text_to_change, " PLAIN"
 	except KeyError:
-		print "key error in edit steps"		
+		print "key error in edit steps"
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	exact_matches = []
 	possible_matches = []
@@ -1507,7 +1507,7 @@ def edit_steps(request):
 				if proposed_text is not None:
 					all_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
 		print exact_matches, " EXACT"
-		print possible_matches, " possible"				
+		print possible_matches, " possible"
 	return HttpResponse(simplejson.dumps({"exact_matches" : exact_matches, "possible_matches" : possible_matches, "all_matches" : all_matches}),content_type = "application/json")
 
 
@@ -1557,8 +1557,8 @@ def create_step(request):
 				div.replaceWithChildren()
 			print soup, "souppppppppppppppppppppp"
 			html = str(soup)
-					
-			# check the code with the previous 
+
+			# check the code with the previous
 			#current_step_text = lxml.html.fromstring(html).text_content().split()
 			current_step_text = keeptags(html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
 			previous_step_text = []
@@ -1648,11 +1648,17 @@ def create_step_old(request):
 
 	try:
 		example_name = request.POST['example_name']
+		print example_name
 		step_number = int(request.POST['step_number'])
+		print step_number
 		panel_texts = json.loads(request.POST['panel_texts'])
+		print panel_texts
 		explanation = request.POST['explanation']
+		print explanation
 		insert_after = json.loads(request.POST['insert_after'])
+		print insert_after
 		insert_before = json.loads(request.POST['insert_before'])
+		print insert_before
 	except KeyError:
 		print "key error in save step texts"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
@@ -1690,13 +1696,13 @@ def create_step_old(request):
 				div.replaceWithChildren()
 			print soup, "souppppppppppppppppppppp"
 			html = str(soup)
-			
+
 			current_text = stripAllTags(html.replace("<br>", "/n"))
-			print current_text, "test html"	
+			print current_text, "test html"
 			print html, "after soup"
 			current_html = ""
 
-			# check the code with the previous 
+			# check the code with the previous
 			#current_step_text = lxml.html.fromstring(html).text_content().split()
 			current_step_text = keeptags(html,"div br").replace("<div>", " <div> ").replace("</div>", " </div> ").replace("<br/>", " <br/>").split()
 			print current_step_text, "after keeptags"
@@ -1811,8 +1817,45 @@ def create_step_old(request):
 	return HttpResponse("{}",content_type = "application/json")# A method to create a new html step
 
 
+def get_previous_and_current_step_texts(panel_texts, panel_id, step_number, example):
+
+	texts = {}
+	# SET originalText TO <the raw text including HTML for step n>
+	current_step_original_text = panel_texts[panel_id].replace("&nbsp;", " ")
+	print current_step_original_text, "original text"
+
+	# SET plainText TO <the text with all HTML removed, again for step n>
+	current_step_plain_text = stripAllTags(current_step_original_text)
+	print current_step_plain_text, "plain text"
+
+	# SET newText TO ""
+	new_text = ""
+	# find the previous step text
+	previous_step_number = step_number - 1
+	previous_step_text = ""
+	while previous_step_number >= 0 and previous_step_text == "":
+		previous_step = HTMLStep.objects.filter(example = example, step_number = previous_step_number, panel_id = panel_id)
+		if len(previous_step) != 0:
+			previous_step_text = previous_step[0].html
+		previous_step_number -= 1
+
+	# find the previous step plain text
+	previous_step_plain_text = stripAllTags(previous_step_text)
+
+	texts['current_step_original_text'] = current_step_original_text
+	texts['current_step_plain_text'] = current_step_plain_text
+	texts['previous_step_plain_text'] = previous_step_plain_text
+
+	return texts
 
 
+def find_differences(previous_step_plain_text, current_step_plain_text):
+	#SET diffs TO <a list of tuples produced by diff-match-patch against the plaintext for step n-1>
+	diff_obj = diff_match_patch.diff_match_patch()
+	diffs = diff_obj.diff_main(previous_step_plain_text, current_step_plain_text)
+	diff_obj.diff_cleanupSemantic(diffs)
+	print diffs, "result from diff-match-patch"
+	return diffs
 
 @requires_csrf_token
 def create_step(request):
@@ -1843,192 +1886,188 @@ def create_step(request):
 		# save the new step panel texts
 		for panel_id in panel_texts:
 
+			texts = get_previous_and_current_step_texts(panel_texts, panel_id, step_number, example)
 			# SET originalText TO <the raw text including HTML for step n>
-			original_text = panel_texts[panel_id].replace("&nbsp;", " ")
-			print original_text, "original text"
+			original_text = texts['current_step_original_text']
+			current_step_plain_text = texts['current_step_plain_text']
+			previous_step_plain_text = texts['previous_step_plain_text']
 
-			# SET plainText TO <the text with all HTML removed, again for step n>
-			current_step_plain_text = stripAllTags(original_text)
-			print current_step_plain_text, "plain text"
-			
-			# SET newText TO ""
 			new_text = ""
-			# find the previous step text
-			previous_step_number = step_number - 1
-			previous_step_text = ""
-			while previous_step_number >= 0 and previous_step_text == "":
-				previous_step = HTMLStep.objects.filter(example = example, step_number = previous_step_number, panel_id = panel_id)
-				if len(previous_step) != 0:
-					previous_step_text = previous_step[0].html
-				previous_step_number -= 1
-
-			# this is the very first step so everything needs to be highlighted
-			#if len(previous_step_text) == 0:
-			#	new_text = '<span class ="style" style = "background-color:red; white-space:pre;">' + original_text + '</span>'
-			# there is a previous step so we need to compare the previous and the new step
-			#else:
-
-			# find the previous step plain text
-			previous_step_text_plain = stripAllTags(previous_step_text)
 
 			#SET diffs TO <a list of tuples produced by diff-match-patch against the plaintext for step n-1>
-			diff_obj = diff_match_patch.diff_match_patch()
-			diffs = diff_obj.diff_main(previous_step_text_plain, current_step_plain_text)
-			diff_obj.diff_cleanupSemantic(diffs)
-			print diffs, "result from diff-match-patch"
+			diffs = find_differences(previous_step_plain_text, current_step_plain_text)
 
 			# only check if the steps are not identical
 			if len(diffs) > 0:
 				#SET origPntr TO 0 # index into the original string with HTML
-				original_text_ptr = 0
+				current_step_original_text_ptr = 0
 				#SET plainPntr TO 0  # index into the plain text string
-				plain_text_ptr = 0
+				current_step_plain_text_ptr = 0
 				#SET diffsPntr TO <the first entry in the diffs list that is either an equality (0) or an insertion (1) >
 				diffs_ptr = 0
 
-				# 
 				next_diff = diffs[diffs_ptr]
 
 				# Scan over the plainText
 				#WHILE <not at the end of the plainText> DO
-				while plain_text_ptr < len(current_step_plain_text):
+				while current_step_plain_text_ptr < len(current_step_plain_text) and current_step_original_text_ptr < len(original_text) and diffs_ptr < len(diffs):
+					print "1", current_step_plain_text_ptr < len(current_step_plain_text), current_step_original_text_ptr < len(original_text)
+					#IF <current position in the originalText is an < (e.g HTML tag)> THEN
+					# We've found an HTML tag, so we need to copy it into newText
+					if original_text[current_step_original_text_ptr] == '<': #1
+						# <add the whole tag to newText>
+						while original_text[current_step_original_text_ptr] != '>' and current_step_original_text_ptr < len(original_text) - 1:
+							print "2"
+							new_text += original_text[current_step_original_text_ptr]
+							current_step_original_text_ptr += 1
+						new_text += original_text[current_step_original_text_ptr]
+						# <update origPntr to point to the end of the tag in originalText>
+						current_step_original_text_ptr += 1
+					# ELIF <the diff pointed at by diffsPntr is a match with the same-length string starting at plainPntr>
+					elif next_diff[0] == 0:
+						# We've found a matching piece of text in both step n-1 and step n
+						# We need to scan through this matching text, adding in any of the original HTML tags
 
-				    #IF <current position in the originalText is an < (e.g HTML tag)> THEN
-				    # We've found an HTML tag, so we need to copy it into newText
-				    if original_text[original_text_ptr] == '<':
-				    	# <add the whole tag to newText>
-				    	while original_text[original_text_ptr] != '>':
-				    		new_text += original_text[original_text_ptr]
-				    		original_text_ptr += 1
-				    	new_text += original_text[original_text_ptr]
-				    	# <update origPntr to point to the end of the tag in originalText>
-				    	original_text_ptr += 1
-						# ELIF <the diff pointed at by diffsPntr is a match with the same-length string starting at plainPntr>
-				    elif next_diff[0] == 0:
-   						# We've found a matching piece of text in both step n-1 and step n
-				    	# We need to scan through this matching text, adding in any of the original HTML tags
-
-				    	# SET eqText TO <the equal text in the diffs list>
-				    	eq_text = next_diff[1]
+						# SET eqText TO <the equal text in the diffs list>
+						eq_text = next_diff[1]
 
 						# SET eqTextPntr TO 0
-				    	eq_text_ptr = 0
+						eq_text_ptr = 0
 
-				    	# WHILE <not at the end of the eqText> DO
-				    	while eq_text_ptr < len(eq_text):
-				    		# IF <current position in the originalText is a < (e.g HTML tag)> THEN
-				    		if original_text[original_text_ptr] == '<':
-				    			# <add the whole tag to newText>
-				    			while original_text[original_text_ptr] != '>':
-				    				new_text += original_text[original_text_ptr]
-				    				original_text_ptr += 1
-				    			new_text += original_text[original_text_ptr]
-				    			# <update origPntr to point to the end of the tag in originalText>
-				    			original_text_ptr += 1
-				    			# don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
-				    		
+						# WHILE <not at the end of the eqText> DO
+						while eq_text_ptr < len(eq_text) and current_step_original_text_ptr < len(original_text):
+							print "3"
+							# IF <current position in the originalText is a < (e.g HTML tag)> THEN
+							if original_text[current_step_original_text_ptr] == '<': #2
+								# <add the whole tag to newText>
+								while original_text[current_step_original_text_ptr] != '>' and current_step_original_text_ptr < len(original_text) - 1:
+									print "4"
+									new_text += original_text[current_step_original_text_ptr]
+									current_step_original_text_ptr += 1
+								new_text += original_text[current_step_original_text_ptr]
+								# <update origPntr to point to the end of the tag in originalText>
+								current_step_original_text_ptr += 1
+								# don't make any update to plainPntr or eqTextPntr, as there may be two or more adjacent HTML tags
 
-       						# ELSIF <current pos in originalText is a &> THEN
-				    		elif original_text[original_text_ptr] == "&" and original_text_ptr < len(original_text) - 2 and original_text[original_text_ptr + 1] != "&":
-						    	
-           						# We have found some kind of symbol that has been escaped - e.g &gt for the greater than symbol
-						    	html_symbol = original_text[original_text_ptr]
-						    	# <copy over the HMTL text for the symbol into newText>  #Unsure how hard it is to do this!!!
-						    	while original_text[original_text_ptr] != ";":
-						    		html_symbol += original_text[original_text_ptr]
-						    		original_text_ptr += 1
-						    	html_symbol += original_text[original_text_ptr]
-						    	original_text_ptr += 1
-						    	new_text += html_symbol
-						    	# <update plainPntr to step past the symbol in plainText>
-						    	plain_text_ptr += 1
-						    	# <update eqTextPntr to step past the symbol in eqText>
-						    	eq_text_ptr += 1
-						    	# <update origPntr to step past the HTML text for the symbol in originalText>
-						    	original_text_ptr += 1
 
-						    # ELSE
-				    		else:
-				    			# I think we can assume that the text in eqText will be the same as the text in plainText
-           						# You could put a check in here to test whether this assertion is true!
-				    			
+							# ELSIF <current pos in originalText is a &> THEN
+							elif original_text[current_step_original_text_ptr] == "&" and current_step_original_text_ptr < len(original_text) - 2 and original_text[current_step_original_text_ptr + 1] != "&":
+
+								# We have found some kind of symbol that has been escaped - e.g &gt for the greater than symbol
+								html_symbol = ''
+								# <copy over the HMTL text for the symbol into newText>  #Unsure how hard it is to do this!!!
+								while original_text[current_step_original_text_ptr] != ";" and current_step_original_text_ptr < len(original_text) - 1:
+									print "5"
+									html_symbol += original_text[current_step_original_text_ptr]
+									current_step_original_text_ptr += 1
+								html_symbol += original_text[current_step_original_text_ptr]
+								current_step_original_text_ptr += 1
+								new_text += html_symbol
+								# <update plainPntr to step past the symbol in plainText>
+								# current_step_plain_text_ptr += 1
+								# <update eqTextPntr to step past the symbol in eqText>
+								# eq_text_ptr += 1
+								# <update origPntr to step past the HTML text for the symbol in originalText>
+								# current_step_original_text_ptr += 1
+
+							# ELSE
+							else:
+								# I think we can assume that the text in eqText will be the same as the text in plainText
+								# You could put a check in here to test whether this assertion is true!
+
 								# <copy a single character from plainText across to newText>
-				    			new_text += current_step_plain_text[plain_text_ptr]
-				    			# <increment plainPntr by one position>
-				    			plain_text_ptr += 1 
-				    			# <increment eqTextPntr by one position>
-				    			eq_text_ptr += 1
-				    			# <increment origPntr by one position>
-				    			original_text_ptr += 1
-				    		# <update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
-					     	if diffs_ptr < len(diffs) - 1:
-						        diffs_ptr += 1
-						        next_diff = diffs[diffs_ptr]
+								new_text += current_step_plain_text[current_step_plain_text_ptr]
+								# <increment plainPntr by one position>
+								current_step_plain_text_ptr += 1
+								# <increment eqTextPntr by one position>
+								eq_text_ptr += 1
+								# <increment origPntr by one position>
+								current_step_original_text_ptr += 1
+							# <update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+						if diffs_ptr < len(diffs) - 1:
+							diffs_ptr += 1
+							next_diff = diffs[diffs_ptr]
 
-						        while diffs_ptr < len(diffs) - 1 and next_diff[0] < 0:
-						        	diffs_ptr += 1
-						        	next_diff = diffs[diffs_ptr]
-				    # ELSE
-				    elif next_diff[0] == 1:
-				    	# I think there's only one other situation that's possible
-					    # We must have found an addition, a new fragment of text in step n
-					    # You could check this assertion by comparing the current entry in diffs with the string fragment pointed at by plainPntr
-					    # Assuming the assertion is correct
+							while diffs_ptr < len(diffs) - 1 and next_diff[0] < 0:
+								print "6"
+								diffs_ptr += 1
+								next_diff = diffs[diffs_ptr]
+					# ELSE
+					elif next_diff[0] == 1:
+						# I think there's only one other situation that's possible
+						# We must have found an addition, a new fragment of text in step n
+						# You could check this assertion by comparing the current entry in diffs with the string fragment pointed at by plainPntr
+						# Assuming the assertion is correct
 
-					    # Challenge though - the inserted text fragment may include HTML tags and also the HTML version of symbols
-				    	
-					    # get the new text from the comparison results
-				    	added_text = next_diff[1]
-				    	added_text_ptr = 0
+						# Challenge though - the inserted text fragment may include HTML tags and also the HTML version of symbols
 
-				    	# find the text that needs to be highlighted
-				    	to_highlight = ""
-				    	while added_text_ptr < len(added_text) and original_text_ptr < len(original_text):
-				    		# <Add the text in the diff entry to newText, using same technique as above to ensure HTML tags/symbols are copied over from originalText>
-				    		
-				    		# don't highlight tags
-				    		print len(original_text), "len orig text"
-				    		print original_text_ptr, "orig text ptr"
-				    		if original_text[original_text_ptr] == '<':
-				    			# highlight everything before the tag
-				    			new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
-				    			# reset the text to highlight
-				    			to_highlight = ""
-				    			while original_text[original_text_ptr] != '>':
-				    				new_text += original_text[original_text_ptr]
-				    				original_text_ptr += 1
-				    			new_text += original_text[original_text_ptr]
-				    			original_text_ptr += 1
-				    		elif original_text[original_text_ptr] == "&" and original_text_ptr < len(original_text) - 2 and original_text[original_text_ptr + 1] != "&":
-						    	html_symbol = original_text[original_text_ptr]
+						# get the new text from the comparison results
+						added_text = next_diff[1]
+						added_text_ptr = 0
 
-						    	# find the end of the html symbol- assuming it always ends in ;
-						    	while original_text[original_text_ptr] != ";":
-						    		html_symbol += original_text[original_text_ptr]
-						    		original_text_ptr += 1
-						    	html_symbol += original_text[original_text_ptr]
-						    	to_highlight += current_step_plain_text[plain_text_ptr]
-						    	plain_text_ptr += 1
-						    	added_text_ptr += 1
-						    	original_text_ptr += 1
-				    		else:
-				    			to_highlight += current_step_plain_text[plain_text_ptr]
-				    			plain_text_ptr += 1
-				    			added_text_ptr += 1
-				    			original_text_ptr += 1
-				    	#add the highlighted text to newText
-				       	new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
-				        #<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
-				     	if diffs_ptr < len(diffs)-1:
-					        diffs_ptr += 1
-					        next_diff = diffs[diffs_ptr]
-					        while diffs_ptr < len(diffs) and next_diff[0] < 0:
-					        	diffs_ptr += 1
-					        	next_diff = diffs[diffs_ptr]
+						# find the text that needs to be highlighted
+						to_highlight = ""
+						while added_text_ptr < len(added_text) and current_step_original_text_ptr < len(original_text):
+							print "7"
+							# <Add the text in the diff entry to newText, using same technique as above to ensure HTML tags/symbols are copied over from originalText>
 
-					    #END IF
+							# don't highlight tags
+							print len(original_text), "len orig text"
+							print current_step_original_text_ptr, "orig text ptr"
+							if original_text[current_step_original_text_ptr] == '<': #3
+								# highlight everything before the tag
+								new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
+								# reset the text to highlight
+								to_highlight = ""
+								while original_text[current_step_original_text_ptr] != '>' and current_step_original_text_ptr < len(original_text) - 1:
+									print "8"
+									new_text += original_text[current_step_original_text_ptr]
+									current_step_original_text_ptr += 1
+								new_text += original_text[current_step_original_text_ptr]
+								current_step_original_text_ptr += 1
+							elif original_text[current_step_original_text_ptr] == "&" and current_step_original_text_ptr < len(original_text) - 2 and original_text[current_step_original_text_ptr + 1] != "&":
+								# html_symbol = original_text[current_step_original_text_ptr]
+								html_symbol = ''
+								# find the end of the html symbol- assuming it always ends in ;
+								while original_text[current_step_original_text_ptr] != ";" and current_step_original_text_ptr < len(original_text) - 1:
+									print "9"
+									html_symbol += original_text[current_step_original_text_ptr]
+									current_step_original_text_ptr += 1
+								html_symbol += original_text[current_step_original_text_ptr]
+								to_highlight += current_step_plain_text[current_step_plain_text_ptr]
+								current_step_plain_text_ptr += 1
+								added_text_ptr += 1
+								current_step_original_text_ptr += 1
+							else:
+								to_highlight += current_step_plain_text[current_step_plain_text_ptr]
+								current_step_plain_text_ptr += 1
+								added_text_ptr += 1
+								current_step_original_text_ptr += 1
+						#add the highlighted text to newText
+						new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
+						#<update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
+						if diffs_ptr < len(diffs)-1:
+							diffs_ptr += 1
+							next_diff = diffs[diffs_ptr]
+							while diffs_ptr < len(diffs) and next_diff[0] < 0:
+								print "10"
+								diffs_ptr += 1
+								next_diff = diffs[diffs_ptr]
+
+
+					else:
+						print "here", next_diff[0]
+						if diffs_ptr < len(diffs)-1:
+							diffs_ptr += 1
+							next_diff = diffs[diffs_ptr]
+							while diffs_ptr < len(diffs) and next_diff[0] < 0:
+								print "10"
+								diffs_ptr += 1
+								next_diff = diffs[diffs_ptr]
+
+						#END IF
 					#END WHILE
-				
+
 			save_panel_text(new_text, example_name, step_number,panel_id)
 
 		# save the new step explanation
@@ -2066,7 +2105,7 @@ def create_question(request):
 	except KeyError:
 		print "key error in save question"
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 	except IndexError:
@@ -2080,12 +2119,12 @@ def create_question(request):
 
 		# create a new question step
 		question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
-		
+
 		# delete any previously existing options to ensure only the new options are there
 		ExampleOption.objects.filter(question = question).delete()
 
 		question.question_text = question_text
-		question.kind = question_type 
+		question.kind = question_type
 		question.save()
 
 		# save the options provided by the author
@@ -2172,14 +2211,14 @@ def example_editor(request):
 	context = RequestContext(request)
 
 	example_list = Example.objects.all()
-	
+
 	# Construct a dictionary to pass to the template engine as its context.
 	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
 	context_dict = {'examples' : example_list}
 
 	for example in example_list:
 		example.url = example.name.replace(' ', '_')
-	
+
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
@@ -2189,13 +2228,13 @@ def example_editor(request):
 def edit_example(request, example_name_url):
 
 	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
-	
-	
+
+
 	context = RequestContext(request)
-	
+
 	## !!!!!!!!!!!!!! check if the author is authenticeted/has the permission to edit this example !!!!!!!!!!!!!!
 	##if 'student_registered' in request.session:
-		
+
 
 	# Change underscores in the category name to spaces.
 	# URLs don't handle spaces well, so we encode them as underscores.
@@ -2210,7 +2249,7 @@ def edit_example(request, example_name_url):
 
 		example = Example.objects.get(name=example_name)
 		context_dict['example'] = example
-		
+
 		# Get how many panels there are
 		# when the request is done- create the panels and the editors for them
 		# request for the first step and load it
@@ -2258,14 +2297,14 @@ def example_viewer(request):
 	context = RequestContext(request)
 
 	example_list = Example.objects.all()
-	
+
 	# Construct a dictionary to pass to the template engine as its context.
 	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
 	context_dict = {'examples' : example_list}
 
 	for example in example_list:
 		example.url = example.name.replace(' ', '_')
-	
+
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
@@ -2289,7 +2328,7 @@ def get_answer(request):
 
 	# !!!!!!!!!!!! when I add accounts to associate a viewing of the example to a user uncomment this and add it to the filter for the example
 	answer = PupilAnswer.objects.filter(question = question) #, pupil = pupil)
-	
+
 """
 
 
@@ -2297,13 +2336,13 @@ def get_answer(request):
 def view_example(request, example_name_url):
 
 	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
-	
-	
+
+
 	context = RequestContext(request)
-	
+
 	## !!!!!!!!!!!!!! check if the author is authenticeted/has the permission to edit this example !!!!!!!!!!!!!!
 	##if 'student_registered' in request.session:
-		
+
 
 	# Change underscores in the category name to spaces.
 	# URLs don't handle spaces well, so we encode them as underscores.
@@ -2318,7 +2357,7 @@ def view_example(request, example_name_url):
 
 		example = Example.objects.get(name=example_name)
 		context_dict['example'] = example
-		
+
 		# Get how many panels there are
 		# when the request is done- create the panels and the editors for them
 		# request for the first step and load it
@@ -2362,28 +2401,28 @@ def view_example(request, example_name_url):
 
 
 def keeptags(value, tags):
-    """
-    Strips all [X]HTML tags except the space seperated list of tags 
-    from the output.
-    
-    Usage: keeptags:"strong em ul li"
-    """
-    tags = [re.escape(tag) for tag in tags.split()]
-    tags_re = '(%s)' % '|'.join(tags)
-    singletag_re = re.compile(r'<(%s\s*/?)>' % tags_re)
-    starttag_re = re.compile(r'<(%s)(\s+[^>]+)>' % tags_re)
-    endtag_re = re.compile(r'<(/%s)>' % tags_re)
-    value = singletag_re.sub('##~~~\g<1>~~~##', value)
-    value = starttag_re.sub('##~~~\g<1>\g<3>~~~##', value)
-    value = endtag_re.sub('##~~~\g<1>~~~##', value)
-    value = strip_tags(value)
-    value = escape(value)
-    recreate_re = re.compile('##~~~([^~]+)~~~##')
-    value = recreate_re.sub('<\g<1>>', value)
-    return value
+	"""
+	Strips all [X]HTML tags except the space seperated list of tags
+	from the output.
+
+	Usage: keeptags:"strong em ul li"
+	"""
+	tags = [re.escape(tag) for tag in tags.split()]
+	tags_re = '(%s)' % '|'.join(tags)
+	singletag_re = re.compile(r'<(%s\s*/?)>' % tags_re)
+	starttag_re = re.compile(r'<(%s)(\s+[^>]+)>' % tags_re)
+	endtag_re = re.compile(r'<(/%s)>' % tags_re)
+	value = singletag_re.sub('##~~~\g<1>~~~##', value)
+	value = starttag_re.sub('##~~~\g<1>\g<3>~~~##', value)
+	value = endtag_re.sub('##~~~\g<1>~~~##', value)
+	value = strip_tags(value)
+	value = escape(value)
+	recreate_re = re.compile('##~~~([^~]+)~~~##')
+	value = recreate_re.sub('<\g<1>>', value)
+	return value
 
 def remove_tags(text):
-    return ''.join(ET.fromstring(text).itertext())
+	return ''.join(ET.fromstring(text).itertext())
 """
 
 def highlight_new_text(raw_old_text, raw_new_text):
@@ -2402,7 +2441,7 @@ def highlight_new_text(raw_old_text, raw_new_text):
 	between_style_tag = False
 	style_tag = None
 	while word_index < len(comparison_result):
-		word = comparison_result[word_index] 
+		word = comparison_result[word_index]
 		if word[0] == ' ' or word[0] == '+':
 			# currently not in style tag so the word is valid unless it is entering a style tag now
 			if not in_style_tag:
@@ -2453,14 +2492,14 @@ def student_interface(request):
 
 	example_list = Example.objects.all()
 	academic_years = AcademicYear.objects.all()
-	
+
 	# Construct a dictionary to pass to the template engine as its context.
 	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
 	context_dict = {'examples' : example_list, 'academic_years':academic_years}
 
 	for example in example_list:
 		example.url = example.name.replace(' ', '_')
-	
+
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
@@ -2470,7 +2509,7 @@ def student_interface(request):
 
 @requires_csrf_token
 def log_info_db(request):
-	""" 
+	"""
 	This method logs the time spent on a step, when the user moves forwards or backwards to the next/previous step.
 	"""
 	try:
@@ -2492,15 +2531,15 @@ def log_info_db(request):
 
 	except IndexError:
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-		
+
 	#record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)
 	record = ExampleUsageRecord.objects.get_or_create(example = example, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)[0]
 	teacher_name=request.session.get("teacher",None)
 	if teacher_name != None:
-	
+
 		user=User.objects.filter(username=teacher_name)
 		teacher=Teacher.objects.filter(user=user)
-		
+
 		if len(teacher)>0:
 			teacher=teacher[0]
 			record.teacher = teacher
@@ -2522,15 +2561,15 @@ def log_info_db(request):
 	record.save()
 	return HttpResponse("{}",content_type = "application/json")
 
-	
-	
+
+
 
 @requires_csrf_token
 def log_question_info_db(request):
 	"""
 	This method stores the answer chosen for a question at a particular step.
 	"""
-	
+
 	try:
 		time_on_question = request.POST['time']
 		print time_on_question
@@ -2577,7 +2616,7 @@ def log_question_info_db(request):
 						group=group[0]
 						usage_record.group = group
 						question_record.group = group
-						
+
 						student_name=request.session.get("student", None)
 
 						print student_name, "studeeeeeeeeeeeent"
@@ -2623,7 +2662,7 @@ def automatic_highlighter(example_name, step_number):
 		print soup, "souppppppppppppppppppppp"
 		panel_html = str(soup)
 
-		current_step_text = keeptags(html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
+		current_step_text = keeptags(panel_html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
 
 		previous_step_text = []
 		previous_step_number = step_number - 1
@@ -2765,19 +2804,19 @@ def automatic_paneltext_highlighter(current_step_panel_text, previous_step_panel
 	return current_step_panel_text
 
 def stripAllTags( html ):
-        if html is None:
-                return None
-        return ''.join( BeautifulSoup( html ).findAll( text = True ) ) 
+		if html is None:
+				return None
+		return ''.join( BeautifulSoup( html ).findAll( text = True ) )
 
 def diff_wordMode(text1, text2):
-  	#dmp = new diff_match_patch()
-  	dmp = diff_match_patch.diff_match_patch()
-  	a = dmp.diff_linesToWords_(text1, text2)
-  	lineText1 = a[0]
-  	lineText2 = a[1]
-  	lineArray = a[2]
+	#dmp = new diff_match_patch()
+	dmp = diff_match_patch.diff_match_patch()
+	a = dmp.diff_linesToWords_(text1, text2)
+	lineText1 = a[0]
+	lineText2 = a[1]
+	lineArray = a[2]
 
-  	diffs = dmp.diff_main(lineText1, lineText2, false)
+	diffs = dmp.diff_main(lineText1, lineText2, False)
 
-  	dmp.diff_charsToLines_(diffs, lineArray)
-  	return diffs
+	dmp.diff_charsToLines_(diffs, lineArray)
+	return diffs

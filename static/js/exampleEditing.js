@@ -72,12 +72,3 @@ $('#step_editor_modal').on('hidden.bs.modal', function () {
         $("#step_editor_modal").modal('show');
     }
 })
-
-
-
-
-
-
-
-
-
