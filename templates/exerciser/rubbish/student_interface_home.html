@@ -9,6 +9,7 @@
 {% endblock %}
 {% block example_name %}WEAVE{% endblock %}
 {% block home_icon %}
+{% if user.is_authenticated %} Test {% endif %}
 <a class="navbar-brand" href="/weave/student_interface">
 	<i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
 </a>

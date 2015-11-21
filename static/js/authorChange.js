@@ -578,7 +578,6 @@ $('.create_step_btn.before').click(function() {
 
 
 function saveStep(insertBefore, insertAfter, direction, newStep){
-
     if (insertBefore == undefined){
         insertBefore = false;
     }
@@ -645,6 +644,11 @@ function saveStep(insertBefore, insertAfter, direction, newStep){
     });
 
 }
+
+$('.done_btn').click(function(){
+    saveStep(false, false, "this", false);
+})
+
 
 function clearAutomaticHighlighting(){
     $('textarea[id^="area"]').each(function(index) {

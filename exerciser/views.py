@@ -447,7 +447,7 @@ def reset_session(request):
 	request.session.delete()
 	request.session.modified = True
 
-	return HttpResponseRedirect('/weave/')
+	return HttpResponseRedirect('/weave/student_interface')
 
 
 
@@ -915,7 +915,7 @@ def teacher_interface(request):
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
-	return render_to_response('exerciser/teacher_interface.html', context_dict, context)
+	return render_to_response('exerciser/teacher_interface_home.html', context_dict, context)
 
 
 
@@ -2286,12 +2286,11 @@ def edit_example(request, example_name_url):
 
 	# Go render the response and return it to the client.
 	return render_to_response('exerciser/edit_example.html', context_dict, context)
-
+"""
 
 def example_viewer(request):
-	"""
+
 	A function to load the main page for the pupil interface
-	"""
 	# Request the context of the request.
 	# The context contains information such as the client's machine details, for example.
 	context = RequestContext(request)
@@ -2309,6 +2308,9 @@ def example_viewer(request):
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
 	return render_to_response('exerciser/example_viewer.html', context_dict, context)
+
+"""
+
 """
 def get_answer(request):
 	try:
@@ -2332,7 +2334,7 @@ def get_answer(request):
 """
 
 
-
+"""
 def view_example(request, example_name_url):
 
 	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
@@ -2395,6 +2397,134 @@ def view_example(request, example_name_url):
 
 	# Go render the response and return it to the client.
 	return render_to_response('exerciser/view_example.html', context_dict, context)
+"""
+
+def view_example_student(request, example_name_url):
+
+	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
+
+
+	context = RequestContext(request)
+
+	## !!!!!!!!!!!!!! check if the author is authenticeted/has the permission to edit this example !!!!!!!!!!!!!!
+	##if 'student_registered' in request.session:
+
+
+	# Change underscores in the category name to spaces.
+	# URLs don't handle spaces well, so we encode them as underscores.
+	# We can then simply replace the underscores with spaces again to get the name.
+	example_name = example_name_url.replace('_', ' ')
+
+	# Create a context dictionary which we can pass to the template rendering engine.
+	# We start by containing the name of the category passed by the user.
+	context_dict = {'example_name': example_name}
+
+	try:
+
+		example = Example.objects.get(name=example_name)
+		context_dict['example'] = example
+
+		# Get how many panels there are
+		# when the request is done- create the panels and the editors for them
+		# request for the first step and load it
+
+		# Get the text and the explanation for the first step of that example
+		steps = HTMLStep.objects.filter(example=example)
+		# get the first non-question step to determine the number of panels
+		first_non_question_step = steps.aggregate(Min('step_number'))['step_number__min']
+		steps = steps.filter(step_number = first_non_question_step).order_by('panel_id')
+		panels = []
+		if first_non_question_step != 0: # the first step is a question!
+			context_dict['explanation'] = ''
+			#context_dict['is_question'] = "true"
+			for step in steps:
+				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				print panel_number
+				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
+				panels.append(panel)
+
+		else:
+			explanation = HTMLExplanation.objects.filter(example = example, step_number = first_non_question_step)
+			context_dict['explanation'] = explanation[0].html
+			#context_dict['is_question'] = "false"
+			for step in steps:
+				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				print panel_number
+				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
+				panels.append(panel)
+		context_dict['panels'] = panels
+
+	# Change to something more sensible!
+	except Example.DoesNotExist:
+		print "example doesn't exist"
+		return HttpResponseRedirect('/weave/')
+
+	# Go render the response and return it to the client.
+	return render_to_response('exerciser/view_example_student.html', context_dict, context)
+
+
+def view_example_teacher(request, example_name_url):
+
+	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
+
+
+	context = RequestContext(request)
+
+	## !!!!!!!!!!!!!! check if the author is authenticeted/has the permission to edit this example !!!!!!!!!!!!!!
+	##if 'student_registered' in request.session:
+
+
+	# Change underscores in the category name to spaces.
+	# URLs don't handle spaces well, so we encode them as underscores.
+	# We can then simply replace the underscores with spaces again to get the name.
+	example_name = example_name_url.replace('_', ' ')
+
+	# Create a context dictionary which we can pass to the template rendering engine.
+	# We start by containing the name of the category passed by the user.
+	context_dict = {'example_name': example_name}
+
+	try:
+
+		example = Example.objects.get(name=example_name)
+		context_dict['example'] = example
+
+		# Get how many panels there are
+		# when the request is done- create the panels and the editors for them
+		# request for the first step and load it
+
+		# Get the text and the explanation for the first step of that example
+		steps = HTMLStep.objects.filter(example=example)
+		# get the first non-question step to determine the number of panels
+		first_non_question_step = steps.aggregate(Min('step_number'))['step_number__min']
+		steps = steps.filter(step_number = first_non_question_step).order_by('panel_id')
+		panels = []
+		if first_non_question_step != 0: # the first step is a question!
+			context_dict['explanation'] = ''
+			#context_dict['is_question'] = "true"
+			for step in steps:
+				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				print panel_number
+				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
+				panels.append(panel)
+
+		else:
+			explanation = HTMLExplanation.objects.filter(example = example, step_number = first_non_question_step)
+			context_dict['explanation'] = explanation[0].html
+			#context_dict['is_question'] = "false"
+			for step in steps:
+				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				print panel_number
+				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
+				panels.append(panel)
+		context_dict['panels'] = panels
+
+	# Change to something more sensible!
+	except Example.DoesNotExist:
+		print "example doesn't exist"
+		return HttpResponseRedirect('/weave/')
+
+	# Go render the response and return it to the client.
+	return render_to_response('exerciser/view_example_teacher.html', context_dict, context)
 
 
 
@@ -2503,9 +2633,31 @@ def student_interface(request):
 	# Return a rendered response to send to the client.
 	# We make use of the shortcut function to make our lives easier.
 	# Note that the first parameter is the template we wish to use.
-	return render_to_response('exerciser/student_interface_home.html', context_dict, context)
+	return render_to_response('exerciser/student_interface_examples_viewer.html', context_dict, context)
 
 
+def teacher_interface_examples_viewer(request):
+	"""
+	A function to load the main page for the pupil interface
+	"""
+	# Request the context of the request.
+	# The context contains information such as the client's machine details, for example.
+	context = RequestContext(request)
+
+	example_list = Example.objects.all()
+
+
+	# Construct a dictionary to pass to the template engine as its context.
+	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
+	context_dict = {'examples' : example_list}
+
+	for example in example_list:
+		example.url = example.name.replace(' ', '_')
+
+	# Return a rendered response to send to the client.
+	# We make use of the shortcut function to make our lives easier.
+	# Note that the first parameter is the template we wish to use.
+	return render_to_response('exerciser/teacher_interface_examples_viewer.html', context_dict, context)
 
 @requires_csrf_token
 def log_info_db(request):

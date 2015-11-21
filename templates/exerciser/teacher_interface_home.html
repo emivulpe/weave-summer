@@ -25,7 +25,7 @@
 	{% if user.is_authenticated %}
 		<div class="container">
 			<div class="row">
-				<div class="col-md-3 text-center">
+				<div class="col-md-4 text-center">
 					<h1>Register/Update a group</h1><br>
 					<form id="register_or_update_group_form">
 					<table class = "choice_selector" >
@@ -112,7 +112,7 @@
 					<strong id="group_success_message"></strong>
 				</div>
 
-				<div class="col-md-3 text-center">
+				<div class="col-md-4 text-center">
 					<h1>View group list</h1><br>
 					<form id="register_or_update_group_form" style="text-align:center;">
 						<table class = "choice_selector" style="margin: 0 auto;">
@@ -152,16 +152,21 @@
 					<br>
 					<strong id="student_success_message"></strong>
 				</div>
-				<div class="col-md-2 text-center">
-					<h1 class="brand-heading"><a href="/weave/statistics/"><i class="fa fa-bar-chart landing-icon fa-lg"></i><br><br><span class="landing-text">View Progress</span></a></h1>
+				<div class="col-md-4 text-center">
+					<h1 class="brand-heading"><a href="/weave/statistics/"><i class="fa fa-bar-chart landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">View Progress</span></a></h1>
 				</div>
-				<div class="col-md-2 text-center">
-					<h1 class="brand-heading"><a href="/weave/example_creator/"><i class="fa fa-bar-chart landing-icon fa-lg"></i><br><br><span class="landing-text">Create Example</span></a></h1>
+			</div>
+			<div class="row">
+				<div class="col-md-4 text-center">
+					<h1 class="brand-heading"><a href="/weave/teacher_interface_examples_viewer/"><i class="fa fa-eye landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">View Example</span></a></h1>
 				</div>
-				<div class="col-md-2 text-center">
-					<h1 class="brand-heading"><a href="/weave/example_editor/"><i class="fa fa-bar-chart landing-icon fa-lg"></i><br><br><span class="landing-text">Edit Example</span></a></h1>
+				<div class="col-md-4 text-center">
+					<h1 class="brand-heading"><a href="/weave/example_creator/"><i class="fa fa-pencil-square-o landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">Create Example</span></a></h1>
 				</div>
-			</div>			
+				<div class="col-md-4 text-center">
+					<h1 class="brand-heading"><a href="/weave/example_editor/"><i class="fa fa-wrench landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">Edit Example</span></a></h1>
+				</div>
+			</div>
 		</div>
 
 

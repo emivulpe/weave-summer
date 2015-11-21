@@ -3,3 +3,4 @@
 5. Sometimes the question textarea doesn't appear properly- maybe wait for the page to load before specifying the width (it gets better when you change the window size)
 6. In create/edit example when there is a previously created open question the "add option button" appears when reviewing the question
 8. Edit example is not working
+9. student interface change details doesn't work

@@ -49,10 +49,13 @@ urlpatterns = patterns('',
 		url(r'^check_steps', views.check_steps, name='check_steps'),
 		url(r'^example_editor', views.example_editor, name='example_editor'),
 		url(r'^edit_example/(?P<example_name_url>\w+)/$', views.edit_example, name='edit_example'),
-		url(r'^example_viewer', views.example_viewer, name='example_viewer'),
-		url(r'^view_example/(?P<example_name_url>\w+)/$', views.view_example, name='view_example'),
+		# url(r'^example_viewer', views.example_viewer, name='example_viewer'),
+		# url(r'^view_example/(?P<example_name_url>\w+)/$', views.view_example, name='view_example'),
 		#url(r'^get_answer', views.get_answer, name='get_answer'),
 		url(r'^student_interface', views.student_interface, name='student_interface'),
+		url(r'^teacher_interface_examples_viewer', views.teacher_interface_examples_viewer, name='teacher_interface_examples_viewer'),
+		url(r'^student/view_example/(?P<example_name_url>\w+)/$', views.view_example_student, name='view_example'),
+		url(r'^teacher/view_example/(?P<example_name_url>\w+)/$', views.view_example_teacher, name='view_example'),
 
 
 		) 

@@ -1,0 +1,35 @@
+{% extends 'exerciser/example_viewer_base.html' %}
+
+{% block home_icon %}
+<a class="navbar-brand" href="/weave/teacher_interface">
+	<i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
+</a>
+{% endblock %}
+{% block examples_list %}
+
+    <h1 class="details">Choose an Example</h1>
+    <strong>
+        <div style="text-align:left;">
+            <table style="margin: 0 auto;">
+                <tr>
+                    <td>
+                        <input placeholder="Search Example" id="example_search_box" type="text" style="margin:10px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    {% if examples %}
+                    <ul class="navList" style=" list-style-type: none; ">
+                        {% for example in examples %}
+                            <li><a href="/weave/teacher/view_example/{{ example.url }}" style="color:gray;">{{ example.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <strong>There are no examples present!</strong>
+                    {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </strong>
+{% endblock %}

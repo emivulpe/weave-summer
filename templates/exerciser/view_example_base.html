@@ -1,0 +1,139 @@
+{% extends 'exerciser/base_combined.html' %}
+{% load static %}
+{% block links %}
+    <link href="{% static 'css/jquery.splitter.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block home_icon %}
+<a class="navbar-brand" href="/weave/student_interface">
+	<i class="fa fa-home fa-lg landing-icon fa"></i>&nbsp;<span class="landing-text" style="position: relative; top: 2px;">Home</span>
+</a>
+{% endblock %}
+
+{% block example_name %}<label id = "example_name_label">{{ example.name }}{% endblock %}
+{% block style %}
+
+body {
+	padding: 1em;
+}
+
+/*
+ * Splitter container. Set this to the desired width and height
+ * of the combined left and right panes.
+ */
+#example_container {
+	height: 95%;
+	width: 100%;
+	border: 4px solid black;
+	/* No padding allowed */
+}
+.modal-backdrop{
+	background-color: grey;
+}
+
+/*
+ * Splitter bar style; the .active class is added when the
+ * mouse is over the splitter or the splitter is focused
+ * via the keyboard taborder or an accessKey.
+ */
+#example_container .hsplitbar {
+	height: 4px;
+	background: black no-repeat center;
+	/* No margin, border, or padding allowed */
+}
+
+
+{% endblock %}
+
+
+{% block navigation_controls %}
+
+	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
+	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
+
+{% endblock %}
+
+
+{% block body_block %}
+<div id="example_container">
+	<div id = "outer_panel2" style ="position:relative; overflow-y:hidden;overflow-x:hidden;">
+		<table id="panel_container" style=" line-height: 110%;overflow:hidden;height:100%; width:100%;">
+			<tr id = "example_panels">
+				{% for panel in panels %}
+                <td id = "panel_area_{{ panel.panel_number }}" class = "panel" valign="top" style = "border-right: 3px solid black;">
+                	<div id = "area_container{{ panel.panel_number }}" class="panel" style="margin:0px; float: left;word-wrap:break-word;overflow-y:scroll; overflow-x:hidden;">
+                		<div id = "{{ panel.panel_id }}" style = "white-space: pre;">{{ panel.html }}</div>
+                	</div>
+                </td>
+				{% endfor %}
+			</tr>
+		</table>
+	</div>
+	<div id="explanation_row2" style = "position:relative;overflow-x:hidden; overflow-y:scroll;">
+		<div id = "explanation_area" style="width: 100%; height: 100%;">{{ explanation }}</div>
+	</div>
+
+</div>
+
+<div id="question_modal" class="modal fade" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog draggable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id = "question_step_close_button" type="button" class="close modal-dissmiss" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id = "question_modal_title" class="modal-title"></h4>
+            </div>
+            <div id = "question_modal_body" class="modal-body">
+                <div id="question_text">
+                </div>
+				<div id = "options_container" style = "padding-top : 30px;">
+					<ol id = "options_list" class="list-group" style = "list-style: none;">
+					</ol>
+				</div>
+            </div>
+            <div class="modal-footer">
+                <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
+            		<li><a id="question_btn_prev" class="prev_btn question_control question_step_btn" href="#" style="top: 2px; color : #777;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
+					<li><a id="question_btn_next" class="next_btn question_control question_step_btn" href="#" style=" top: 2px; color : #777;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
+				</ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript" src=" {% static 'js/bootstrap-dialog.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/colResizable-1.4.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.splitter-0.15.0.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/viewerChange.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/modals.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/exampleViewerResizeHandler.js' %}"></script>
+
+
+<script type="text/javascript">
+	var exampleName = "{{ example.name }}";
+	loadStep("this");
+
+</script>
+
+
+<!--<script type="text/javascript">
+	$(function() {
+		$(".step").draggable();
+	});
+
+
+</script>
+
+-->
+<script type="text/javascript" src="{% static 'js/applications.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'js/jquery.browser.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jQuery.splitter.js' %}"></script>
+
+{% endblock %}
