@@ -877,7 +877,7 @@ document.onkeydown = function(e) {
             });
             request.done(function(outcome) {
                 if (outcome['previous_steps'] > 0){
-                    loadStep("back");
+                    saveStep("false", "false", "back", false);
                 }
             });
 
@@ -890,7 +890,7 @@ document.onkeydown = function(e) {
             });
             request.done(function(outcome) {
                 if (outcome['next_steps'] > 0){
-                    loadStep("next");
+                    saveStep("false", "false", "next", false);
                 }
             });
             break;
