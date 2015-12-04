@@ -123,7 +123,7 @@ function manageExampleAreas(data, direction, answer) {
                             opt_number = i + 1;
                             option = questionOptions[i];
                             var optionText = option["option_text"];     
-                            $("#options_list").append('<li class ="option"><table id = "option_' + opt_number +'" style = "width:100%;"><tr><td style = "width:1%;white-space:nowrap;"><input type="checkbox" class = "answer_checkbox"></td><td class = "option_number" style = "width:1%;white-space:nowrap; padding : 10px;">' + opt_number + '.</td><td class = "option_text">' + optionText + '</td></tr></table></li>');
+                            $("#options_list").append('<li class ="option"><table id = "option_' + opt_number +'" style = "width:100%;"><tr><td style = "width:1%;white-space:nowrap;"><input type="checkbox" class = "answer_checkbox" id = "checkbox_' + opt_number + '"></td><td class = "option_number" style = "width:1%;white-space:nowrap; padding : 10px;"><label for = "checkbox_' + opt_number + '">' + opt_number + '.</label></td><td class = "option_text"><label for = "checkbox_' + opt_number + '">' + optionText + '</label></td></tr></table></li>');
                         }
                     }
                     else{

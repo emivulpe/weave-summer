@@ -26,38 +26,38 @@ $("#btn_reset").css('visibility', 'hidden');
 
 
 
-$('#create_question_step').click(function(){
-    //option_number = 1;
-
-    var invalidInputs = $('.option_text').filter(function() {
-        return $.trim(this.value) == '';
-    });
-    var questionEditor = nicEditors.findEditor("question_text");
-    var questionText = questionEditor.getContent();
-    console.log(questionText + "question_text");
-    if($('#multiple_choice_radio_button').is(':checked')) {
-        if (invalidInputs.length > 0) {
-            BootstrapDialog.alert('Please enter text for each of the options or delete an option by clicking on the recycle bin next to it!');
-        } 
-        else{
-            $('#question_modal').modal('hide');
-            // ?????????? do I need to set the booleans somehow??????????
-            saveQuestion("false", "false", "next", false);
-            $("#create_question_step").hide();
-            //$("#delete_question").show();
-
-        }
-    }
-    else{
-        $('#question_modal').modal('hide');
-        // ?????????? do I need to set the booleans somehow??????????
-        saveQuestion("false", "false", "next", false);
-        $("#create_question_step").hide();
-        //$("#delete_question").show();
-
-    }
-
-});
+//$('#create_question_step').click(function(){
+//    //option_number = 1;
+//
+//    var invalidInputs = $('.option_text').filter(function() {
+//        return $.trim(this.value) == '';
+//    });
+//    var questionEditor = nicEditors.findEditor("question_text");
+//    var questionText = questionEditor.getContent();
+//    console.log(questionText + "question_text");
+//    if($('#multiple_choice_radio_button').is(':checked')) {
+//        if (invalidInputs.length > 0) {
+//            BootstrapDialog.alert('Please enter text for each of the options or delete an option by clicking on the recycle bin next to it!');
+//        }
+//        else{
+//            $('#question_modal').modal('hide');
+//            // ?????????? do I need to set the booleans somehow??????????
+//            saveQuestion("false", "false", "next", false);
+//            $("#create_question_step").hide();
+//            //$("#delete_question").show();
+//
+//        }
+//    }
+//    else{
+//        $('#question_modal').modal('hide');
+//        // ?????????? do I need to set the booleans somehow??????????
+//        saveQuestion("false", "false", "next", false);
+//        $("#create_question_step").hide();
+//        //$("#delete_question").show();
+//
+//    }
+//
+//});
 
 
 $("#question_step_close_button").click(function(){
@@ -317,7 +317,7 @@ function loadStep(direction){
         handleNavigationVisibility();
         if (data.hasOwnProperty("question_text")) {
             //alert("here is a question dialog");
-            $("#create_question_step").hide();
+            //$("#create_question_step").hide();
             //$("#delete_question").show();
             $("#question_step_navigator").show();
             $("#question_step_close_button").hide();
@@ -746,15 +746,15 @@ $('.create_question_btn').click(function(){
             'step_number': (currentStep-stepsToSubtract),
             'csrfmiddlewaretoken': csrftoken,
         });
-        request.done(function(outcome) {
-            if (outcome['next_steps'] != 0){
-                $("#create_question_step").show();
-            }
-            else{
-                $("#create_question_step").hide();
-            }
-
-        })
+//        request.done(function(outcome) {
+//            if (outcome['next_steps'] != 0){
+//                $("#create_question_step").show();
+//            }
+//            else{
+//                $("#create_question_step").hide();
+//            }
+//
+//        })
     },1000);
 
     var questionEditor = nicEditors.findEditor("question_text");
