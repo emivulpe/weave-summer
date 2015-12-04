@@ -323,7 +323,17 @@ function loadStep(direction){
             $("#question_step_close_button").hide();
 
             $("#example_name_label").text(exampleName + "- step " + (currentStep + 1));   
-            $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");   
+            $("#question_modal_title").text("Step " + (currentStep + 1) + "- Question Step");
+            if (data.hasOwnProperty("question_type")) {
+
+                questionType = data["question_type"];
+                if(questionType == "open"){
+                    $("#add_option_button").hide();
+                }
+                else{
+                    $("#add_option_button").show();
+                }
+            }
             $("#question_modal").modal('show');
 
            // alert("THIS STEP IS A QUESTION!!!!!!!!");
@@ -351,7 +361,6 @@ function manageExampleAreas(data, direction) {
     }
     if (!("error" in data)) {
         if (data.hasOwnProperty("question_type")) {
-
             questionType = data["question_type"];
             $("[name=question_type_radio][value="+ questionType +"]").prop('checked', true);
         }
@@ -391,7 +400,7 @@ function manageExampleAreas(data, direction) {
                                 $("#options_list").append('<li class="list-group-item option" style = "background-color:green;"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox" checked></td><td class = "option_number">' + opt_number + '.</td><td><input class="form-control option_text" type="text" value="' + optionText + '"></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
                             }
                             else{
-                                $("#options_list").append('<li class="list-group-item option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td class = "option_number">' + opt_number + '.</td><td><input class="form-control option_text" type="text" value=' + optionText + '></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
+                                $("#options_list").append('<li class="list-group-item option"><table id = "option_' + opt_number +'"style = "width:100%;"><tr><td><input type="checkbox"></td><td class = "option_number">' + opt_number + '.</td><td><input class="form-control option_text" type="text" value="' + optionText + '"></td><td align="center"><a href="#" style="top: 2px; color : #777;" title = "Delete this option" class = "delete_option"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></td></tr></table></li>');
                             }
                             refreshDeleteOptionController();
                             if (option.hasOwnProperty("comment")){
@@ -747,11 +756,6 @@ $('.create_question_btn').click(function(){
 
         })
     },1000);
-
-
-
-    //$("#delete_question").hide();
-    $("#question_step_navigator").hide();
 
     var questionEditor = nicEditors.findEditor("question_text");
     if(questionEditor != undefined){

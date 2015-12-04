@@ -6,8 +6,21 @@ $(document).ready(function() {
 
 $("#accept_all_changes_button").click(function(){
     alert("in accept_all_changes_button");
+    // Accept the change of the current step
+    stepEditor = nicEditors.findEditor("text_to_change_textarea");
+    newStepText = stepEditor.getContent();
+    stepEditorTitle = $("#step_editor_title").text();
+    stepNumber = parseInt(stepEditorTitle.replace( /\D+/g, '')) - 1;
+    $.post("/weave/edit_step/", {
+        'example_name': exampleName,
+        'panel_id': currentFocusedEditor,
+        'csrfmiddlewaretoken': csrftoken,
+        'html' : newStepText,
+        'step_number' : stepNumber
+    })
+    // Accept the change at any subsequent step
     while(allMatches.length > 0){
-        stepDetails = allMatches[0]; 
+        stepDetails = allMatches[0];
         allMatches.shift(); 
         stepNumber = stepDetails["step_number"];
         newStepText = stepDetails["proposed_text"];
