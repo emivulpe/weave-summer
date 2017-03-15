@@ -2,9 +2,10 @@ import os
 import xml.etree.ElementTree as ET
 import json
 import sys
+import django
 
-
-
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "exercises_system_project.settings")
+django.setup()
 ########################## Code to take care for populating the Doc Types ####################
 
 # A method that takes an xml ducument containing information about the doc types and stores it in the database

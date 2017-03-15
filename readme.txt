@@ -1,10 +1,28 @@
 This file describes what subdirectories are in this directory and what commands can be run when the command line is open in this directory.
 
-From here you can:
+Initial setup
+The best way to setup locally the project is to create a virtual environment and install the required packages from requirements.txt
+
+1. Open a command prompt and navigate to the Weave root.
+Example if I cloned the repository in C:/Weave this would be C:/Weave/weave-summer
+
+2. Run the following commands on the command prompt (assuming you have pip install https://pip.pypa.io/en/stable/installing/)
+    2.1 pip install virtualenv
+    2.2 pip install virtualenvwrapper
+
+    2.3 for linux/unix OS only: source virtualenvwrapper.sh
+    2.3 for Windows OS only: pip install virtualenvwrapper-win
+
+    2.4 mkvirtualenv weave
+
+    2.5 workon weave
+
+    2.6 pip install -r requirements.txt
+
 
 ######################## Create the database ####################
 
-From this directory you can create the database for WEAVE by running the command: 
+From the root (ex. C:/Weave/weave-summer) directory you can create the database for WEAVE by running the command:
 	python manage.py syncdb
 
 You will be prompted whether you want to create a superuser account. This account will allow you to view the admin interface which can be found on 127.0.0.1:8000/admin when you are running it on the local server. In this interface you will be able to see the objects in the database. Remember that every time you add a new object class for the database in exerciser/models.py you need to register that class for the admin interface in the exerciser/admin.py by importing the object and adding the line admin.site.register(NameOfTheNewClass).
@@ -52,4 +70,11 @@ In this directory you can find 6 subdirectories:
 	4. population_script.py- This is the file which translates the xml elements created from the author interface of IWE into database objects.
 	
 	
-	
+
+#################### Main URLs #####################################
+Local server:
+
+http://127.0.0.1:8000/weave/student_interface
+http://127.0.0.1:8000/weave/teacher_interface
+http://127.0.0.1:8000/weave/example_creator
+http://127.0.0.1:8000/weave/example_editor

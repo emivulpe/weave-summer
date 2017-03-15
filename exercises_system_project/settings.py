@@ -1,6 +1,8 @@
 # Django settings for exercises_system_project project.
 
 import os
+import tempfile
+
 SETTINGS_DIR = os.path.dirname(__file__)
 PROJECT_PATH = os.path.join(SETTINGS_DIR, os.pardir)
 PROJECT_PATH = os.path.abspath(PROJECT_PATH)
@@ -126,7 +128,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    TEMPLATE_PATH
+    TEMPLATE_PATH,
 )
 
 INSTALLED_APPS = (
@@ -157,7 +159,8 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 if DEPLOYED:
     log_filename = '/var/www/DJANGO/weave/mysite/weave.log'
 else:
-    log_filename = 'C:\Users\Emi\mysite.log'
+    log_filename = os.path.join(tempfile.gettempdir(), 'mysite.log')
+
 
 LOGGING = {
     'version': 1,
