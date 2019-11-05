@@ -39,3 +39,6 @@ Thumbs.db
 
 ### pyc ###
 *.pyc
+
+### idea files ###
+.idea/workspace.xml

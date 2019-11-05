@@ -62,7 +62,7 @@ def log_info_db_old(request):
 		direction = request.POST['direction']
 		application_name = request.POST['example_name']
 	except KeyError:
-		print "key error in log info db"
+		print("key error in log info db")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	session_id = request.session.session_key
 
@@ -969,7 +969,7 @@ def register(request):
 		# Print problems to the terminal.
 		# They'll also be shown to the user.
 		else:
-			print user_form.errors
+			print(user_form.errors)
 
 	request.session['registered'] = registered
 	# Render the template depending on the context.
@@ -1115,22 +1115,22 @@ def create_example(request):
 	# A method to create a new html explanation
 @requires_csrf_token
 def save_explanation(request):
-	print "in save explanation"
+	print("in save explanation")
 	try:
 		html = request.POST['html']
 		example_name = request.POST['example_name']
 		step_number = request.POST['step_number']
 	except KeyError:
-		print "key error in save explanation"
+		print("key error in save explanation")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
-		print "index error in save explanation"
+		print("index error in save explanation")
 		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
-	print "explanation html ", html
+	print("explanation html ", html)
 	html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number)[0]
 	html_explanation.html = html
 	html_explanation.save() #Save the changes
@@ -1178,17 +1178,17 @@ def save_panel_text(html, example_name, step_number, panel_id):
 # A method to create a new html step
 @requires_csrf_token
 def save_step_texts(request):
-	print "in save step texts"
+	print("in save step texts")
 
 	try:
 		example_name = request.POST['example_name']
 		step_number = request.POST['step_number']
 		panel_texts = json.loads(request.POST['panel_texts'])
 	except KeyError:
-		print "key error in save step texts"
+		print("key error in save step texts")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
-	print "step number ",	step_number
+	print("step number ",	step_number)
 	for panel_id in panel_texts:
 		html = panel_texts[panel_id]
 		save_panel_text(html, example_name, step_number,panel_id)
@@ -1207,40 +1207,40 @@ def save_step_texts(request):
 # A method to create a new html step
 @requires_csrf_token
 def save_question(request):
-	print "in save question"
+	print("in save question")
 
 	try:
 		question_text = request.POST['question_text']
-		print question_text, "QUESTION TEXT"
+		print(question_text, "QUESTION TEXT")
 		question_type = request.POST['question_type']
-		print question_type, "QUESTION TYPE"
+		print(question_type, "QUESTION TYPE")
 		example_name = request.POST['example_name']
-		print example_name, "EXAMPLE NAME"
+		print(example_name, "EXAMPLE NAME")
 		step_number = request.POST['step_number']
-		print step_number, "STEP NUMBER"
+		print(step_number, "STEP NUMBER")
 		options = json.loads(request.POST['options'])['options']
-		print options, "DETAILSSSSSSSSSSS"
+		print(options, "DETAILSSSSSSSSSSS")
 
 	except KeyError:
-		print "key error in save question"
+		print("key error in save question")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 	try:
-		print example_name
+		print(example_name)
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
-		print "index error in save question"
+		print("index error in save question")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
-	print "question step html ", question_text
-	print "question step number ",	step_number
+	print("question step html ", question_text)
+	print("question step number ",	step_number)
 	question = ExampleQuestion.objects.get_or_create(example = example, step_number = step_number)[0]
 	question_options = ExampleOption.objects.filter(question = question).delete()
 	question.question_text = question_text
 	question.kind = question_type
 	question.save()
 	for index in range(len(options)):
-		print index, " heeeere"
+		print(index, " heeeere")
 		option = options[index]
 		option_text = option['option_text']
 		is_correct = option['correct']
@@ -1254,25 +1254,25 @@ def save_question(request):
 
 
 def get_next_step(request):
-	print "in get next steppppppppppp"
+	print("in get next steppppppppppp")
 	context = RequestContext(request)
 	session_id = request.session.session_key
 	# Get the requested example and step number
 	try:
 		example_name = request.GET['example_name']
 		step_number = int(request.GET['step_number'])
-		print step_number
+		print(step_number)
 		use_to_create_new_step = json.loads(request.GET['use_to_create_new_step'])
-		print use_to_create_new_step, "new steeeep"
+		print(use_to_create_new_step, "new steeeep")
 
 	except KeyError:
-		print "key error in get next step"
+		print("key error in get next step")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 	try:
 		example = Example.objects.filter(name = example_name)[0]
 	except IndexError:
-		print "index error in get next step"
+		print("index error in get next step")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 
@@ -1298,11 +1298,11 @@ def get_next_step(request):
 					div.replaceWithChildren()
 				for div in soup.findAll('p', ''):
 					div.replaceWithChildren()
-				print soup, "souppppppppppppppppppppp"
+				print(soup, "souppppppppppppppppppppp")
 				panel_html = str(soup)
 
 			step_entry[panel_id] = panel_html
-			print "something in panel exists"
+			print("something in panel exists")
 		else:
 
 			previous_step_number = step_number - 1
@@ -1325,28 +1325,28 @@ def get_next_step(request):
 					previous_step_text = str(previous_text_soup)
 				previous_step_number -= 1
 			step_entry[panel_id] = previous_step_text
-			print "nothing in panel exists"
+			print("nothing in panel exists")
 	# Add the html for the explanation if it existed else add an empty string
 	if len(html_explanation) > 0 and not use_to_create_new_step :
 		step_entry["explanation_area"] = html_explanation[0].html
-		print "explanation exists"
+		print("explanation exists")
 	else:
 		step_entry["explanation_area"] = ""
-		print "no explanation exists"
+		print("no explanation exists")
 	if not use_to_create_new_step:
 		if len(question) > 0:
 			question = question[0]
 			question_record = ExampleQuestionRecord.objects.filter(question = question, session_id = session_id)
 			options = ExampleOption.objects.filter(question = question)
 			if len(question_record) == 0:
-				print "QUESTIOOOOOON" , question.question_text
+				print("QUESTIOOOOOON" , question.question_text)
 				step_entry["question_text"] = question.question_text
 				step_entry["question_type"] = question.kind
 				question_options = []
 				for i in range(0, len(options)):
-					print i
-					print len(options)
-					print options[i].option_text ,"optiooooooooooooon teeeeeeeeeeeext"
+					print(i)
+					print(len(options))
+					print(options[i].option_text ,"optiooooooooooooon teeeeeeeeeeeext")
 					option = options[i]
 					question_options.append({"option_text" : option.option_text, "correct": option.correct})
 					option_comment = OptionComment.objects.filter(option = option)
@@ -1438,33 +1438,33 @@ def get_next_step(request):
 
 @requires_csrf_token
 def edit_step(request):
-	print "in edit step"
+	print("in edit step")
 	try:
 		example_name = request.POST['example_name']
 		panel_id = request.POST['panel_id']
 		step_number = request.POST['step_number']
 		html = request.POST['html']
 	except KeyError:
-		print "key error in edit step"
+		print("key error in edit step")
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	save_panel_text(html, example_name, step_number, panel_id)
 	return HttpResponse(simplejson.dumps({}),content_type = "application/json")
 
 @requires_csrf_token
 def edit_steps(request):
-	print "in edit steps"
+	print("in edit steps")
 	try:
 		panel_id = request.POST['panel_id']
 		step_number = int(request.POST['step_number'])
-		print panel_id, "iddddddddddddddddddddddddddddddddddddddd"
+		print(panel_id, "iddddddddddddddddddddddddddddddddddddddd")
 		raw_new_text = request.POST['new_text']
 		raw_text_to_change = request.POST['text_to_change']
 		plain_text_to_change = stripAllTags(raw_text_to_change)#lxml.html.fromstring(raw_text_to_change).text_content()
-		print raw_text_to_change, " RAW"
-		print raw_new_text, " NEW"
-		print plain_text_to_change, " PLAIN"
+		print(raw_text_to_change, " RAW")
+		print(raw_new_text, " NEW")
+		print(plain_text_to_change, " PLAIN")
 	except KeyError:
-		print "key error in edit steps"
+		print("key error in edit steps")
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	exact_matches = []
 	possible_matches = []
@@ -1473,22 +1473,22 @@ def edit_steps(request):
 		try:
 			example_name = request.POST['example_name']
 		except KeyError:
-			print "key error in edit steps"
+			print("key error in edit steps")
 			return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 		try:
 			example = Example.objects.filter(name = example_name)[0]
 		except IndexError:
-			print "index error in edit steps"
+			print("index error in edit steps")
 			return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 
 		this_step = HTMLStep.objects.filter(example = example, step_number = step_number, panel_id = panel_id)
 		if len(this_step) > 0:
 			this_step = this_step[0]
 			this_step_new_text = this_step.html.replace(raw_text_to_change, raw_new_text)
-			print this_step_new_text, " THIS NEW "
+			print(this_step_new_text, " THIS NEW ")
 			save_panel_text(this_step_new_text, example_name, step_number, panel_id)
 			ts = HTMLStep.objects.filter(example = example, step_number = step_number, panel_id = panel_id)[0]
-			print ts.html, " after change "
+			print(ts.html, " after change ")
 		steps = HTMLStep.objects.filter(example = example, panel_id = panel_id).order_by('step_number')
 		for step in steps:
 			if step.step_number != step_number:
@@ -1502,12 +1502,12 @@ def edit_steps(request):
 					plain_new_text = keeptags(raw_new_text,"br div")
 					proposed_text = plain_step_html.replace(plain_text_to_change, raw_new_text)
 					possible_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
-				print raw_step_html, " raw step"
-				print plain_step_html, " plain step"
+				print(raw_step_html, " raw step")
+				print(plain_step_html, " plain step")
 				if proposed_text is not None:
 					all_matches.append({"example": example_name, "step_number" :step.step_number, "html" : step.html, "proposed_text" : proposed_text, "panel_id" : step.panel_id})
-		print exact_matches, " EXACT"
-		print possible_matches, " possible"
+		print(exact_matches, " EXACT")
+		print(possible_matches, " possible")
 	return HttpResponse(simplejson.dumps({"exact_matches" : exact_matches, "possible_matches" : possible_matches, "all_matches" : all_matches}),content_type = "application/json")
 
 
@@ -1644,29 +1644,29 @@ def create_step(request):
 # A method to create a new html step
 @requires_csrf_token
 def create_step_old(request):
-	print "in create step"
+	print("in create step")
 
 	try:
 		example_name = request.POST['example_name']
-		print example_name
+		print(example_name)
 		step_number = int(request.POST['step_number'])
-		print step_number
+		print(step_number)
 		panel_texts = json.loads(request.POST['panel_texts'])
-		print panel_texts
+		printp(anel_texts)
 		explanation = request.POST['explanation']
-		print explanation
+		print(explanation)
 		insert_after = json.loads(request.POST['insert_after'])
-		print insert_after
+		print(insert_after)
 		insert_before = json.loads(request.POST['insert_before'])
-		print insert_before
+		print(insert_before)
 	except KeyError:
-		print "key error in save step texts"
+		print("key error in save step texts")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
-		print "index error in save explanation"
+		print("index error in save explanation")
 		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
 	if step_number >= 0:
 		if insert_after:
@@ -1677,12 +1677,12 @@ def create_step_old(request):
 		# save the new step panel texts
 		for panel_id in panel_texts:
 
-			print panel_texts[panel_id], "nothing escaped"
+			print(panel_texts[panel_id], "nothing escaped")
 			html = panel_texts[panel_id].replace("&nbsp;", " ")
 
 			original_html = html
-			print original_html, "originallllll"
-			print html, "spaces escaped"
+			print(original_html, "originallllll")
+			print(html, "spaces escaped")
 
 			# new code to deal with automatic highlighting
 			soup = BeautifulSoup(html, "lxml")
@@ -1694,18 +1694,18 @@ def create_step_old(request):
 				div.replaceWithChildren()
 			for div in soup.findAll('p', ''):
 				div.replaceWithChildren()
-			print soup, "souppppppppppppppppppppp"
+			print(soup, "souppppppppppppppppppppp")
 			html = str(soup)
 
 			current_text = stripAllTags(html.replace("<br>", "/n"))
-			print current_text, "test html"
-			print html, "after soup"
+			print(current_text, "test html")
+			print(html, "after soup")
 			current_html = ""
 
 			# check the code with the previous
 			#current_step_text = lxml.html.fromstring(html).text_content().split()
 			current_step_text = keeptags(html,"div br").replace("<div>", " <div> ").replace("</div>", " </div> ").replace("<br/>", " <br/>").split()
-			print current_step_text, "after keeptags"
+			print(current_step_text, "after keeptags")
 			previous_step_text = []
 			previous_step_number = step_number - 1
 			while previous_step_number >= 0 and previous_step_text == []:
@@ -1725,7 +1725,7 @@ def create_step_old(request):
 				diff_obj = diff_match_patch.diff_match_patch()
 				diffs = diff_obj.diff_main(previous_text, current_text)
 				diff_obj.diff_cleanupSemantic(diffs)
-				print diffs
+				print(diffs)
 				"""
 				d = Differ()
 				comparison_result = list(d.compare(previous_step_text, current_step_text))
@@ -1779,12 +1779,12 @@ def create_step_old(request):
 				for diff in diffs:
 					if diff[0] == 0:
 						current_html += diff[1]
-						print 0,"00000000"
+						print(0,"00000000")
 					if diff[0] == 1:
 
 
 						current_html += '<span class ="style" style = "background-color:red;">' + diff[1] + '</span>'
-						print 1, "111111111111"
+						print(1, "111111111111")
 						html = html.replace(diff[1],'<span class ="style" style = "background-color:red;">' + diff[1] + '</span>')
 
 
@@ -1822,11 +1822,11 @@ def get_previous_and_current_step_texts(panel_texts, panel_id, step_number, exam
 	texts = {}
 	# SET originalText TO <the raw text including HTML for step n>
 	current_step_original_text = panel_texts[panel_id].replace("&nbsp;", " ")
-	print current_step_original_text, "original text"
+	print(current_step_original_text, "original text")
 
 	# SET plainText TO <the text with all HTML removed, again for step n>
 	current_step_plain_text = stripAllTags(current_step_original_text)
-	print current_step_plain_text, "plain text"
+	print(current_step_plain_text, "plain text")
 
 	# SET newText TO ""
 	new_text = ""
@@ -1854,12 +1854,12 @@ def find_differences(previous_step_plain_text, current_step_plain_text):
 	diff_obj = diff_match_patch.diff_match_patch()
 	diffs = diff_obj.diff_main(previous_step_plain_text, current_step_plain_text)
 	diff_obj.diff_cleanupSemantic(diffs)
-	print diffs, "result from diff-match-patch"
+	print (diffs, "result from diff-match-patch")
 	return diffs
 
 @requires_csrf_token
 def create_step(request):
-	print "in create steppppppppp"
+	print("in create steppppppppp")
 
 	try:
 		example_name = request.POST['example_name']
@@ -1869,13 +1869,13 @@ def create_step(request):
 		insert_after = json.loads(request.POST['insert_after'])
 		insert_before = json.loads(request.POST['insert_before'])
 	except KeyError:
-		print "key error in save step texts"
+		print("key error in save step texts")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
-		print "index error in save explanation"
+		print("index error in save explanation")
 		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
 	if step_number >= 0:
 		if insert_after:
@@ -1911,13 +1911,13 @@ def create_step(request):
 				# Scan over the plainText
 				#WHILE <not at the end of the plainText> DO
 				while current_step_plain_text_ptr < len(current_step_plain_text) and current_step_original_text_ptr < len(original_text) and diffs_ptr < len(diffs):
-					print "1", current_step_plain_text_ptr < len(current_step_plain_text), current_step_original_text_ptr < len(original_text)
+					print ("1", current_step_plain_text_ptr < len(current_step_plain_text), current_step_original_text_ptr < len(original_text))
 					#IF <current position in the originalText is an < (e.g HTML tag)> THEN
 					# We've found an HTML tag, so we need to copy it into newText
 					if original_text[current_step_original_text_ptr] == '<': #1
 						# <add the whole tag to newText>
 						while original_text[current_step_original_text_ptr] != '>' and current_step_original_text_ptr < len(original_text) - 1:
-							print "2"
+							print("2")
 							new_text += original_text[current_step_original_text_ptr]
 							current_step_original_text_ptr += 1
 						new_text += original_text[current_step_original_text_ptr]
@@ -1936,12 +1936,12 @@ def create_step(request):
 
 						# WHILE <not at the end of the eqText> DO
 						while eq_text_ptr < len(eq_text) and current_step_original_text_ptr < len(original_text):
-							print "3"
+							print("3")
 							# IF <current position in the originalText is a < (e.g HTML tag)> THEN
 							if original_text[current_step_original_text_ptr] == '<': #2
 								# <add the whole tag to newText>
 								while original_text[current_step_original_text_ptr] != '>' and current_step_original_text_ptr < len(original_text) - 1:
-									print "4"
+									print("4")
 									new_text += original_text[current_step_original_text_ptr]
 									current_step_original_text_ptr += 1
 								new_text += original_text[current_step_original_text_ptr]
@@ -1957,7 +1957,7 @@ def create_step(request):
 								html_symbol = ''
 								# <copy over the HMTL text for the symbol into newText>  #Unsure how hard it is to do this!!!
 								while original_text[current_step_original_text_ptr] != ";" and current_step_original_text_ptr < len(original_text) - 1:
-									print "5"
+									print("5")
 									html_symbol += original_text[current_step_original_text_ptr]
 									current_step_original_text_ptr += 1
 								html_symbol += original_text[current_step_original_text_ptr]
@@ -1989,7 +1989,7 @@ def create_step(request):
 							next_diff = diffs[diffs_ptr]
 
 							while diffs_ptr < len(diffs) - 1 and next_diff[0] < 0:
-								print "6"
+								print("6")
 								diffs_ptr += 1
 								next_diff = diffs[diffs_ptr]
 					# ELSE
@@ -2008,19 +2008,19 @@ def create_step(request):
 						# find the text that needs to be highlighted
 						to_highlight = ""
 						while added_text_ptr < len(added_text) and current_step_original_text_ptr < len(original_text):
-							print "7"
+							print("7")
 							# <Add the text in the diff entry to newText, using same technique as above to ensure HTML tags/symbols are copied over from originalText>
 
 							# don't highlight tags
-							print len(original_text), "len orig text"
-							print current_step_original_text_ptr, "orig text ptr"
+							print(len(original_text), "len orig text")
+							print(current_step_original_text_ptr, "orig text ptr")
 							if original_text[current_step_original_text_ptr] == '<': #3
 								# highlight everything before the tag
 								new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
 								# reset the text to highlight
 								to_highlight = ""
 								while original_text[current_step_original_text_ptr] != '>' and current_step_original_text_ptr < len(original_text) - 1:
-									print "8"
+									print("8")
 									new_text += original_text[current_step_original_text_ptr]
 									current_step_original_text_ptr += 1
 								new_text += original_text[current_step_original_text_ptr]
@@ -2030,7 +2030,7 @@ def create_step(request):
 								html_symbol = ''
 								# find the end of the html symbol- assuming it always ends in ;
 								while original_text[current_step_original_text_ptr] != ";" and current_step_original_text_ptr < len(original_text) - 1:
-									print "9"
+									print("9")
 									html_symbol += original_text[current_step_original_text_ptr]
 									current_step_original_text_ptr += 1
 								html_symbol += original_text[current_step_original_text_ptr]
@@ -2050,18 +2050,18 @@ def create_step(request):
 							diffs_ptr += 1
 							next_diff = diffs[diffs_ptr]
 							while diffs_ptr < len(diffs) and next_diff[0] < 0:
-								print "10"
+								print("10")
 								diffs_ptr += 1
 								next_diff = diffs[diffs_ptr]
 
 
 					else:
-						print "here", next_diff[0]
+						print("here", next_diff[0])
 						if diffs_ptr < len(diffs)-1:
 							diffs_ptr += 1
 							next_diff = diffs[diffs_ptr]
 							while diffs_ptr < len(diffs) and next_diff[0] < 0:
-								print "10"
+								print("10")
 								diffs_ptr += 1
 								next_diff = diffs[diffs_ptr]
 
@@ -2091,7 +2091,7 @@ def create_step(request):
 # A method to create a new html step
 @requires_csrf_token
 def create_question(request):
-	print "in create question"
+	print("in create question")
 
 	try:
 		question_text = request.POST['question_text']
@@ -2103,13 +2103,13 @@ def create_question(request):
 		insert_before = json.loads(request.POST['insert_before'])
 
 	except KeyError:
-		print "key error in save question"
+		print("key error in save question")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 	try:
 		example = Example.objects.filter(name=example_name)[0]
 	except IndexError:
-		print "index error in save question"
+		print("index error in save question")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	if step_number >= 0:
 		if insert_after:
@@ -2150,24 +2150,24 @@ def create_question(request):
 def update_step_number_after_insertion(example, step_number):
 	following_steps = ExampleStep.objects.filter(example = example, step_number__gte = step_number)
 	for following_step in following_steps:
-		print following_step.step_number
+		print(following_step.step_number)
 		following_step.step_number = following_step.step_number + 1
 		following_step.save()
 
 
 @requires_csrf_token
 def delete_step(request):
-	print "in delete steppp"
+	print("in delete steppp")
 	try:
 		example_name = request.POST['example_name']
 		step_number = int(request.POST['step_number'])
 	except KeyError:
-		print "key error in delete step"
+		print ("key error in delete step")
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	try:
 		example = Example.objects.filter(name = example_name)[0]
 	except IndexError:
-		print "index error in delete step"
+		print("index error in delete step")
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	ExampleStep.objects.filter(example = example, step_number = step_number).delete()
 	steps = ExampleStep.objects.filter(example = example)
@@ -2179,18 +2179,18 @@ def delete_step(request):
 
 @requires_csrf_token
 def check_steps(request):
-	print "in check steppps"
+	print("in check steppps")
 	try:
 		example_name = request.GET['example_name']
-		print example_name
+		print(example_name)
 		step_number = int(request.GET['step_number'])
 	except KeyError:
-		print "key error in check steps"
+		print("key error in check steps")
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	try:
 		example = Example.objects.filter(name = example_name)[0]
 	except IndexError:
-		print "index error in check steps"
+		print("index error in check steps")
 		return HttpResponse(simplejson.dumps({"error" : "Bad input supplied"}),content_type = "application/json")
 	previous_steps = ExampleStep.objects.filter(example = example, step_number__lt = step_number)
 	next_steps = ExampleStep.objects.filter(example = example, step_number__gt = step_number)
@@ -2265,7 +2265,7 @@ def edit_example(request, example_name_url):
 			#context_dict['is_question'] = "true"
 			for step in steps:
 				panel_number = int(filter(str.isdigit, str(step.panel_id)))
-				print panel_number
+				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
 				panels.append(panel)
 
@@ -2275,7 +2275,7 @@ def edit_example(request, example_name_url):
 			#context_dict['is_question'] = "false"
 			for step in steps:
 				panel_number = int(filter(str.isdigit, str(step.panel_id)))
-				print panel_number
+				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
 				panels.append(panel)
 		context_dict['panels'] = panels
@@ -2439,7 +2439,7 @@ def view_example_student(request, example_name_url):
 			#context_dict['is_question'] = "true"
 			for step in steps:
 				panel_number = int(filter(str.isdigit, str(step.panel_id)))
-				print panel_number
+				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
 				panels.append(panel)
 
@@ -2449,14 +2449,14 @@ def view_example_student(request, example_name_url):
 			#context_dict['is_question'] = "false"
 			for step in steps:
 				panel_number = int(filter(str.isdigit, str(step.panel_id)))
-				print panel_number
+				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
 				panels.append(panel)
 		context_dict['panels'] = panels
 
 	# Change to something more sensible!
 	except Example.DoesNotExist:
-		print "example doesn't exist"
+		print("example doesn't exist")
 		return HttpResponseRedirect('/weave/')
 
 	# Go render the response and return it to the client.
@@ -2503,7 +2503,7 @@ def view_example_teacher(request, example_name_url):
 			#context_dict['is_question'] = "true"
 			for step in steps:
 				panel_number = int(filter(str.isdigit, str(step.panel_id)))
-				print panel_number
+				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
 				panels.append(panel)
 
@@ -2513,14 +2513,14 @@ def view_example_teacher(request, example_name_url):
 			#context_dict['is_question'] = "false"
 			for step in steps:
 				panel_number = int(filter(str.isdigit, str(step.panel_id)))
-				print panel_number
+				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
 				panels.append(panel)
 		context_dict['panels'] = panels
 
 	# Change to something more sensible!
 	except Example.DoesNotExist:
-		print "example doesn't exist"
+		print("example doesn't exist")
 		return HttpResponseRedirect('/weave/')
 
 	# Go render the response and return it to the client.
@@ -2670,7 +2670,7 @@ def log_info_db(request):
 		direction = request.POST['direction']
 		example_name = request.POST['example_name']
 	except KeyError:
-		print "key error in log info db"
+		print("key error in log info db")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	session_id = request.session.session_key
 
@@ -2724,16 +2724,16 @@ def log_question_info_db(request):
 
 	try:
 		time_on_question = request.POST['time']
-		print time_on_question
+		print(time_on_question)
 		step_number = request.POST['step_number']
-		print step_number
+		print(step_number)
 		example_name = request.POST['example_name']
-		print example_name
+		print(example_name)
 		answer_text = request.POST['answer']
-		print answer_text
+		print(answer_text)
 		direction = request.POST['direction']
 	except KeyError:
-		print "key error in log question info db"
+		print("key error in log question info db")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	teacher_name=request.session.get("teacher",None)
 	session_id = request.session.session_key
@@ -2744,7 +2744,7 @@ def log_question_info_db(request):
 		step = ExampleStep.objects.filter(example = example, step_number = step_number)[0]
 		question = ExampleQuestion.objects.filter(example = example, step_number = step_number)[0]
 	except IndexError:
-		print "index error in log question info db"
+		print("index error in log question info db")
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 	#usage_record = ExampleUsageRecord(example = example, session_id = session_id, time_on_step = time_on_question, step = step, direction = "next")
 	#question_record = ExampleQuestionRecord(example = example, question = question, answer_text = answer_text)
@@ -2771,7 +2771,7 @@ def log_question_info_db(request):
 
 						student_name=request.session.get("student", None)
 
-						print student_name, "studeeeeeeeeeeeent"
+						print(student_name, "studeeeeeeeeeeeent")
 
 						if student_name != None:
 							student = Student.objects.filter(teacher=teacher,group=group,student_id=student_name)
@@ -2789,7 +2789,7 @@ def automatic_highlighter(example_name, step_number):
 		example = Example.objects.filter(name=example_name)[0]
 
 	except IndexError:
-		print "index error in automatic highlighter"
+		print("index error in automatic highlighter")
 		return HttpResponse(simplejson.dumps({'error':'Inexistent application'}), content_type="application/json")
 
 	step_panel_texts = {}
@@ -2811,7 +2811,7 @@ def automatic_highlighter(example_name, step_number):
 			div.replaceWithChildren()
 		for div in soup.findAll('p', ''):
 			div.replaceWithChildren()
-		print soup, "souppppppppppppppppppppp"
+		print(soup, "souppppppppppppppppppppp")
 		panel_html = str(soup)
 
 		current_step_text = keeptags(panel_html,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
@@ -2832,48 +2832,48 @@ def automatic_highlighter(example_name, step_number):
 		else:
 			d = Differ()
 			comparison_result = list(d.compare(previous_step_text, current_step_text))
-			print comparison_result, "interestedddddddddddddddddddddddddddddddddd"
+			print(comparison_result, "interestedddddddddddddddddddddddddddddddddd")
 			combination = ""
 			after_div_tag = True
 			#doc = et.fromstring(test)
 			for word in comparison_result:
-				print "woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd"
-				print after_div_tag, " after div tag"
+				print("woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd")
+				print(after_div_tag, " after div tag")
 				if word[0] == '+' and "<div>" not in word and "</div>" not in word:
-					print "had +"
+					print("had +")
 					if not after_div_tag:
-						print "not after div"
+						print("not after div")
 						word = word[1:]
 					else:
-						print "after div"
+						print("after div")
 						word = word[1:].lstrip()	# the div tag added an extra space in front
 					combination += word;
 				else:
 					if combination != "":
-						print "combination NOT empty", len(combination), combination
+						print("combination NOT empty", len(combination), combination)
 						#print html
 						#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
 						#print "combination NOT empty", combination
 						panel_html = panel_html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
-						print panel_html
+						print(panel_html)
 						combination = ""
 					else:
-						print "combination empty"
+						print("combination empty")
 				if after_div_tag == True:
 					after_div_tag = False
 				if "<div>" not in word and "</div>" not in word:
 					if word[0] == "+":
 						after_div_tag = False
 				else:
-					print "after div"
+					print("after div")
 					after_div_tag = True
 			if combination != "":
-				print "combination NOT empty2", len(combination)
-				print panel_html
+				print("combination NOT empty2", len(combination))
+				print(panel_html)
 				#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
 				#print "combination NOT empty2", combination
 				panel_html = panel_html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
-				print panel_html
+				print(panel_html)
 				combination = ""
 		step_panel_texts[panel_id] = panel_html
 
@@ -2894,7 +2894,7 @@ def automatic_paneltext_highlighter(current_step_panel_text, previous_step_panel
 		div.replaceWithChildren()
 	for div in soup.findAll('p', ''):
 		div.replaceWithChildren()
-	print soup, "souppppppppppppppppppppp"
+	print(soup, "souppppppppppppppppppppp")
 	current_step_panel_text = str(soup)
 
 	current_step_text = keeptags(current_step_panel_text,"div").replace("<div>", " <div> ").replace("</div>", " </div> ").split()
@@ -2909,48 +2909,48 @@ def automatic_paneltext_highlighter(current_step_panel_text, previous_step_panel
 	else:
 		d = Differ()
 		comparison_result = list(d.compare(previous_step_text, current_step_text))
-		print comparison_result, "interestedddddddddddddddddddddddddddddddddd"
+		print(comparison_result, "interestedddddddddddddddddddddddddddddddddd")
 		combination = ""
 		after_div_tag = True
 		#doc = et.fromstring(test)
 		for word in comparison_result:
-			print "woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd"
-			print after_div_tag, " after div tag"
+			print("woooooooooooooooooooooooordddddddddddd", word, "woooooooooooooooooooooooordddddddddddd")
+			print(after_div_tag, " after div tag")
 			if word[0] == '+' and "<div>" not in word and "</div>" not in word:
-				print "had +"
+				print("had +")
 				if not after_div_tag:
-					print "not after div"
+					print("not after div")
 					word = word[1:]
 				else:
-					print "after div"
+					print("after div")
 					word = word[1:].lstrip()	# the div tag added an extra space in front
 				combination += word;
 			else:
 				if combination != "":
-					print "combination NOT empty", len(combination), combination
+					print("combination NOT empty", len(combination), combination)
 					#print html
 					#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
 					#print "combination NOT empty", combination
 					current_step_panel_text = current_step_panel_text.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
-					print current_step_panel_text
+					print(current_step_panel_text)
 					combination = ""
 				else:
-					print "combination empty"
+					print("combination empty")
 			if after_div_tag == True:
 				after_div_tag = False
 			if "<div>" not in word and "</div>" not in word:
 				if word[0] == "+":
 					after_div_tag = False
 			else:
-				print "after div"
+				print("after div")
 				after_div_tag = True
 		if combination != "":
-			print "combination NOT empty2", len(combination)
-			print current_step_panel_text
+			print("combination NOT empty2", len(combination))
+			print(current_step_panel_text)
 			#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
 			#print "combination NOT empty2", combination
 			current_step_panel_text = current_step_panel_text.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
-			print current_step_panel_text
+			print(current_step_panel_text)
 			combination = ""
 
 	return current_step_panel_text

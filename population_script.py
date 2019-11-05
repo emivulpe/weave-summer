@@ -255,8 +255,8 @@ def add_explanation(step, element):
 
 
 if __name__ == '__main__':
-	print "Starting DocumentFragment population script..."
-	
+	print("Starting DocumentFragment population script...")
+
 	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'exercises_system_project.settings')
 	from exerciser.models import FragmentStyle, Document, DocumentType, FragmentType, Fragment, Step, Change, Question, Explanation, Option, Application, Panel, AcademicYear
 	from django.db import IntegrityError
