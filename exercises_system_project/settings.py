@@ -1,23 +1,24 @@
-# Django settings for exercises_system_project project.
 
+import django
 import os
-import tempfile
 
 SETTINGS_DIR = os.path.dirname(__file__)
 PROJECT_PATH = os.path.join(SETTINGS_DIR, os.pardir)
-PROJECT_PATH = os.path.abspath(PROJECT_PATH)
-TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
-STATIC_PATH = os.path.join(PROJECT_PATH,'static')
-
-DEPLOYED = False
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+SECRET_KEY = 'gkqa=$!806(j62kf*(fi7+(j76f7nyp)crwzh++hq*qu%9fpwg'
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # Uncomment the next line to enable the admin:
+    'django.contrib.admin',
+    # Uncomment the next line to enable admin documentation:
+    # 'django.contrib.admindocs',
+    'exerciser',
+	'chartit'
 )
-
-MANAGERS = ADMINS
 
 DATABASE_PATH = os.path.join(PROJECT_PATH, 'exerciser.db')
 
@@ -32,6 +33,25 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default.
     }
 }
+
+# Django settings for exercises_system_project project.
+import tempfile
+
+
+PROJECT_PATH = os.path.abspath(PROJECT_PATH)
+TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
+STATIC_PATH = os.path.join(PROJECT_PATH,'static')
+
+DEPLOYED = False
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+
+MANAGERS = ADMINS
+
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -131,20 +151,6 @@ TEMPLATE_DIRS = (
     TEMPLATE_PATH,
 )
 
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
-    'exerciser',
-	'chartit'
-)
 
 LOGIN_URL = '/exerciser/login/'
 
@@ -215,3 +221,4 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
 	"django.contrib.messages.context_processors.messages",
 	"exerciser.context_processor.applications",
 	"django.core.context_processors.request")
+django.setup()

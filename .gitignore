@@ -41,4 +41,5 @@ Thumbs.db
 *.pyc
 
 ### idea files ###
-.idea/workspace.xml
+.idea/*
+exerciser/5Nov2019

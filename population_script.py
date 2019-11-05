@@ -263,7 +263,7 @@ if __name__ == '__main__':
 	from django.core.exceptions import ObjectDoesNotExist
 	
 	
-	# If the path to the examples is specified as a command line argument, take it, else assume the examples are placed in the examples folder
+	# If the path to the  mples is specified as a command line argument, take it, else assume the examples are placed in the examples folder
 	if len(sys.argv) > 1:
 		path = sys.argv[1]
 	else:

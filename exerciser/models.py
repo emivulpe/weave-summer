@@ -259,7 +259,7 @@ class QuestionRecord(models.Model):
 	answer_text=models.TextField()
 	
 	
-class Example (models.Model):
+class Example(models.Model):
 	name = models.CharField(primary_key = True, max_length=100)
 	number_of_panels = models.IntegerField()
 

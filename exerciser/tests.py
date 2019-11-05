@@ -1,12 +1,12 @@
+import os
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'exercises_system_project.settings'
+
 from django.test import TestCase, Client
 from exerciser.models import Application, User, Teacher, Step, Group, AcademicYear, Student, Question, Option
-from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.utils.importlib import import_module
-
-#imports for views
-from django.core.urlresolvers import reverse
+from importlib import import_module
 
 
 
@@ -18,21 +18,7 @@ class ApplicationTest(TestCase):
 		self.assertTrue(isinstance(app, Application))
 		self.assertEqual(app.__unicode__(), app.name)
 		
-		
-class IndexViewTests(TestCase):
 
-	def test_index_view_with_no_applications(self):
-		response = self.client.get(reverse('index'))
-		self.assertEqual(response.status_code, 200)
-		self.assertQuerysetEqual(response.context['applications'], [])
-		
-	def test_index_view_with_applications(self):
-		response = self.client.get(reverse('index'))
-		app = Application.objects.get_or_create(name = 'test app')[0]
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual((response.context['applications'] >= 0), True)
-
-		
 class LogInfoDbTests(TestCase):
 	def setUp(self):
 		# Setup Test User
@@ -47,8 +33,6 @@ class LogInfoDbTests(TestCase):
 		group = Group.objects.get_or_create(teacher = teacher, academic_year = year, name = 'test group')[0]
 		student = Student.objects.get_or_create(teacher=teacher,group=group,student_id = 'test student')[0]
 		
-
-
 
 	def test_log_info_db_valid(self):
 		c = Client()
@@ -628,13 +612,10 @@ class GetQuestionDataTests(TestCase):
 		
 
 	def test_get_question_data_missing_key(self):
-		print "here222"
 		self.c.login(username='test user',password='password')
 		response = self.c.get(reverse('get_question_data'), {'year' : 2014, 'group' : 'test group', 'step' : 1, 'question' : 'test question', 'student':'test student'})
-		print response.content
 		self.assertEqual(response.status_code, 200)
-		print "there222"
-		
+
 		
 	def test_get_question_data_invalid(self):
 		self.c.login(username='test user',password='password')
@@ -652,7 +633,6 @@ class UpdateTimeGraphTests(TestCase):
 		)
 		self.c = Client()
 		teacher = Teacher.objects.get_or_create(user = user)[0]
-		print teacher
 		year = AcademicYear.objects.get_or_create(start = 2014)[0]
 		group = Group.objects.get_or_create(teacher = teacher, academic_year = year, name = 'test group')[0]
 		student = Student.objects.get_or_create(teacher = teacher, group = group, student_id = 'test student')[0]
@@ -662,13 +642,11 @@ class UpdateTimeGraphTests(TestCase):
 		
 
 	def test_update_time_graph_valid(self):
-		print "here"
 		self.c.login(username='test user',password='password')
 		
 		response = self.c.get(reverse('update_time_graph'), {'year' : 2014,'app_name' : 'test application', 'group' : 'test group', 'student':'test student'})
 		self.assertEqual(response.status_code, 200)
-		print "there"
-		
+
 		
 	def test_update_time_graph_invalid(self):
 		

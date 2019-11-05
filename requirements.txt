@@ -7,7 +7,7 @@ constantly==15.1.0
 cryptography==1.8.1
 cssselect==1.0.1
 diff-match-patch==20181111
-Django==1.8
+Django==1.9
 django-chartit==0.2.9
 django-http-proxy==0.4.3
 enum34==1.1.6
@@ -22,6 +22,7 @@ pycparser==2.17
 pyOpenSSL==16.2.0
 pyparsing==2.2.0
 queuelib==1.4.2
+selenium==3.141.0
 simplejson==3.8.2
 six==1.10.0
 w3lib==1.17.0

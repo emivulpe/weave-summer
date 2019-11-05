@@ -41,7 +41,7 @@ def create_student_ids(teacher,group,number_students_needed):
 	created=0
 	ids=[]
 	while (created < int(number_students_needed)):
-		id=random.choice(string.ascii_lowercase)
+		id=random.choice(string.lowercase)
 		id+=str(randint(10, 99))
 		students=Student.objects.filter(teacher=teacher,group=group,student_id=id)
 		if len(students)==0:
@@ -49,6 +49,63 @@ def create_student_ids(teacher,group,number_students_needed):
 			student.save()
 			ids.append(id)
 			created += 1
+
+
+@requires_csrf_token
+def log_info_db_old(request):
+	"""
+	This method logs the time spent on a step, when the user moves forwards or backwards to the next/previous step.
+	"""
+	try:
+		time_on_step = request.POST['time']
+		current_step = int(request.POST['step'])
+		direction = request.POST['direction']
+		application_name = request.POST['example_name']
+	except KeyError:
+		print("key error in log info db")
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+	session_id = request.session.session_key
+
+	if direction == "back":
+		current_step = int(current_step) + 1
+
+	try:
+		application = Application.objects.filter(name=application_name)[0]
+		step = Step.objects.filter(application=application, order = current_step)[0]
+
+	except IndexError:
+		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
+
+	record = UsageRecord(application = application, session_id = session_id, time_on_step = time_on_step, step = step, direction = direction)
+
+	teacher_name=request.session.get("teacher",None)
+	if teacher_name != None:
+
+		user=User.objects.filter(username=teacher_name)
+		teacher=Teacher.objects.filter(user=user)
+
+		if len(teacher)>0:
+			teacher=teacher[0]
+			record.teacher = teacher
+			group_name=request.session.get("group",None)
+			year = request.session.get("year",None)
+			if group_name != None and year != None:
+				academic_year = AcademicYear.objects.filter(start = year)[0]
+				group = Group.objects.filter(teacher=teacher, academic_year = academic_year, name = group_name)
+				if len(group) > 0:
+					group=group[0]
+					record.group = group
+					student_name=request.session.get("student", None)
+					if student_name != None:
+						student = Student.objects.filter(teacher=teacher,group=group,student_id=student_name)
+						if len(student) > 0:
+							student=student[0]
+							record.student = student
+
+	record.save()
+	return HttpResponse("{}",content_type = "application/json")
+
+
 
 
 @requires_csrf_token
@@ -345,7 +402,7 @@ def get_groups_for_year(request):
 	except IndexError:
 		return HttpResponse(simplejson.dumps([]), content_type="application/json")
 	groups = Group.objects.filter(teacher=teacher,academic_year = academic_year)
-	groups = list(map(str, groups))
+	groups = map(str, groups)
 	return HttpResponse(simplejson.dumps(groups), content_type="application/json")
 
 
@@ -409,6 +466,31 @@ def del_session_variable(request):
 	return HttpResponseRedirect('/weave/')
 
 
+"""
+def index(request):
+
+	#A function to load the main page for the pupil interface
+
+	# Request the context of the request.
+	# The context contains information such as the client's machine details, for example.
+	context = RequestContext(request)
+
+	application_list = Application.objects.all()
+	academic_years = AcademicYear.objects.all()
+
+	# Construct a dictionary to pass to the template engine as its context.
+	# Note the key boldmessage is the same as {{ boldmessage }} in the template!
+	context_dict = {'applications' : application_list, 'academic_years':academic_years}
+
+	for application in application_list:
+		application.url = application.name.replace(' ', '_')
+
+	# Return a rendered response to send to the client.
+	# We make use of the shortcut function to make our lives easier.
+	# Note that the first parameter is the template we wish to use.
+	return render_to_response('exerciser/index.html', context_dict, context)
+
+"""
 """
 def application(request, application_name_url):
 
@@ -489,7 +571,7 @@ def get_students(request):
 		return HttpResponse(simplejson.dumps({'error':'Bad input supplied'}), content_type="application/json")
 
 	students=Student.objects.filter(group=selected_group)
-	students = list(map(str, students))
+	students = map(str, students)
 	return HttpResponse(simplejson.dumps(students), content_type="application/json")
 
 
