@@ -837,7 +837,6 @@ def teacher_interface(request):
 
 
 
-
 def register(request):
 	"""
 	A function to deal with the registration of a new teacher.
@@ -1011,7 +1010,6 @@ def example_creator(request):
 	# Ensure panels corresponds to something meaningful
 	return render_to_response('exerciser/example_creator.html', {'panels':range(0,3)}, context)
 
-	# A method to create a new html explanation
 @requires_csrf_token
 def create_example(request):
 	try:
@@ -1570,7 +1568,7 @@ def create_step_old(request):
 		step_number = int(request.POST['step_number'])
 		print(step_number)
 		panel_texts = json.loads(request.POST['panel_texts'])
-		printp(anel_texts)
+		print(panel_texts)
 		explanation = request.POST['explanation']
 		print(explanation)
 		insert_after = json.loads(request.POST['insert_after'])
@@ -2002,10 +2000,6 @@ def create_step(request):
 
 
 
-
-
-
-
 # A method to create a new html step
 @requires_csrf_token
 def create_question(request):
@@ -2425,7 +2419,7 @@ def view_example_teacher(request, example_name_url):
 			context_dict['explanation'] = explanation[0].html
 			#context_dict['is_question'] = "false"
 			for step in steps:
-				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				panel_number = int(step.panel_id.replace("area", ""))
 				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
 				panels.append(panel)

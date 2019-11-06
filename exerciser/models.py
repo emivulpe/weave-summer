@@ -11,6 +11,7 @@ class Application(models.Model):
 		return self.name
 
 # A class for document types
+# TODO - not needed?
 class DocumentType(models.Model):
 	name = models.CharField(max_length=128,unique=True,primary_key=True)
 	kind = models.CharField(max_length=128)
@@ -20,6 +21,7 @@ class DocumentType(models.Model):
 		return self.name
 
 # A class for fragment types
+# TODO - not needed?
 class FragmentType(models.Model):
 	name = models.CharField(max_length=128)
 	kind = models.CharField(max_length=128)
@@ -54,6 +56,7 @@ class FragmentStyle(models.Model):
 		return style
 		
 # A class for documents
+# TODO not needed
 class Document(models.Model):
 	id = models.CharField(max_length=128,unique=True,primary_key=True)
 	document_type = models.ForeignKey(DocumentType, blank=True, null=True)
@@ -64,6 +67,7 @@ class Document(models.Model):
 		return self.name
 
 # A class for fragments
+#TODO not needed
 class Fragment(models.Model):
 	id = models.CharField(max_length=128,unique=True,primary_key=True)
 	document = models.ForeignKey(Document, blank=True, null=True)
@@ -100,6 +104,7 @@ class Question(models.Model):
 		return self.__unicode__()
 		
 # A class for the changes at each step
+# TODO remove
 class Change(models.Model):
 	step = models.ForeignKey(Step, unique = False)
 	fragment = models.ForeignKey(Fragment, blank=True, null=True, unique = False)
@@ -257,7 +262,8 @@ class QuestionRecord(models.Model):
 	session_id = models.CharField(max_length=100, blank=True, null=True)
 	answer = models.ForeignKey(Option, blank=True, null=True, unique = False)
 	answer_text=models.TextField()
-	
+
+###### Model compatible with author interface ####
 	
 class Example(models.Model):
 	name = models.CharField(primary_key = True, max_length=100)
@@ -297,38 +303,6 @@ class PupilAnswer(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	student = models.ForeignKey(Student, blank=True, null=True, unique = False)
 
-
-
-
-"""
-class HTMLStep(models.Model):
-	example = models.ForeignKey(Example, unique = False)
-	html = models.TextField()
-	step_number = models.IntegerField()
-	panel_id = models.CharField(max_length=100) # This will be the id of the html panel where the html will be shown/is taken from
-	
-	def __unicode__(self):
-		return " ".join((self.example.name ," step number: ", str(self.step_number)," panel id: ", self.panel_id," html: ", self.html))
-
-class HTMLExplanation(models.Model):
-	example = models.ForeignKey(Example, unique = False)
-	html = models.TextField()
-	step_number = models.IntegerField()
-
-	def __unicode__(self):
-		return " ".join((self.example.name ," text: ",self.html))
-
-class ExampleQuestion(models.Model):
-	question_text = models.TextField()
-	example = models.ForeignKey(Example, unique = False)
-	step_number = models.IntegerField()
-	multiple_choice = models.BooleanField()
-	kind = models.CharField(max_length = 30)
-
-
-	def __unicode__(self):
-		return self.question_text
-"""
 class ExampleOption(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	option_text = models.TextField()
@@ -337,28 +311,7 @@ class ExampleOption(models.Model):
 
 	def __unicode__(self):
 		return " ".join((self.option_text, " correct: ", str(self.correct), " number: ", str(self.number)))
-"""
-class CorrectAnswerComment(models.Model):
-	question = models.ForeignKey(ExampleQuestion, unique = False)
-	comment = models.TextField()
 
-	def __unicode__(self):
-		return self.comment
-
-class WrongAnswerComment(models.Model):
-	question = models.ForeignKey(ExampleQuestion, unique = False)
-	comment = models.TextField()
-
-	def __unicode__(self):
-		return self.comment
-
-class GeneralComment(models.Model):
-	question = models.ForeignKey(ExampleQuestion, unique = False)
-	comment = models.TextField()
-
-	def __unicode__(self):
-		return self.comment
-"""
 class OptionComment(models.Model):
 	option = models.ForeignKey(ExampleOption, unique = False)
 	comment = models.TextField()
@@ -397,7 +350,6 @@ class ExampleUsageRecord(models.Model):
 	def save(self, *args, **kwargs):	
 		self.step_number = self.step.step_number
 		super(ExampleUsageRecord, self).save(*args, **kwargs)
-
 
 
 class ExampleQuestionRecord(models.Model):

@@ -169,6 +169,34 @@ def add_panel(application, attributesDict):
 
 ##############################################################################################
 
+# ############################### Code to populate the EXAMPLES ############################
+
+def populate_examples(filepath):
+
+	file = open(filepath,'r')
+	tree = ET.parse(file)
+	root = tree.getroot()
+	for example in root:
+		add_example(example)
+
+# A method to add an example to the database
+def add_example(example):
+	try:
+		exampleAttributesDict = example.attrib
+		name = exampleAttributesDict['name']
+		#layout = applicationAttributesDict['layout']
+		application = Example.objects.get_or_create(name = name, number_of_panels=2)[0]
+		#application.layout = layout
+		application.save()
+		# if len(Panel.objects.filter(application = application)) == 0:
+		# 	for panel in example.iter('panel'):
+		# 		panelAttributesDict = panel.attrib
+		# 		add_panel(application,panelAttributesDict)
+	except (IntegrityError, KeyError):
+		print("Error adding example")
+
+##############################################################################################
+
 ################################### Code to populate the processes ###########################
 
 def populate_processes(filepath):
@@ -258,7 +286,8 @@ if __name__ == '__main__':
 	print("Starting DocumentFragment population script...")
 
 	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'exercises_system_project.settings')
-	from exerciser.models import FragmentStyle, Document, DocumentType, FragmentType, Fragment, Step, Change, Question, Explanation, Option, Application, Panel, AcademicYear
+	from exerciser.models import FragmentStyle, Document, DocumentType, FragmentType, Fragment, Step, Change, Question, \
+	Explanation, Option, Application, Panel, AcademicYear, Example
 	from django.db import IntegrityError
 	from django.core.exceptions import ObjectDoesNotExist
 	
@@ -277,7 +306,8 @@ if __name__ == '__main__':
 
 	applications_path = os.path.join(path, 'Applications.xml')
 	populate_applications(applications_path)
-	
+	populate_examples(applications_path)
+
 	processes_path = os.path.join(path, 'Processes.xml')
 	populate_processes(processes_path)
 	

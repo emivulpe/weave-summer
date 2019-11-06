@@ -56,6 +56,4 @@ urlpatterns = patterns('',
 		url(r'^teacher_interface_examples_viewer', views.teacher_interface_examples_viewer, name='teacher_interface_examples_viewer'),
 		url(r'^student/view_example/(?P<example_name_url>\w+)/$', views.view_example_student, name='view_example'),
 		url(r'^teacher/view_example/(?P<example_name_url>\w+)/$', views.view_example_teacher, name='view_example'),
-
-
 		) 
