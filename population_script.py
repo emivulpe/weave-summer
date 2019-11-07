@@ -104,6 +104,7 @@ def add_document(attributesDict):
 		d.save()
 		return d
 	except (IntegrityError, IndexError, KeyError):
+		print("Error in add_document")
 		return None
 
 # A method to add a fragment to the database
@@ -124,6 +125,7 @@ def add_fragment(doc, attributesDict):
 		f = Fragment.objects.get_or_create(id = id,document = doc, style = fragment_style, type = fragment_type, text = text, order = order)[0]
 
 	except (IntegrityError, IndexError, KeyError):
+		print("Error in add_fragment")
 		pass
 
 ##############################################################################################
@@ -152,6 +154,7 @@ def add_application(app):
 				panelAttributesDict = panel.attrib
 				add_panel(application,panelAttributesDict)
 	except (IntegrityError, KeyError):
+		print("Error in add_application")
 		pass
 
 # A method to add a panel to the database
@@ -165,6 +168,7 @@ def add_panel(application, attributesDict):
 			document = document[0]
 			p = Panel.objects.get_or_create(application = application, number = number, type = type, document = document)[0]
 	except (IntegrityError, ObjectDoesNotExist, KeyError):
+		print("Error in add_panel")
 		pass
 
 ##############################################################################################
@@ -193,7 +197,7 @@ def add_example(example):
 		# 		panelAttributesDict = panel.attrib
 		# 		add_panel(application,panelAttributesDict)
 	except (IntegrityError, KeyError):
-		print("Error adding example")
+		print("Error in add_example")
 
 ##############################################################################################
 
@@ -227,11 +231,13 @@ def add_step(application, attributesDict):
 	try:
 		order = attributesDict['num']
 	except KeyError:
+		print("Error in add_step")
 		return None
 	try:
 		s = Step.objects.get_or_create(application=application, order = order)[0]
 		return s
 	except (IntegrityError, ObjectDoesNotExist):
+		print("Error in add_step")
 		return None
 
 # A method to add a change to the database
@@ -266,6 +272,7 @@ def add_change(application, step, element):
 		else:
 			c = Change.objects.get_or_create(document = document, step = step, question = question, operation = operation)[0]
 	except (IntegrityError, ObjectDoesNotExist, KeyError):
+		print("Error in add_change")
 		pass
 		
 
@@ -276,6 +283,7 @@ def add_explanation(step, element):
 	try:
 		e = Explanation.objects.get_or_create(step = step, text = text)[0]
 	except:
+		print("Error in add_explanation")
 		pass
 
 

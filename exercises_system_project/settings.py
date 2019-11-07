@@ -17,7 +17,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'exerciser',
-	'chartit'
+	# 'chartit'
 )
 
 DATABASE_PATH = os.path.join(PROJECT_PATH, 'exerciser.db')
