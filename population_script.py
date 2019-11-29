@@ -187,15 +187,15 @@ def add_panel(application, attributesDict):
 
 # ############################### Code to populate the EXAMPLES ############################
 
-def populate_examples(applications_filepath, documents_filepath):
+def populate_examples(applications_filepath, processes_filepath):
     file = open(applications_filepath, 'r')
     tree = ET.parse(file)
     root = tree.getroot()
     for application in root:
-        add_example(application, documents_filepath)
+        add_example(application, processes_filepath)
 
 
-def add_example(application, documents_filepath):
+def add_example(application, processes_filepath):
     example_name = application.attrib['name']
 
     # Determine the number of panels - TODO improve
@@ -211,42 +211,83 @@ def add_example(application, documents_filepath):
     for panel in application.iter('panel'):
         panel_number = panel.attrib['number']
         document_name = panel.attrib['content']
-        add_panel_steps(example, panel_number, document_name, documents_filepath)
+        add_panel_steps(example, panel_number, document_name, processes_filepath)
 
 
-# A method to add an example to the database
-def add_panel_steps(example, panel_number, document_name, documents_filepath):
-    file = open(documents_filepath, 'r')
-    tree = ET.parse(file)
-    root = tree.getroot()
-    for document in root:
-        # TODO - improve
-        if document.attrib['name'] == document_name:
-            for document_step in document.iter('text'):
-                step_number = document_step.attrib['order']
-                html = document_step.attrib['value']
-                html_step = HTMLStep.objects.get_or_create(example=example, step_number=step_number, html=html,
-                                                           panel_id='area' + str(panel_number))[0]
-                html_step.save()
-
-
-def populate_explanations(processes_filepath):
+# A method to add a step to an example
+def add_panel_steps(example, panel_number, document_name, processes_filepath):
     file = open(processes_filepath, 'r')
     tree = ET.parse(file)
     root = tree.getroot()
     for process in root:
-        example_name = process.attrib['app']
-        example = Example.objects.filter(name=example_name)[0]
-        for step in process:
-            step_number = int(step.attrib['num']) - 1
-            for element in step:
-                if element.tag == 'explanation':
-                    html = element.text
-                    html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number, html = html)[0]
-                    html_explanation.save()
+        # TODO - improve
+        if process.attrib['app'] == example.name:
+            old_html = ""
+            for step in process:
+                step_number = int(step.attrib['num']) - 1
+                step_html = old_html
+                for process_step_element in step:
+                    if process_step_element.tag == "change":
+                        for change_element in process_step_element:
+                            if change_element.tag == "fragname":
+                                html = change_element.text
+                            elif change_element.tag == "operation":
+                                operation = change_element.text
+                            elif change_element.tag == "docname":
+                                doc_name = change_element.text
+                        if doc_name == document_name and operation == "Insert":
+                            step_html += html + "\r\n"
+                    elif process_step_element.tag == "explanation":
+                        explanation = process_step_element.text
+
+                old_html = step_html
+
+                html_step = HTMLStep.objects.get_or_create(example=example, step_number=step_number, html=step_html,
+                                                           panel_id='area' + str(panel_number))[0]
+                html_step.save()
+
+                html_explanation = HTMLExplanation.objects.get_or_create(example=example, step_number=step_number, html = explanation)[0]
+                html_explanation.save()
+#
+# # A method to add an example to the database
+# def add_panel_steps(example, panel_number, document_name, documents_filepath):
+#     file = open(documents_filepath, 'r')
+#     tree = ET.parse(file)
+#     root = tree.getroot()
+#     for document in root:
+#         # TODO - improve
+#         if document.attrib['name'] == document_name:
+#             old_html = ""
+#             for document_step in document.iter('text'):
+#                 step_number = document_step.attrib['order']
+#                 new_html = document_step.attrib['value']
+#                 html = old_html + new_html
+#                 html_step = HTMLStep.objects.get_or_create(example=example, step_number=step_number, html=html,
+#                                                            panel_id='area' + str(panel_number))[0]
+#                 html_step.save()
+#                 old_html = html + "\r\n"
 
 
-
+# def populate_example_steps(processes_filepath):
+#     file = open(processes_filepath, 'r')
+#     tree = ET.parse(file)
+#     root = tree.getroot()
+#     for process in root:
+#         example_name = process.attrib['app']
+#         example = Example.objects.filter(name=example_name)[0]
+#         for step in process:
+#             step_number = int(step.attrib['num']) - 1
+#             for element in step:
+#                 if element.tag == 'change':
+#                     add_exa
+#
+#                 if element.tag == 'explanation':
+#                     html = element.text
+#                     html_explanation = HTMLExplanation.objects.get_or_create(example = example, step_number = step_number, html = html)[0]
+#                     html_explanation.save()
+#
+#
+#
 
 ##############################################################################################
 
@@ -364,8 +405,8 @@ if __name__ == '__main__':
     processes_path = os.path.join(path, 'Processes.xml')
 
     populate_applications(applications_path)
-    populate_examples(applications_path, documents_path)
-    populate_explanations(processes_path)
+    populate_examples(applications_path, processes_path)
+    # populate_explanations(processes_path)
 
     populate_processes(processes_path)
 
