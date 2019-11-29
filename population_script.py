@@ -225,7 +225,7 @@ def add_panel_steps(example, panel_number, document_name, processes_filepath):
             old_html = ""
             for step in process:
                 step_number = int(step.attrib['num']) - 1
-                step_html = old_html
+                step_html = ""
                 for process_step_element in step:
                     if process_step_element.tag == "change":
                         for change_element in process_step_element:
@@ -239,15 +239,17 @@ def add_panel_steps(example, panel_number, document_name, processes_filepath):
                             step_html += html + "\r\n"
                     elif process_step_element.tag == "explanation":
                         explanation = process_step_element.text
+                step_html_with_style = '<span class="style" style="background-color:red; white-space:pre;">' + step_html + '</span>'
 
-                old_html = step_html
-
-                html_step = HTMLStep.objects.get_or_create(example=example, step_number=step_number, html=step_html,
+                html_step = HTMLStep.objects.get_or_create(example=example, step_number=step_number, html=old_html+step_html_with_style,
                                                            panel_id='area' + str(panel_number))[0]
                 html_step.save()
 
                 html_explanation = HTMLExplanation.objects.get_or_create(example=example, step_number=step_number, html = explanation)[0]
                 html_explanation.save()
+                old_html += step_html
+
+
 #
 # # A method to add an example to the database
 # def add_panel_steps(example, panel_number, document_name, documents_filepath):
