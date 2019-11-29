@@ -185,19 +185,22 @@ def populate_examples(filepath):
 
 # A method to add an example to the database
 def add_example(example):
-	try:
+	# try:
 		exampleAttributesDict = example.attrib
 		name = exampleAttributesDict['name']
-		#layout = applicationAttributesDict['layout']
-		application = Example.objects.get_or_create(name = name, number_of_panels=2)[0]
+		number_of_panels = 0
+		for _ in example.iter('panel'):
+			number_of_panels += 1
+		print(number_of_panels)
+		example = Example.objects.get_or_create(name = name, number_of_panels=number_of_panels)[0]
 		#application.layout = layout
-		application.save()
+		example.save()
 		# if len(Panel.objects.filter(application = application)) == 0:
 		# 	for panel in example.iter('panel'):
 		# 		panelAttributesDict = panel.attrib
 		# 		add_panel(application,panelAttributesDict)
-	except (IntegrityError, KeyError):
-		print("Error in add_example")
+	# except (IntegrityError, KeyError):
+	# 	print("Error in add_example")
 
 ##############################################################################################
 

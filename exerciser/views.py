@@ -2313,53 +2313,8 @@ def view_example_student(request, example_name_url):
 
 	context = RequestContext(request)
 
-	## !!!!!!!!!!!!!! check if the author is authenticeted/has the permission to edit this example !!!!!!!!!!!!!!
-	##if 'student_registered' in request.session:
-
-
-	# Change underscores in the category name to spaces.
-	# URLs don't handle spaces well, so we encode them as underscores.
-	# We can then simply replace the underscores with spaces again to get the name.
-	example_name = example_name_url.replace('_', ' ')
-
-	# Create a context dictionary which we can pass to the template rendering engine.
-	# We start by containing the name of the category passed by the user.
-	context_dict = {'example_name': example_name}
-
 	try:
-
-		example = Example.objects.get(name=example_name)
-		context_dict['example'] = example
-
-		# Get how many panels there are
-		# when the request is done- create the panels and the editors for them
-		# request for the first step and load it
-
-		# Get the text and the explanation for the first step of that example
-		steps = HTMLStep.objects.filter(example=example)
-		# get the first non-question step to determine the number of panels
-		first_non_question_step = steps.aggregate(Min('step_number'))['step_number__min']
-		steps = steps.filter(step_number = first_non_question_step).order_by('panel_id')
-		panels = []
-		if first_non_question_step != 0: # the first step is a question!
-			context_dict['explanation'] = ''
-			#context_dict['is_question'] = "true"
-			for step in steps:
-				panel_number = int(step.panel_id.replace("area", ""))
-				print(panel_number)
-				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
-				panels.append(panel)
-
-		else:
-			explanation = HTMLExplanation.objects.filter(example = example, step_number = first_non_question_step)
-			context_dict['explanation'] = explanation[0].html
-			#context_dict['is_question'] = "false"
-			for step in steps:
-				panel_number = int(step.panel_id.replace("area", ""))
-				print(panel_number)
-				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
-				panels.append(panel)
-		context_dict['panels'] = panels
+		context_dict = populate_view_example_context_dict(example_name_url)
 
 	# Change to something more sensible!
 	except Example.DoesNotExist:
@@ -2369,61 +2324,12 @@ def view_example_student(request, example_name_url):
 	# Go render the response and return it to the client.
 	return render_to_response('exerciser/view_example_student.html', context_dict, context)
 
-
 def view_example_teacher(request, example_name_url):
-
-	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
-
 
 	context = RequestContext(request)
 
-	## !!!!!!!!!!!!!! check if the author is authenticeted/has the permission to edit this example !!!!!!!!!!!!!!
-	##if 'student_registered' in request.session:
-
-
-	# Change underscores in the category name to spaces.
-	# URLs don't handle spaces well, so we encode them as underscores.
-	# We can then simply replace the underscores with spaces again to get the name.
-	example_name = example_name_url.replace('_', ' ')
-
-	# Create a context dictionary which we can pass to the template rendering engine.
-	# We start by containing the name of the category passed by the user.
-	context_dict = {'example_name': example_name}
-
 	try:
-
-		example = Example.objects.get(name=example_name)
-		context_dict['example'] = example
-
-		# Get how many panels there are
-		# when the request is done- create the panels and the editors for them
-		# request for the first step and load it
-
-		# Get the text and the explanation for the first step of that example
-		steps = HTMLStep.objects.filter(example=example)
-		# get the first non-question step to determine the number of panels
-		first_non_question_step = steps.aggregate(Min('step_number'))['step_number__min']
-		steps = steps.filter(step_number = first_non_question_step).order_by('panel_id')
-		panels = []
-		if first_non_question_step != 0: # the first step is a question!
-			context_dict['explanation'] = ''
-			#context_dict['is_question'] = "true"
-			for step in steps:
-				panel_number = int(step.panel_id.replace("area", ""))
-				print(panel_number)
-				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
-				panels.append(panel)
-
-		else:
-			explanation = HTMLExplanation.objects.filter(example = example, step_number = first_non_question_step)
-			context_dict['explanation'] = explanation[0].html
-			#context_dict['is_question'] = "false"
-			for step in steps:
-				panel_number = int(step.panel_id.replace("area", ""))
-				print(panel_number)
-				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
-				panels.append(panel)
-		context_dict['panels'] = panels
+		context_dict = populate_view_example_context_dict(example_name_url)
 
 	# Change to something more sensible!
 	except Example.DoesNotExist:
@@ -2434,6 +2340,38 @@ def view_example_teacher(request, example_name_url):
 	return render_to_response('exerciser/view_example_teacher.html', context_dict, context)
 
 
+def populate_view_example_context_dict(example_name_url):
+
+	# Change underscores in the category name to spaces.
+	# URLs don't handle spaces well, so we encode them as underscores.
+	# We can then simply replace the underscores with spaces again to get the name.
+	example_name = example_name_url.replace('_', ' ')
+
+	# Create a context dictionary which we can pass to the template rendering engine.
+	context_dict = {'example_name': example_name}
+
+	example = Example.objects.get(name=example_name)
+	steps = HTMLStep.objects.filter(example=example)
+	first_non_question_step_number = steps.aggregate(Min('step_number'))['step_number__min']
+
+	panels = []
+	if first_non_question_step_number != 0: # the first step is a question!
+		context_dict['explanation'] = ''
+		for panel_number in range(example.number_of_panels):
+			panel = {'html' : '', 'panel_number' : panel_number}
+			panels.append(panel)
+
+	else:
+		first_non_question_step = steps.filter(step_number=first_non_question_step_number).order_by('panel_id')
+		explanation = HTMLExplanation.objects.filter(example = example, step_number = first_non_question_step_number)
+		context_dict['explanation'] = explanation[0].html
+		for panel_step in first_non_question_step:
+			panel_number = int(panel_step.panel_id.replace("area", ""))
+			panel = {'html' : panel_step.html, 'panel_number' : panel_number}
+			panels.append(panel)
+	context_dict['panels'] = panels
+
+	return context_dict
 
 
 
