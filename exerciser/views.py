@@ -2306,24 +2306,24 @@ def view_example(request, example_name_url):
 	return render_to_response('exerciser/view_example.html', context_dict, context)
 """
 
+
+# A function to view example from student interface
 def view_example_student(request, example_name_url):
-
-	# A function to load the editing page for a selected example. The name of the example is passed as the second parameter of the method.
-
 
 	context = RequestContext(request)
 
 	try:
 		context_dict = populate_view_example_context_dict(example_name_url)
 
-	# Change to something more sensible!
+	# TODO Change to something more sensible - LOW PRIORITY
 	except Example.DoesNotExist:
-		print("example doesn't exist")
 		return HttpResponseRedirect('/weave/')
 
-	# Go render the response and return it to the client.
+	# Render the response and return it to the client.
 	return render_to_response('exerciser/view_example_student.html', context_dict, context)
 
+
+# A function to view example from teacher interface
 def view_example_teacher(request, example_name_url):
 
 	context = RequestContext(request)
@@ -2331,20 +2331,17 @@ def view_example_teacher(request, example_name_url):
 	try:
 		context_dict = populate_view_example_context_dict(example_name_url)
 
-	# Change to something more sensible!
+	# TODO Change to something more sensible - LOW PRIORITY
 	except Example.DoesNotExist:
-		print("example doesn't exist")
 		return HttpResponseRedirect('/weave/')
 
-	# Go render the response and return it to the client.
+	# Render the response and return it to the client.
 	return render_to_response('exerciser/view_example_teacher.html', context_dict, context)
 
 
+# A function to populate the context dictionary necessary to view an example
 def populate_view_example_context_dict(example_name_url):
 
-	# Change underscores in the category name to spaces.
-	# URLs don't handle spaces well, so we encode them as underscores.
-	# We can then simply replace the underscores with spaces again to get the name.
 	example_name = example_name_url.replace('_', ' ')
 
 	# Create a context dictionary which we can pass to the template rendering engine.
@@ -2353,22 +2350,26 @@ def populate_view_example_context_dict(example_name_url):
 	example = Example.objects.get(name=example_name)
 	steps = HTMLStep.objects.filter(example=example)
 	first_non_question_step_number = steps.aggregate(Min('step_number'))['step_number__min']
+	first_non_question_step = steps.filter(step_number=first_non_question_step_number).order_by('panel_id')
 
 	panels = []
-	if first_non_question_step_number != 0: # the first step is a question!
+
+	# TODO - improve
+	if first_non_question_step_number != 0: # the first step is a question so no need to populate the panels
 		context_dict['explanation'] = ''
-		for panel_number in range(example.number_of_panels):
-			panel = {'html' : '', 'panel_number' : panel_number}
+		for panel_step in first_non_question_step:
+			panel_number = int(panel_step.panel_id.replace("area", ""))
+			panel = {'html' : '', 'panel_number' : panel_number, 'panel_id' : panel_step.panel_id}
 			panels.append(panel)
 
 	else:
-		first_non_question_step = steps.filter(step_number=first_non_question_step_number).order_by('panel_id')
 		explanation = HTMLExplanation.objects.filter(example = example, step_number = first_non_question_step_number)
 		context_dict['explanation'] = explanation[0].html
 		for panel_step in first_non_question_step:
 			panel_number = int(panel_step.panel_id.replace("area", ""))
-			panel = {'html' : panel_step.html, 'panel_number' : panel_number}
+			panel = {'html' : panel_step.html, 'panel_number' : panel_number, 'panel_id' : panel_step.panel_id}
 			panels.append(panel)
+
 	context_dict['panels'] = panels
 
 	return context_dict
