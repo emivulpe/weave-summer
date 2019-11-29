@@ -2171,7 +2171,7 @@ def edit_example(request, example_name_url):
 			context_dict['explanation'] = ''
 			#context_dict['is_question'] = "true"
 			for step in steps:
-				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				panel_number = int(step.panel_id.replace("area", ""))
 				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
 				panels.append(panel)
@@ -2181,7 +2181,7 @@ def edit_example(request, example_name_url):
 			context_dict['explanation'] = explanation[0].html
 			#context_dict['is_question'] = "false"
 			for step in steps:
-				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				panel_number = int(step.panel_id.replace("area", ""))
 				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
 				panels.append(panel)
@@ -2345,7 +2345,7 @@ def view_example_student(request, example_name_url):
 			context_dict['explanation'] = ''
 			#context_dict['is_question'] = "true"
 			for step in steps:
-				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				panel_number = int(step.panel_id.replace("area", ""))
 				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
 				panels.append(panel)
@@ -2355,7 +2355,7 @@ def view_example_student(request, example_name_url):
 			context_dict['explanation'] = explanation[0].html
 			#context_dict['is_question'] = "false"
 			for step in steps:
-				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				panel_number = int(step.panel_id.replace("area", ""))
 				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : step.html, 'panel_number' : panel_number}
 				panels.append(panel)
@@ -2409,7 +2409,7 @@ def view_example_teacher(request, example_name_url):
 			context_dict['explanation'] = ''
 			#context_dict['is_question'] = "true"
 			for step in steps:
-				panel_number = int(filter(str.isdigit, str(step.panel_id)))
+				panel_number = int(step.panel_id.replace("area", ""))
 				print(panel_number)
 				panel = {'panel_id' : step.panel_id, 'html' : '', 'panel_number' : panel_number}
 				panels.append(panel)
