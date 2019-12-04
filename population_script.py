@@ -8,18 +8,15 @@ django.setup()
 
 
 def populate_examples(applications_filepath, processes_filepath, documents_filepath):
-
-    documents_fragments_order = populate_documents_order(documents_filepath) # TODO improve
-
-    print(documents_fragments_order)
+    ordered_documents_fragments_ids, ordered_documents_fragments_texts = populate_documents_order(documents_filepath) # TODO improve
 
     applications_file = open(applications_filepath, 'r')
     applications = ET.parse(applications_file).getroot()
     for application in applications:
-        add_example(application, processes_filepath, documents_fragments_order)
+        add_example(application, processes_filepath, ordered_documents_fragments_ids, ordered_documents_fragments_texts)
 
 
-def add_example(application, processes_filepath, documents_fragments_order):
+def add_example(application, processes_filepath, ordered_documents_fragments_ids, ordered_documents_fragments_texts):
     example_name = application.attrib['name']
 
     # Determine the number of panels - TODO improve
@@ -36,23 +33,35 @@ def add_example(application, processes_filepath, documents_fragments_order):
         panel_number = panel.attrib['number']
         document_name = panel.attrib['content']
         print(document_name)
-        ordered_document_fragments = documents_fragments_order[document_name]
-        add_panel_steps(example, panel_number, document_name, ordered_document_fragments, processes_filepath)
+        ordered_document_fragments_ids = ordered_documents_fragments_ids[document_name]
+        ordered_document_fragments_texts = ordered_documents_fragments_texts[document_name]
+        add_panel_steps(example, panel_number, document_name, ordered_document_fragments_ids, ordered_document_fragments_texts, processes_filepath)
 
 
 def populate_documents_order(documents_filepath):
     documents_file = open(documents_filepath, 'r')
     documents = ET.parse(documents_file).getroot()
-    documents_fragments_order = {}
+
+    ordered_documents_fragments_ids = {}
+    ordered_documents_fragments_texts = {}
+
     for document in documents:
         document_name = document.attrib['name']
-        document_fragments_order = []
+
+        ordered_document_fragments_ids = []
+        ordered_document_fragments_texts = []
+
         for text in document:
             next_fragment_id = text.attrib['ID']
-            document_fragments_order.append(next_fragment_id)
-        documents_fragments_order[document_name] = document_fragments_order
+            ordered_document_fragments_ids.append(next_fragment_id)
 
-    return documents_fragments_order
+            next_fragment_text = text.attrib['value']
+            ordered_document_fragments_texts.append(next_fragment_text)
+
+        ordered_documents_fragments_ids[document_name] = ordered_document_fragments_ids
+        ordered_documents_fragments_texts[document_name] = ordered_document_fragments_texts
+
+    return ordered_documents_fragments_ids, ordered_documents_fragments_texts
 
 
 def order_step_fragments(step_fragment_ids, step_fragment_texts, ordered_document_fragments):
@@ -65,8 +74,7 @@ def order_step_fragments(step_fragment_ids, step_fragment_texts, ordered_documen
     return ordered_step_fragments
 
 
-
-def add_panel_steps(example, panel_number, document_name, ordered_document_fragments, processes_filepath):
+def add_panel_steps(example, panel_number, document_name, ordered_document_fragment_ids, ordered_document_fragment_texts, processes_filepath):
     processes_file = open(processes_filepath, 'r')
     processes = ET.parse(processes_file).getroot()
     for process in processes:
@@ -90,12 +98,15 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                     if doc_name == document_name and operation == "Insert":
                         step_fragment_ids.append(step_fragment_id)
                         step_fragment_texts.append(step_fragment_text)
+                    if doc_name == document_name and operation == "Show all":
+                        step_fragment_ids = ordered_document_fragment_ids
+                        step_fragment_texts = ordered_document_fragment_texts
 
                 # TODO improve
                 for step_explanation in step.iter('explanation'):
                     explanation = step_explanation.text
 
-                ordered_step_fragments = order_step_fragments(step_fragment_ids, step_fragment_texts, ordered_document_fragments)
+                ordered_step_fragments = order_step_fragments(step_fragment_ids, step_fragment_texts, ordered_document_fragment_ids)
 
                 step_text = ""
                 for next_fragment in ordered_step_fragments:
