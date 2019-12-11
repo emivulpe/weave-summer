@@ -103,7 +103,10 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                         step_fragment_texts = ordered_document_fragment_texts
                     if doc_name == document_name and operation == "Delete":
                         old_html = old_html.replace(step_fragment_text + "\r\n", "")
-
+                    if doc_name == document_name and operation == "Highlight":
+                        old_html = old_html.replace(step_fragment_text, '<span class="style" style="background-color:yellow; white-space:pre;">' + step_fragment_text + '</span>')
+                    if doc_name == document_name and operation == "Unhighlight":
+                        old_html = old_html.replace('<span class="style" style="background-color:yellow; white-space:pre;">' + step_fragment_text + '</span>', step_fragment_text)
                 # TODO improve
                 for step_explanation in step.iter('explanation'):
                     explanation = step_explanation.text
