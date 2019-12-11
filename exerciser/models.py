@@ -294,7 +294,7 @@ class HTMLExplanation(ExampleStep):
 class ExampleQuestion(ExampleStep):
 	question_text = models.TextField()
 	multiple_choice = models.BooleanField()
-	kind = models.CharField(max_length = 30)
+	kind = models.CharField(max_length = 30, default=None) #TODO delete
 
 	def __unicode__(self):
 		return " ".join((self.example.name , self.question_text, str(self.step_number)))
@@ -303,7 +303,7 @@ class PupilAnswer(models.Model):
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	student = models.ForeignKey(Student, blank=True, null=True, unique = False)
 
-class ExampleOption(models.Model):
+class ExampleOption(models.Model): # TODO rename to QuestionOption
 	question = models.ForeignKey(ExampleQuestion, unique = False)
 	option_text = models.TextField()
 	correct = models.BooleanField(default = False)

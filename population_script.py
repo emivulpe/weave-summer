@@ -85,6 +85,7 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                 step_number = int(step.attrib['num']) - 1
                 step_fragment_ids = []
                 step_fragment_texts = []
+                question_options = []
                 for change in step.iter('change'):
                     # TODO improve
                     for change_element in change:
@@ -95,6 +96,10 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                             operation = change_element.text
                         elif change_element.tag == "docname":
                             doc_name = change_element.text
+                        elif change_element.tag == "question":
+                            question_text = change_element.attrib['content']
+                            for option in change_element:
+                                question_options.append(option.attrib['content'])
                     if doc_name == document_name and operation == "Insert":
                         step_fragment_ids.append(step_fragment_id)
                         step_fragment_texts.append(step_fragment_text)
@@ -107,6 +112,15 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                         old_html = old_html.replace(step_fragment_text, '<span class="style" style="background-color:yellow; white-space:pre;">' + step_fragment_text + '</span>')
                     if doc_name == document_name and operation == "Unhighlight":
                         old_html = old_html.replace('<span class="style" style="background-color:yellow; white-space:pre;">' + step_fragment_text + '</span>', step_fragment_text)
+                    if doc_name == document_name and operation == "Ask Answer":
+                        question_step = ExampleQuestion.objects.get_or_create(example=example, step_number=step_number, question_text=question_text, multiple_choice = len(question_options) > 0, kind='placeholder')[0] #TODO remove kind from the model
+                        question_step.save()
+                        option_number = 0
+                        for option in question_options:
+                            question_option = ExampleOption.objects.get_or_create(question=question_step, option_text = option, number = option_number)[0]
+                            question_option.save()
+                            option_number += 1
+
                 # TODO improve
                 for step_explanation in step.iter('explanation'):
                     explanation = step_explanation.text
@@ -131,7 +145,7 @@ if __name__ == '__main__':
     print("Starting DocumentFragment population script...")
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'exercises_system_project.settings')
-    from exerciser.models import AcademicYear, Example, HTMLStep, HTMLExplanation
+    from exerciser.models import AcademicYear, Example, HTMLStep, HTMLExplanation, ExampleQuestion, ExampleOption
 
     # If the path to the examples is specified as a command line argument, take it, else assume the examples are placed in the examples folder
     if len(sys.argv) > 1:
