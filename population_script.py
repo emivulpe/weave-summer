@@ -101,6 +101,8 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                     if doc_name == document_name and operation == "Show all":
                         step_fragment_ids = ordered_document_fragment_ids
                         step_fragment_texts = ordered_document_fragment_texts
+                    if doc_name == document_name and operation == "Delete":
+                        old_html = old_html.replace(step_fragment_text + "\r\n", "")
 
                 # TODO improve
                 for step_explanation in step.iter('explanation'):
