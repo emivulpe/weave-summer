@@ -1189,6 +1189,8 @@ def get_next_step(request):
     try:
         example_name = request.GET['example_name']
         step_number = int(request.GET['step_number'])
+
+        # True if a new step if being created through the author inteface
         use_to_create_new_step = json.loads(request.GET['use_to_create_new_step'])
 
     except KeyError:
@@ -1201,163 +1203,107 @@ def get_next_step(request):
         print("index error in get next step")
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
 
-    html_steps = HTMLStep.objects.filter(example=example, step_number=step_number)
+    html_step = HTMLStep.objects.filter(example=example, step_number=step_number)
     html_explanation = HTMLExplanation.objects.filter(example=example, step_number=step_number)
     question = ExampleQuestion.objects.filter(example=example, step_number=step_number)
+
     step_entry = {}
     number_of_panels = example.number_of_panels
+
     # Add the panel and the html for the panel in format panel_id:html- this will be directly used in the js
     for i in range(number_of_panels):
         panel_id = "area" + str(i)
-        panel_entry = html_steps.filter(panel_id=panel_id)
+        panel_entry = html_step.filter(panel_id=panel_id)
+
+        # Populate the panel with the text from the current step
         if len(panel_entry) > 0:
             # there has been a text saved for this panel so return the first one
             panel_html = panel_entry[0].html
+
+            # A new step is being created through the author interface?
+            # TODO Why is this needed?
             if use_to_create_new_step:
-                soup = BeautifulSoup(panel_html, "lxml")
-                for div in soup.findAll('span', 'style'):
-                    div.replaceWithChildren()
-                for div in soup.findAll('html', ''):
-                    div.replaceWithChildren()
-                for div in soup.findAll('body', ''):
-                    div.replaceWithChildren()
-                for div in soup.findAll('p', ''):
-                    div.replaceWithChildren()
-                print(soup, "souppppppppppppppppppppp")
-                panel_html = str(soup)
+                panel_html = strip_html_tags(panel_html)
 
             step_entry[panel_id] = panel_html
-            print("something in panel exists")
-        else:
 
+        # Populate the panel with the text from the latest step
+        # TODO this shouldn't be needed - instead save HTMLStep for questions too - each step should have HTMLStep
+        # to be same as the HTMLStep for the previous non-question step
+        else:
             previous_step_number = step_number - 1
             previous_step_text = ""
             while previous_step_number >= 0 and previous_step_text == "":
-                previous_step = HTMLStep.objects.filter(example=example, step_number=previous_step_number,
-                                                        panel_id=panel_id)
-                if len(previous_step) != 0:
-                    # print "there was a previous step"
-                    # previous_step_text = lxml.html.fromstring(previous_step[0].html).text_content().split()
-                    previous_step_text = previous_step[0].html
-                    previous_text_soup = BeautifulSoup(previous_step_text, "lxml")
-                    for div in previous_text_soup.findAll('span', 'style'):
-                        div.replaceWithChildren()
-                    for div in previous_text_soup.findAll('html', ''):
-                        div.replaceWithChildren()
-                    for div in previous_text_soup.findAll('body', ''):
-                        div.replaceWithChildren()
-                    for div in previous_text_soup.findAll('p', ''):
-                        div.replaceWithChildren()
-                    previous_step_text = str(previous_text_soup)
-                previous_step_number -= 1
+                previous_step = HTMLStep.objects.filter(example=example, step_number=previous_step_number, panel_id=panel_id)
+
+                if len(previous_step) > 0:
+                    # TODO why is stripping the html formatting needed? If yes this should be in saveStep instead
+                    previous_step_text = strip_html_tags(previous_step[0].html)
+                else:
+                    previous_step_number -= 1
+
             step_entry[panel_id] = previous_step_text
-            print("nothing in panel exists")
+
     # Add the html for the explanation if it existed else add an empty string
+    # TODO save HTMLExplanation as "" if not provided on example creation instead - each step should have explanation
     if len(html_explanation) > 0 and not use_to_create_new_step:
         step_entry["explanation_area"] = html_explanation[0].html
         print("explanation exists")
     else:
         step_entry["explanation_area"] = ""
         print("no explanation exists")
+
     if not use_to_create_new_step:
+
         if len(question) > 0:
             question = question[0]
             question_record = ExampleQuestionRecord.objects.filter(question=question, session_id=session_id)
-            options = ExampleOption.objects.filter(question=question)
+
+            # The pupil hasn't answered the question yet so ask it
             if len(question_record) == 0:
-                print("QUESTIOOOOOON", question.question_text)
+
+                question_type = question.kind
                 step_entry["question_text"] = question.question_text
-                step_entry["question_type"] = question.kind
-                question_options = []
-                for i in range(0, len(options)):
-                    print(i)
-                    print(len(options))
-                    print(options[i].option_text, "optiooooooooooooon teeeeeeeeeeeext")
-                    option = options[i]
-                    question_options.append({"option_text": option.option_text, "correct": option.correct})
-                    option_comment = OptionComment.objects.filter(option=option)
-                    if len(option_comment) > 0:
-                        option_comment = option_comment[0]
-                        question_options[len(question_options) - 1]["comment"] = option_comment.comment
-                step_entry["options"] = question_options
+                step_entry["question_type"] = question_type
+
+                if question_type in ["multiple_choice", "multiple_choice_with_comments"]:
+
+                    options = ExampleOption.objects.filter(question=question)
+                    question_options = []
+
+                    for option in options:
+                        question_option = {"option_text": option.option_text, "correct": option.correct}
+
+                        if question_type == "multiple_choice_with_comments":
+                            option_comment = OptionComment.objects.filter(option=option)[0]
+                            question_option["comment"] = option_comment.comment
+
+                    question_options.append(question_option)
+
+                    step_entry["options"] = question_options
+
+            # The pupil has answered the question already so show their answer in the explanation
             else:
                 question_record = question_record[0]
 
-                explanation = "<div>You have answered: " + question_record.answer_text + "</div><div><b>Question: </b>" + question.question_text + "</div><ul style = 'list-style-type:none;'>"
-                for i in range(0, len(options)):
-                    option = options[i]
-                    explanation += "<li><b>" + str(option.number + 1) + ".</b> " + option.option_text + "</li>"
-
-                explanation += "</ul></div>"
+                explanation = "<div><b>Question: </b>" + question.question_text + "</div><div><b>Your answer: </b>" + question_record.answer_text + "</div>"
                 step_entry["explanation_area"] = explanation
-        """
-        correct_answer_comment = CorrectAnswerComment.objects.filter(question = question)
 
-        if len(correct_answer_comment) > 0:
-            step_entry["correct_answer_comment"] = correct_answer_comment[0].comment
-        else:
-            step_entry["correct_answer_comment"] = ""
-        wrong_answer_comment = WrongAnswerComment.objects.filter(question = question)
-        if len(wrong_answer_comment) > 0:
-            step_entry["wrong_answer_comment"] = wrong_answer_comment[0].comment
-        else:
-            step_entry["wrong_answer_comment"] = ""
-        general_comment = GeneralComment.objects.filter(question = question)
-        if len(general_comment)  > 0:
-            step_entry["general_comment"] = general_comment[0].comment
-        else:
-            step_entry["general_comment"] = ""
-        step_entry["options"] = simplejson.dumps(question_options)
-        print step_entry["options"], "STEP ENTRY OPTIONS "
-        """
-    # else:
-    #	step_entry["question_text"] = ""
-    #	print "NOT A QUESTIOOOOOON"
-    # first find the differences in the plain text
-    # second find the
-    # print(result)
-
-
-    """
-    #for r in result:
-    #	if r[0] == ' ' or r[0] == '+':
-    #		print r[1:]
-    test0 = '<span style="line-height: 15.3999996185303px;">this is step 2-panel 3</span><br>'
-    plain_test0 = lxml.html.fromstring(test0).text_content()
-    test = '<span style="line-height: 15.3999996185303px;">thi<span style="background-color: rgb(25, 7, 7);">s is a new step 2-pa</span>nel 3</span>'
-    plain_test = lxml.html.fromstring(test).text_content()
-    r = list(d.compare(plain_test0.split(),plain_test.split()))
-    #print r
-    #l = list(d.compare(test.split(),plain_test.split()))
-    ##print l
-
-    combination = ""
-    #doc = et.fromstring(test)
-    for word in r:
-        print word
-        if word[0] is '+':
-            print "had +"
-            word = word[1:]
-            combination += word;
-        else:
-            if combination != '':
-                test = test.replace(combination, ('<div class ="style">' + combination + '</div>'))
-                combination = ""
-            else:
-                print "combination empty"
-    #print et.tostring(doc,pretty_print=True), "looookkkkkkkkkkkkkkkkkkkkkkkkkk"
-
-
-    print test, "cheeeeeeeeeeeeeeeck"
-
-    soup = BeautifulSoup(test, "lxml")
-
-    for div in soup.findAll('div', 'style'):
-        div.replaceWithChildren()
-    print soup
-    """
-
+    print(step_entry)
     return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
+
+
+def strip_html_tags(html_text):
+    stripped_html_text = BeautifulSoup(html_text, "lxml")
+    for div in stripped_html_text.findAll('span', 'style'):
+        div.replaceWithChildren()
+    for div in stripped_html_text.findAll('html', ''):
+        div.replaceWithChildren()
+    for div in stripped_html_text.findAll('body', ''):
+        div.replaceWithChildren()
+    for div in stripped_html_text.findAll('p', ''):
+        div.replaceWithChildren()
+    return str(stripped_html_text)
 
 
 @requires_csrf_token

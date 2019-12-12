@@ -240,9 +240,7 @@ function saveQuestion(isQuestionBefore, isQuestionAfter, direction, newStep){
             }
         });
 
-
     }
-
 
     //A trick to pass the array with AJAX- it is not possible to pass an array otherwise!
     var options_dict = {'options' : options};
@@ -291,7 +289,6 @@ function saveQuestion(isQuestionBefore, isQuestionAfter, direction, newStep){
     }); 
     resetQuestionModal(true);
 }
-
 
 
 function loadStep(direction){
@@ -348,10 +345,8 @@ function loadStep(direction){
         else{
             manageExampleAreas(data, direction);
         }
-
     });
 }
-
 
 
 
