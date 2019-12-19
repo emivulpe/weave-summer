@@ -525,7 +525,7 @@ def get_groups(request):
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
 
     groups = Group.objects.filter(teacher=teacher, academic_year=academic_year)
-    groups = map(str, groups)
+    groups = list(map(str, groups))
     return HttpResponse(simplejson.dumps(groups), content_type="application/json")
 
 

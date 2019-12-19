@@ -15,7 +15,7 @@ class Application(models.Model):
 class DocumentType(models.Model):
 	name = models.CharField(max_length=128,unique=True,primary_key=True)
 	kind = models.CharField(max_length=128)
-	
+
 	# Show it via document type name
 	def __unicode__(self):
 		return self.name
@@ -26,7 +26,7 @@ class FragmentType(models.Model):
 	name = models.CharField(max_length=128)
 	kind = models.CharField(max_length=128)
 	document_type = models.ForeignKey(DocumentType, blank=True, null=True, unique = False)
-	
+
 	# Show it via fragment type name
 	def __unicode__(self):
 		return self.name
@@ -39,7 +39,7 @@ class FragmentStyle(models.Model):
 	underlined = models.BooleanField(default=False)
 	font_size = models.SmallIntegerField(default=12)
 	type = models.ForeignKey(FragmentType, blank=True, null=True, unique = False)
-	
+
 	# Prepare the fragment style in the form of css attributes
 	def __unicode__(self):
 		style=""
@@ -54,14 +54,14 @@ class FragmentStyle(models.Model):
 		if self.font_size != None:
 			style += "font-size: " + str(self.font_size) + "px;"
 		return style
-		
+
 # A class for documents
 # TODO not needed
 class Document(models.Model):
 	id = models.CharField(max_length=128,unique=True,primary_key=True)
 	document_type = models.ForeignKey(DocumentType, blank=True, null=True)
 	name = models.CharField(max_length=128)
-	
+
 	# Show if via the document name
 	def __unicode__(self):
 		return self.name
@@ -79,7 +79,7 @@ class Fragment(models.Model):
 	# Show it via the text for the fragment
 	def __unicode__(self):
 		return self.text
-	
+
 # A class for the steps
 class Step(models.Model):
 	application = models.ForeignKey(Application, unique = False)
@@ -90,7 +90,7 @@ class Step(models.Model):
 
 	class Meta:
 		ordering = ['order']
-		
+
 # A class for the questions
 class Question(models.Model):
 	application = models.ForeignKey(Application, unique = False)
@@ -102,7 +102,7 @@ class Question(models.Model):
 
 	def __repr__(self):
 		return self.__unicode__()
-		
+
 # A class for the changes at each step
 # TODO remove
 class Change(models.Model):
@@ -134,7 +134,7 @@ class Change(models.Model):
 			return [[question_text, 'question', option_list]]
 		else:
 			return [[self.fragment.id, 'hide']]#default behaviour
-		
+
 	def __unicode__(self):
 		return " ".join(("Document: ", self.document.name," | Step: ", str(self.step.order), " | Text: ",self.fragment.text, " | Operation:", self.operation ))
 
@@ -145,8 +145,8 @@ class Explanation(models.Model):
 
 	def __unicode__(self):
 		return self.text
-		
-		
+
+
 # A class for the options to questions
 class Option(models.Model):
 	question = models.ForeignKey(Question, unique = False)
@@ -164,20 +164,20 @@ class Panel(models.Model):
 	document = models.ForeignKey(Document, unique = False)
 	type = models.CharField(max_length = 128)
 	number = models.IntegerField()
-	
+
 	def __init__(self, *args, **kwargs):
 		super(Panel, self).__init__(*args, **kwargs)
 		self.fragment_operation_mapping = self.initialise_fragment_operation_mappings()
-		
-		
+
+
 	def __unicode__(self):
 		return " ".join((str(self.number) ,self.application.name))
-		
+
 	def initialise_fragment_operation_mappings(self):
 		mappings = []
 		for fragment in Fragment.objects.filter(document = self.document):
 			index = fragment.order
-			mappings.insert(index,{fragment.text : 'show'}) 
+			mappings.insert(index,{fragment.text : 'show'})
 		return mappings
 	def getFragments(self):
 		return Fragment.objects.filter(document = self.document)
@@ -185,7 +185,7 @@ class Panel(models.Model):
 # A class for the academic years
 class AcademicYear(models.Model):
 	start = models.IntegerField(primary_key=True)
-	
+
 	def __unicode__(self):
 		return str(self.start)
 
@@ -193,7 +193,7 @@ class AcademicYear(models.Model):
 class Teacher(models.Model):
 	user = models.OneToOneField(User)
 	can_analyse = models.BooleanField(default=False)
-	
+
 	def __unicode__(self):
 		return " ".join((self.user.username ,str(self.can_analyse)))
 
@@ -204,10 +204,10 @@ class Group(models.Model):
 	name = models.CharField(max_length=100)
 	class Meta:
 		unique_together = ('academic_year', 'name','teacher')
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	def __repr__(self):
-		return self.__unicode__()
+		return self.__str__()
 
 # A class for the students
 class Student(models.Model):
@@ -219,7 +219,7 @@ class Student(models.Model):
 		return self.student_id
 	def __repr__(self):
 		return self.__unicode__()
-		
+
 # A class for a usage data of a step
 class UsageRecord(models.Model):
 	application = models.ForeignKey(Application, unique = False)
@@ -231,7 +231,7 @@ class UsageRecord(models.Model):
 	time_on_step = models.FloatField(default=0)
 	direction = models.CharField(max_length=10)
 	step_number = models.IntegerField()
-	
+
 	def __unicode__(self):
 		if self.teacher != None:
 			teacher=self.teacher.user.username
@@ -246,9 +246,9 @@ class UsageRecord(models.Model):
 		else:
 			student="No student id"
 		return " ".join((self.application.name ," teacher: ",teacher," group: ",group," student: ",student, "step", str(self.step.order)))
-		
 
-	def save(self, *args, **kwargs):	
+
+	def save(self, *args, **kwargs):
 		self.step_number = self.step.order
 		super(UsageRecord, self).save(*args, **kwargs)
 
@@ -264,7 +264,7 @@ class QuestionRecord(models.Model):
 	answer_text=models.TextField()
 
 ###### Model compatible with author interface ####
-	
+
 class Example(models.Model):
 	name = models.CharField(primary_key = True, max_length=100)
 	number_of_panels = models.IntegerField()
@@ -281,7 +281,7 @@ class ExampleStep(models.Model):
 class HTMLStep(ExampleStep):
 	html = models.TextField()
 	panel_id = models.CharField(max_length=100) # This will be the id of the html panel where the html will be shown/is taken from
-	
+
 	def __unicode__(self):
 		return " ".join((self.example.name ," step number: ", str(self.step_number)," panel id: ", self.panel_id," html: ", self.html))
 
@@ -330,7 +330,7 @@ class ExampleUsageRecord(models.Model):
 	time_on_step = models.FloatField(default=0)
 	direction = models.CharField(max_length=10)
 	step_number = models.IntegerField()
-	
+
 	def __unicode__(self):
 		if self.teacher != None:
 			teacher=self.teacher.user.username
@@ -345,9 +345,9 @@ class ExampleUsageRecord(models.Model):
 		else:
 			student="No student id"
 		return " ".join((self.example.name ," teacher: ",teacher," group: ",group," student: ",student, "step", str(self.step.step_number)))
-		
 
-	def save(self, *args, **kwargs):	
+
+	def save(self, *args, **kwargs):
 		self.step_number = self.step.step_number
 		super(ExampleUsageRecord, self).save(*args, **kwargs)
 
@@ -359,7 +359,7 @@ class ExampleQuestionRecord(models.Model):
 	student = models.ForeignKey(Student, blank=True, null=True, unique = False)
 	session_id = models.CharField(max_length=100, blank=True, null=True)
 	answer_text=models.TextField()
-	
+
 	def __unicode__(self):
 		if self.teacher != None:
 			teacher=self.teacher.user.username
