@@ -948,14 +948,13 @@ def statistics(request):
         teacher = Teacher.objects.filter(user=user)[0]
     except IndexError:
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
-    applications = Application.objects.all();
+    applications = Example.objects.all();
     academic_years = AcademicYear.objects.all()
     application_names = []
     questions = {}
     for application in applications:
         application_names.append(str(application.name))
-
-        app_questions = Question.objects.filter(application=application)
+        app_questions = ExampleQuestion.objects.filter(example=application)
         if len(app_questions) > 0:
             questions_text = []
             for app_question in app_questions:
