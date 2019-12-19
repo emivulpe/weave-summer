@@ -796,11 +796,11 @@ def get_application_questions(request):
     except KeyError:
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
     try:
-        selected_application = Application.objects.filter(name=application)[0]
+        selected_application = Example.objects.filter(name=application)[0]
     except IndexError:
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
-    questions = Question.objects.filter(application=application)
-    questions = map(str, questions)
+    questions = ExampleQuestion.objects.filter(example=application)
+    questions = list(map(str, questions))
     return HttpResponse(simplejson.dumps(questions), content_type="application/json")
 
 
