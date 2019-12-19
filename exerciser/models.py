@@ -277,6 +277,8 @@ class ExampleStep(models.Model):
 	example = models.ForeignKey(Example, unique = False)
 	step_number = models.IntegerField()
 
+	# TO DO: Add __str__ method and step titles!
+
 
 class HTMLStep(ExampleStep):
 	html = models.TextField()

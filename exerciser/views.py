@@ -539,12 +539,12 @@ def get_steps(request):
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
 
     try:
-        application = Application.objects.filter(name=app_name)[0]
+        application = Example.objects.filter(name=app_name)[0]
     except IndexError:
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
 
-    steps = Step.objects.filter(application=application)
-    steps = map(str, steps)
+    steps = ExampleStep.objects.filter(example=application)
+    steps = list(map(str, steps))
     return HttpResponse(simplejson.dumps(steps), content_type="application/json")
 
 
