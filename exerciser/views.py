@@ -10,6 +10,7 @@ import datetime
 import string
 import random
 from random import randint
+from collections import OrderedDict
 from django.views.decorators.csrf import requires_csrf_token
 import django.conf as conf
 from exerciser.forms import UserForm
@@ -402,68 +403,6 @@ def del_session_variable(request):
 
     return HttpResponseRedirect('/weave/')
 
-
-"""
-def application(request, application_name_url):
-
-	# A function to load the viewing page for a selected application. The name of the application is passed as the second parameter of the example.
-
-
-	context = RequestContext(request)
-	if 'student_registered' in request.session:
-
-
-		# Change underscores in the category name to spaces.
-		# URLs don't handle spaces well, so we encode them as underscores.
-		# We can then simply replace the underscores with spaces again to get the name.
-		application_name = application_name_url.replace('_', ' ')
-
-		# Create a context dictionary which we can pass to the template rendering engine.
-		# We start by containing the name of the category passed by the user.
-		context_dict = {'application_name': application_name}
-
-
-
-		try:
-
-			application = Application.objects.get(name=application_name)
-			context_dict['application'] = application
-
-			panels = Panel.objects.filter(application = application).order_by('number')
-			context_dict['panels'] = panels
-
-			steps = Step.objects.filter(application=application)
-			stepChanges = []
-			explanations = []
-			for step in steps:
-				changesToAdd = []
-				changes = Change.objects.filter(step = step)
-				for change in changes:
-					changesFound = change.getChanges()
-					for c in changesFound:
-						changesToAdd.append(c)
-				stepChanges.append(changesToAdd)
-				expl = Explanation.objects.filter(step = step)
-				for explanation in expl:
-					explanations.append(json.dumps((explanation.text).replace('"',"&quot")))
-			explanations.append("Example complete! Well done!")
-
-			context_dict['steps'] = json.dumps(stepChanges)
-			context_dict['explanations'] = explanations
-			size_panels = (100/len(panels))
-			context_dict['panel_size'] = str(size_panels)
-		except Application.DoesNotExist:
-			return HttpResponseRedirect('/weave/')
-
-		# Go render the response and return it to the client.
-		return render_to_response('exerciser/application.html', context_dict, context)
-	else:
-		return HttpResponseRedirect('/weave/')
-
-
-"""
-
-
 def get_students(request):
     """
     A function to get the student ids for the students belonging to a particular group.
@@ -634,7 +573,7 @@ def update_time_graph(request):
         teacher = Teacher.objects.filter(user=user)[0]
         academic_year = AcademicYear.objects.filter(start=year)[0]
         selected_group = Group.objects.filter(name=group_name, teacher=teacher, academic_year=academic_year)[0]
-        selected_application = Application.objects.filter(name=app_name)[0]
+        selected_application = Example.objects.filter(name=app_name)[0]
 
         if student_id is not None:
             student = Student.objects.filter(student_id=student_id)[0]
@@ -642,42 +581,42 @@ def update_time_graph(request):
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
 
     selected_data = {}
-    usage_records = UsageRecord.objects.filter(application=selected_application, teacher=teacher, group=selected_group)
+    usage_records = ExampleUsageRecord.objects.filter(example=selected_application, teacher=teacher, group=selected_group)
     if student_id is not None:
-        usage_records = UsageRecord.objects.filter(application=selected_application, teacher=teacher,
+        usage_records = ExampleUsageRecord.objects.filter(example=selected_application, teacher=teacher,
                                                    group=selected_group, student=student)
     else:
-        usage_records = UsageRecord.objects.filter(application=selected_application, teacher=teacher,
+        usage_records = ExampleUsageRecord.objects.filter(example=selected_application, teacher=teacher,
                                                    group=selected_group)
     if len(usage_records) == 0:
         selected_data["no_data"] = "True"
         return HttpResponse(simplejson.dumps(selected_data), content_type="application/json")
 
     question_steps = []
-    app_questions = Question.objects.filter(application=selected_application)
+    app_questions = ExampleQuestion.objects.filter(example=selected_application)
     for question in app_questions:
-        question_steps.append(question.step.order)
+        question_steps.append(question.examplestep_ptr)
     sd = []
     #### Getting averages ##########
-    steps = Step.objects.filter(application=selected_application)
-    num_steps = steps.aggregate(max=Max('order'))
+    steps = ExampleStep.objects.filter(example=selected_application)
+    # TO DO: Find out why each step appears twice.
+    num_steps = steps.aggregate(max=Max('step_number'))
     if num_steps['max'] != None:
         for step_num in range(1, num_steps['max'] + 1):
             explanation_text = ""
-            step = steps.filter(order=step_num)
+            step = steps.filter(step_number=step_num)
+            # TO DO: Find out why step explanation does not appear
             if len(step) > 0:
                 step = step[0]
-                explanation = Explanation.objects.filter(step=step)
+                explanation = HTMLExplanation.objects.filter(examplestep_ptr=step)
                 if len(explanation) > 0:
                     explanation = explanation[0]
                     if explanation.text == "No explanation":
                         explanation_text = "Click to see answers"
                     else:
                         explanation_text = explanation.text
-                    if len(explanation_text) < 100:
-                        explanation_text_start = explanation_text[:len(explanation_text)]
-                    else:
-                        explanation_text_start = explanation_text[:100]
+                    if len(explanation_text) >= 100:
+                        explanation_text = explanation_text[:100]
 
                 records = usage_records.filter(step=step)
 
@@ -689,10 +628,10 @@ def update_time_graph(request):
 
                 revisited_steps_count = len(records.filter(direction="back"))
                 sd.append({"y": time['time'], "revisited_count": revisited_steps_count, "explanation": explanation_text,
-                           "explanation_start": explanation_text_start})
+                           "explanation_start": explanation_text})
     if sd != []:
         selected_data["data"] = sd
-        selected_data["question_steps"] = question_steps
+        selected_data["question_steps"] = list(map(str,question_steps))
 
     return HttpResponse(simplejson.dumps(selected_data), content_type="application/json")
 
@@ -716,13 +655,13 @@ def update_class_steps_graph(request):
         teacher = Teacher.objects.filter(user=user)[0]
         academic_year = AcademicYear.objects.filter(start=year)[0]
         selected_group = Group.objects.filter(name=group_name, teacher=teacher, academic_year=academic_year)[0]
-        application = Application.objects.filter(name=app_name)[0]
-        step = Step.objects.filter(application=application, order=step_num)[0]
+        application = Example.objects.filter(name=app_name)[0]
+        step = ExampleStep.objects.filter(example=application, step_number=step_num)[0]
     except IndexError:
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
     selected_data = {}
     sd = []
-    usage_records = UsageRecord.objects.filter(application=application, teacher=teacher, group=selected_group,
+    usage_records = ExampleUsageRecord.objects.filter(example=application, teacher=teacher, group=selected_group,
                                                step=step)
     if len(usage_records) == 0:
         return HttpResponse(simplejson.dumps({'no_data': True}), content_type="application/json")
@@ -750,7 +689,7 @@ def populate_summary_table(request):
         user = User.objects.filter(username=teacher_username)[0]
         teacher = Teacher.objects.filter(user=user)[0]
         year = AcademicYear.objects.filter(start=academic_year)[0]
-        selected_application = Application.objects.filter(name=application)
+        selected_application = Example.objects.filter(name=application)
         total_steps = selected_application.aggregate(num_steps=Count('step'))['num_steps']
         selected_application = selected_application[0]
         group = Group.objects.filter(name=group_name, teacher=teacher, academic_year=year)[0]
@@ -764,7 +703,7 @@ def populate_summary_table(request):
     for student in students:
         student_id = student.student_id
 
-        student_records = UsageRecord.objects.filter(application=selected_application, teacher=teacher, group=group,
+        student_records = ExampleUsageRecord.objects.filter(example=selected_application, teacher=teacher, group=group,
                                                      student=student)
         last_step_reached = student_records.aggregate(last_step=Max('step_number'))
         if last_step_reached['last_step'] == None:

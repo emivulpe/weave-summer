@@ -277,7 +277,10 @@ class ExampleStep(models.Model):
 	example = models.ForeignKey(Example, unique = False)
 	step_number = models.IntegerField()
 
-	# TO DO: Add __str__ method and step titles!
+	def __str__(self):
+		return str(self.step_number)
+
+	# TO DO: Add __str__ method and step titles; See why steps appear twice
 
 
 class HTMLStep(ExampleStep):
