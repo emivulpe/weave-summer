@@ -1,0 +1,8 @@
+The application crashes when the example name contains an "-"
+
+Example:
+http://127.0.0.1:8000/weave/student/view_example/Emilia-questions
+
+How to reproduce|:
+Create a new example that contains "-" in the name. Open it in the viewer
+

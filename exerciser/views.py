@@ -1159,28 +1159,29 @@ def save_question(request):
     except IndexError:
         print("index error in save question")
         return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
+
     print("question step html ", question_text)
     print("question step number ", step_number)
-    question = ExampleQuestion.objects.get_or_create(example=example, step_number=step_number)[0]
-    question_options = ExampleOption.objects.filter(question=question).delete()
-    question.question_text = question_text
-    question.kind = question_type
-    question.save()
-    for index in range(len(options)):
-        print(index, " heeeere")
-        option = options[index]
-        option_text = option['option_text']
-        is_correct = option['correct']
-        opt = ExampleOption.objects.get_or_create(question=question, option_text=option_text, number=index)[0]
-        opt.correct = is_correct
-        opt.save()
-        if "comment" in option:
-            comment_text = option['comment']
-            option_comment = OptionComment.objects.get_or_create(option=opt, comment=comment_text)
+    question = ExampleQuestion.objects.get_or_create(example=example, step_number=step_number, question_text=question_text, kind=question_type)[0]
+    ExampleOption.objects.filter(question=question).delete()
+
+    if question_type in ["multiple_choice", "multiple_choice_with_comments"]:
+
+        for index in range(len(options)):
+            option = options[index]
+            option_text = option['option_text']
+            is_correct = option['correct']
+            opt = ExampleOption.objects.get_or_create(question=question, option_text=option_text, number=index, correct=is_correct)[0]
+
+            if "comment" in option:
+                comment_text = option['comment']
+                OptionComment.objects.get_or_create(option=opt, comment=comment_text)
+
     return HttpResponse("{}", content_type="application/json")
 
 
-# TODO - refactor
+
+# TODO - stop using
 def get_next_step(request):
     print("in get_next_step method")
     session_id = request.session.session_key
@@ -1290,6 +1291,133 @@ def get_next_step(request):
                 step_entry["explanation_area"] = explanation
 
     print(step_entry)
+    return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
+
+# TODO - use
+def prepopulate_new_step(request):
+    print("in prepopulate_new_step method")
+
+    # Get the requested example and step number
+    try:
+        example_name = request.GET['example_name']
+        step_number = int(request.GET['step_number'])
+    except KeyError:
+        print("key error in get next step")
+        return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
+
+    try:
+        example = Example.objects.filter(name=example_name)[0]
+    except IndexError:
+        print("index error in get next step")
+        return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
+
+    previous_step_number = step_number - 1
+    html_step = HTMLStep.objects.filter(example=example, step_number=previous_step_number)
+
+    step_entry = {}
+    number_of_panels = example.number_of_panels
+
+    # Add the panel and the html for the panel in format panel_id:html- this will be directly used in the js
+    for i in range(number_of_panels):
+        panel_id = "area" + str(i)
+        panel_entry = html_step.filter(panel_id=panel_id)
+
+        # Populate the panel with the text from the current step
+        if len(panel_entry) > 0:
+            panel_html = strip_html_tags(panel_entry[0].html)
+
+            step_entry[panel_id] = panel_html
+
+        else:
+            step_entry[panel_id] = ""
+
+    step_entry["explanation_area"] = ""
+
+    return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
+
+
+# TODO - use
+def load_next_step(request):
+    print("in load_next_step method")
+
+    # Get the requested example and step number
+    try:
+        example_name = request.GET['example_name']
+        step_number = int(request.GET['step_number'])
+        ask_question = True # TODO pass through the request instead
+    except KeyError:
+        print("key error in get next step")
+        return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
+
+    try:
+        example = Example.objects.filter(name=example_name)[0]
+    except IndexError:
+        print("index error in get next step")
+        return HttpResponse(simplejson.dumps({'error': 'Bad input supplied'}), content_type="application/json")
+
+    html_step = HTMLStep.objects.filter(example=example, step_number=step_number)
+    html_explanation = HTMLExplanation.objects.filter(example=example, step_number=step_number)
+    question = ExampleQuestion.objects.filter(example=example, step_number=step_number)
+
+    step_entry = {}
+    number_of_panels = example.number_of_panels
+
+    # Add the panel and the html for the panel in format panel_id:html- this will be directly used in the js
+    for i in range(number_of_panels):
+        panel_id = "area" + str(i)
+        panel_entry = html_step.filter(panel_id=panel_id)
+
+        # Populate the panel with the text from the current step
+        if len(panel_entry) > 0:
+            # there has been a text saved for this panel so return the first one
+            panel_html = panel_entry[0].html
+            step_entry[panel_id] = panel_html
+        else:
+            step_entry[panel_id] = panel_html  # TODO is this correct? Seems panel_html is supposed to be None
+
+    # Add the html for the explanation if it existed else add an empty string
+    # TODO save HTMLExplanation as "" if not provided on example creation instead - each step should have explanation
+    if len(html_explanation) > 0:
+        step_entry["explanation_area"] = html_explanation[0].html
+        print("explanation exists")
+    else:
+        step_entry["explanation_area"] = ""
+        print("no explanation exists")
+
+    if len(question) > 0:
+        question = question[0]
+        question_record = ExampleQuestionRecord.objects.filter(question=question, session_id=request.session.session_key)
+
+        # The pupil hasn't answered the question yet or the ask_question variable is set
+        if len(question_record) == 0 or ask_question:
+
+            question_type = question.kind
+            step_entry["question_text"] = question.question_text
+            step_entry["question_type"] = question_type
+
+            if question_type in ["multiple_choice", "multiple_choice_with_comments"]:
+
+                options = ExampleOption.objects.filter(question=question)
+                question_options = []
+
+                for option in options:
+                    question_option = {"option_text": option.option_text, "correct": option.correct}
+
+                    if question_type == "multiple_choice_with_comments":
+                        option_comment = OptionComment.objects.filter(option=option)[0]
+                        question_option["comment"] = option_comment.comment
+
+                question_options.append(question_option)
+
+                step_entry["options"] = question_options
+
+        # The pupil has answered the question already so show their answer in the explanation
+        else:
+            question_record = question_record[0]
+
+            explanation = "<div><b>Question: </b>" + question.question_text + "</div><div><b>Your answer: </b>" + question_record.answer_text + "</div>"
+            step_entry["explanation_area"] = explanation
+
     return HttpResponse(simplejson.dumps(step_entry), content_type="application/json")
 
 

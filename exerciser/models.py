@@ -293,7 +293,7 @@ class HTMLExplanation(ExampleStep):
 
 class ExampleQuestion(ExampleStep):
 	question_text = models.TextField()
-	multiple_choice = models.BooleanField()
+	multiple_choice = models.BooleanField() # TODO remove and only use kind
 	kind = models.CharField(max_length = 30, default=None) #TODO make enum (multiple_choice, multiple_choice_with_comments, open)
 
 	def __unicode__(self):
