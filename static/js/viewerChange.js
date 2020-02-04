@@ -132,6 +132,10 @@ function manageExampleAreas(data, direction, answer) {
                         $("#options_list").append('<li><textarea id = "answer_area" style = "width:100%; resize: none;"></textarea></li>');
                     }
                 }
+                else if(key == "question_type" && data[key] == "open"){
+                      $("#options_list").append('<li><label id = "answer_area_label" for = "answer_area">Please enter your answer below:</label></li>');
+                      $("#options_list").append('<li><textarea id = "answer_area" style = "width:100%; resize: none;"></textarea></li>');
+                }
                 else if(key == "explanation_area" && direction == "next" && answer != null){
                     $("#" + key).html("<div>You have answered: " + answer + "</div>" + data[key]);
                 }
