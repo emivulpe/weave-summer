@@ -623,7 +623,8 @@ function saveStep(insertBefore, insertAfter, direction, newStep){
                     var request = $.get('/weave/get_next_step/', {
                         'example_name' : exampleName,
                         'step_number' : currentStep-1,
-                        'use_to_create_new_step' : "true"
+                        'use_to_create_new_step' : "true",
+                        'edit_mode': "true"
                     });
 
                     request.done(function(data) {

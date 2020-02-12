@@ -1280,7 +1280,7 @@ def get_next_step(request):
                             option_comment = OptionComment.objects.filter(option=option)[0]
                             question_option["comment"] = option_comment.comment
 
-                    question_options.append(question_option)
+                        question_options.append(question_option)
 
                     step_entry["options"] = question_options
 
