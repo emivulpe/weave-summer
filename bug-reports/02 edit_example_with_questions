@@ -1,0 +1,4 @@
+When an example is edited, the question needs to be shown in edit mode.
+
+How to reproduce:
+Select to edit an example with a question. The question step needs to also be in edit mode.

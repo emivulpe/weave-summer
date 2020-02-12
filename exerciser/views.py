@@ -1193,6 +1193,7 @@ def get_next_step(request):
 
         # True if a new step if being created through the author inteface
         use_to_create_new_step = json.loads(request.GET['use_to_create_new_step'])
+        edit_mode = json.loads(request.GET['edit_mode'])
 
     except KeyError:
         print("key error in get next step")
@@ -1261,7 +1262,7 @@ def get_next_step(request):
             question_record = ExampleQuestionRecord.objects.filter(question=question, session_id=session_id)
 
             # The pupil hasn't answered the question yet so ask it
-            if len(question_record) == 0:
+            if len(question_record) == 0 or edit_mode:
 
                 question_type = question.kind
                 step_entry["question_text"] = question.question_text

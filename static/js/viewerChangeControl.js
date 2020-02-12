@@ -78,7 +78,8 @@ function loadStep(direction, answer){
     var request = $.get('/weave/get_next_step/', {
         'example_name' : exampleName,
         'step_number' : currentStep,
-        'use_to_create_new_step' : "false"
+        'use_to_create_new_step' : "false",
+        'edit_mode': "false"
     });
 
     request.done(function(data) {
