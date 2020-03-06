@@ -109,9 +109,9 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                     if doc_name == document_name and operation == "Delete":
                         old_html = old_html.replace(step_fragment_text + "\r\n", "")
                     if doc_name == document_name and operation == "Highlight":
-                        old_html = old_html.replace(step_fragment_text, '<span class="style" style="background-color:yellow; white-space:pre;">' + step_fragment_text + '</span>')
+                        old_html = old_html.replace(step_fragment_text, '<span class="style" style="background-color:#e0c7ff; white-space:pre;">' + step_fragment_text + '</span>')
                     if doc_name == document_name and operation == "Unhighlight":
-                        old_html = old_html.replace('<span class="style" style="background-color:yellow; white-space:pre;">' + step_fragment_text + '</span>', step_fragment_text)
+                        old_html = old_html.replace('<span class="style" style="background-color:#e0c7ff; white-space:pre;">' + step_fragment_text + '</span>', step_fragment_text)
                     if doc_name == document_name and operation == "Ask Answer":
                         question_step = ExampleQuestion.objects.get_or_create(example=example, step_number=step_number, question_text=question_text, multiple_choice = len(question_options) > 0, kind='placeholder')[0] #TODO remove kind from the model
                         question_step.save()
@@ -130,7 +130,7 @@ def add_panel_steps(example, panel_number, document_name, ordered_document_fragm
                 step_text = ""
                 for next_fragment in ordered_step_fragments:
                     step_text += next_fragment + "\r\n"
-                step_html = '<span class="style" style="background-color:red; white-space:pre;">' + step_text + '</span>'
+                step_html = '<span class="style" style="background-color:#e0c7ff; white-space:pre;">' + step_text + '</span>'
 
                 html_step = HTMLStep.objects.get_or_create(example=example, step_number=step_number, html=old_html+step_html,
                                                            panel_id='area' + str(panel_number))[0]

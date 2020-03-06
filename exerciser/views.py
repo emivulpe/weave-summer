@@ -1388,7 +1388,7 @@ def create_step(request):
 			#print previous_step_text, "previous step text"
 			if len(previous_step_text) == 0:
 				#print "previous step was empty"
-				html = '<span class ="style" style = "background-color:red;">' + html+ '</span>'
+				html = '<span class ="style" style = "background-color:#e0c7ff;">' + html+ '</span>'
 			else:
 				d = Differ()
 				comparison_result = list(d.compare(previous_step_text, current_step_text))
@@ -1414,7 +1414,7 @@ def create_step(request):
 							#print html
 							#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
 							#print "combination NOT empty", combination
-							html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+							html = html.replace(combination, ('<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
 							print html
 							combination = ""
 						else:
@@ -1432,7 +1432,7 @@ def create_step(request):
 					print html
 					#combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
 					#print "combination NOT empty2", combination
-					html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+					html = html.replace(combination, ('<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
 					print html
 					combination = ""
 
@@ -1538,7 +1538,7 @@ def create_step_old(request):
             # print previous_step_text, "previous step text"
             if len(previous_step_text) == 0:
                 # print "previous step was empty"
-                html = '<span class ="style" style = "background-color:red;">' + html + '</span>'
+                html = '<span class ="style" style = "background-color:#e0c7ff;">' + html + '</span>'
             else:
                 previous_text = stripAllTags(previous_step_html)
                 diff_obj = diff_match_patch.diff_match_patch()
@@ -1571,7 +1571,7 @@ def create_step_old(request):
                             #print html
                             #combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
                             #print "combination NOT empty", combination
-                            html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+                            html = html.replace(combination, ('<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
                             #print html
                             combination = ""
                         else:
@@ -1590,7 +1590,7 @@ def create_step_old(request):
                     print html
                     #combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
                     #print "combination NOT empty2", combination
-                    html = html.replace(combination, ('<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+                    html = html.replace(combination, ('<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
                     print html
                     combination = ""
                 """
@@ -1600,9 +1600,9 @@ def create_step_old(request):
                         current_html += diff[1]
                         print(0, "00000000")
                     if diff[0] == 1:
-                        current_html += '<span class ="style" style = "background-color:red;">' + diff[1] + '</span>'
+                        current_html += '<span class ="style" style = "background-color:#e0c7ff;">' + diff[1] + '</span>'
                         print(1, "111111111111")
-                        html = html.replace(diff[1], '<span class ="style" style = "background-color:red;">' + diff[
+                        html = html.replace(diff[1], '<span class ="style" style = "background-color:#e0c7ff;">' + diff[
                             1] + '</span>')
 
             save_panel_text(html, example_name, step_number, panel_id)
@@ -1843,7 +1843,7 @@ def create_step(request):
                             print(current_step_original_text_ptr, "orig text ptr")
                             if original_text[current_step_original_text_ptr] == '<':  # 3
                                 # highlight everything before the tag
-                                new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
+                                new_text += '<span class ="style" style = "background-color:#e0c7ff; white-space:pre;">' + to_highlight + '</span>'
                                 # reset the text to highlight
                                 to_highlight = ""
                                 while original_text[
@@ -1877,7 +1877,7 @@ def create_step(request):
                                 added_text_ptr += 1
                                 current_step_original_text_ptr += 1
                         # add the highlighted text to newText
-                        new_text += '<span class ="style" style = "background-color:red; white-space:pre;">' + to_highlight + '</span>'
+                        new_text += '<span class ="style" style = "background-color:#e0c7ff; white-space:pre;">' + to_highlight + '</span>'
                         # <update diffsPntr to point to the next entry in the diffs list that is an equality or an insertion>
                         if diffs_ptr < len(diffs) - 1:
                             diffs_ptr += 1
@@ -2600,7 +2600,7 @@ def automatic_highlighter(example_name, step_number):
         # print previous_step_text, "previous step text"
         if len(previous_step_text) == 0:
             # print "previous step was empty"
-            panel_html = '<span class ="style" style = "background-color:red;">' + panel_html + '</span>'
+            panel_html = '<span class ="style" style = "background-color:#e0c7ff;">' + panel_html + '</span>'
         else:
             d = Differ()
             comparison_result = list(d.compare(previous_step_text, current_step_text))
@@ -2627,7 +2627,7 @@ def automatic_highlighter(example_name, step_number):
                         # combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
                         # print "combination NOT empty", combination
                         panel_html = panel_html.replace(combination, (
-                        '<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+                        '<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
                         print(panel_html)
                         combination = ""
                     else:
@@ -2646,7 +2646,7 @@ def automatic_highlighter(example_name, step_number):
                 # combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
                 # print "combination NOT empty2", combination
                 panel_html = panel_html.replace(combination, (
-                '<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+                '<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
                 print(panel_html)
                 combination = ""
         step_panel_texts[panel_id] = panel_html
@@ -2680,7 +2680,7 @@ def automatic_paneltext_highlighter(current_step_panel_text, previous_step_panel
     # print previous_step_text, "previous step text"
     if len(previous_step_text) == 0:
         # print "previous step was empty"
-        current_step_panel_text = '<span class ="style" style = "background-color:red;">' + current_step_panel_text + '</span>'
+        current_step_panel_text = '<span class ="style" style = "background-color:#e0c7ff;">' + current_step_panel_text + '</span>'
     else:
         d = Differ()
         comparison_result = list(d.compare(previous_step_text, current_step_text))
@@ -2707,7 +2707,7 @@ def automatic_paneltext_highlighter(current_step_panel_text, previous_step_panel
                     # combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>", "</div>").replace("<div></div>", "<div><br></div>")
                     # print "combination NOT empty", combination
                     current_step_panel_text = current_step_panel_text.replace(combination, (
-                    '<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+                    '<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
                     print(current_step_panel_text)
                     combination = ""
                 else:
@@ -2726,7 +2726,7 @@ def automatic_paneltext_highlighter(current_step_panel_text, previous_step_panel
             # combination = combination.replace(" <div> ","<div>").replace(" </div> ", "</div>").replace(" </div>","</div>").replace("<div></div>", "<div><br></div>")
             # print "combination NOT empty2", combination
             current_step_panel_text = current_step_panel_text.replace(combination, (
-            '<span class ="style" style = "background-color:red;">' + combination + '</span>'))
+            '<span class ="style" style = "background-color:#e0c7ff;">' + combination + '</span>'))
             print(current_step_panel_text)
             combination = ""
 
