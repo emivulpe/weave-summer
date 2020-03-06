@@ -33,10 +33,10 @@ body {
 	background-color: grey;
 }
 
-/* 
+/*
  * Splitter bar style; the .active class is added when the
  * mouse is over the splitter or the splitter is focused
- * via the keyboard taborder or an accessKey. 
+ * via the keyboard taborder or an accessKey.
  */
 #example_container .hsplitbar {
 	height: 4px;
@@ -50,20 +50,31 @@ body {
 
 {% endblock %}
 
-{% block navigation_controls %}                      
+{% block navigation_controls %}
 	<li><a id="btn_prev" class="prev_btn example_control" href="#" style="top: 2px; visibility:hidden;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
 	<li><a id="btn_next" class="next_btn example_control" href="#" style=" top: 2px; visibility:hidden;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
 {% endblock %}
 {% block editor_controls %}
-	<li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>	
-	<li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-	<li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
-	<li><a id="btn_create_question_after" class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
-	<li id = "delete_step_btn"><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>	
-	<li class = "step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
+  <span class="dropdown" style="display:inline-block">
+    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top:8px">
+      Add...
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <li><a id="btn_create_step_before" class = "create_step_btn before" href="#" style="top: 2px;" title = "Insert a step before this step">Step Before</a></li>
+      <li><a id="btn_create_step_after"  class = "create_step_btn after" href="#" style="top: 2px;" title = "Insert a step after this step">Step After</a></li>
+      <li><a id="btn_create_question_before" class = "create_question_btn before" href="#" style="top: 2px;" title = "Insert a question before this step">Question Before</a></li>
+      <li><a id="btn_create_question_after"  class = "create_question_btn after" href="#" style="top: 2px;" title = "Insert a question after this step">Question After</a></li>
+    </div>
+
+  </span>
+  <span>
+    <button class="btn btn-light" id = "delete_step_btn" style="margin-top:8px"><a id="btn_delete_step" class = "delete_step_btn" href="#" style="top: 2px;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></button>
+    <button class="btn btn-light step_btn store_example_btn" style="margin-top:8px"><a id="btn_done" class = "done_btn" href="#" style="top: 2px;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></button>
+
+  </span>
+
+
 {% endblock %}
-
-
 
 {% block body_block %}
 <div id="example_container">
@@ -78,7 +89,7 @@ body {
                 	</div>
                 </td>
 				{% endfor %}
-			</tr>		
+			</tr>
 		</table>
 	</div>
 	<div id="explanation_row2" style = "position:relative;overflow-x:hidden; overflow-y:scroll;">
@@ -111,22 +122,22 @@ body {
 					<button id = "add_option_button" type="button" class="btn btn-default">Add option</button>
 				</div>
             </div>
-            <div class="modal-footer">	
+            <div class="modal-footer">
                 <!--<button id = "create_question_step" type="button" class="btn btn-default">OK</button>-->
 
 				<ul class="nav navbar-nav navbar-right">
-                		<li><a id="btn_create_step_before" class = "create_step_btn before question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>	
-						<li><a id="btn_create_step_after"  class = "create_step_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
+                		<li><a id="btn_create_step_before" class = "create_step_btn before question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step before this step"><i class="fa fa-reply"></i><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i></a></li>
+						<li><a id="btn_create_step_after"  class = "create_step_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a step after this step"><i class="fa fa-pencil-square-o fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>
 						<li><a id="btn_create_question_before" class = "create_question_btn before question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step before this step"><i class="fa fa-reply"></i><i class="fa fa-question fa-lg landing-icon fa"></i></a></li>
-						<li><a id="btn_create_question_after" class = "create_question_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>	
+						<li><a id="btn_create_question_after" class = "create_question_btn after question_step_btn" href="#" style="top: 2px; color : #777;" title = "Insert a question step after this step"><i class="fa fa-question fa-lg landing-icon fa"></i><i class="fa fa-share"></i></a></li>
 					    <li id = "delete_question_step_btn" ><a id="delete_question" class = "delete_step_btn question_step_btn" href="#" style=" top: 2px; color : #777;" title = "Delete this step"><i class="fa fa-trash-o fa-lg landing-icon fa"></i></a></li>
-						<li class = "question_step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>	
+						<li class = "question_step_btn store_example_btn"><a id="btn_done" class = "done_btn" href="#" style="top: 2px; color : #777;" title = "Store the example"><i class="fa fa-floppy-o fa-lg landing-icon fa"></i></a></li>
 						<!--<li><a id="create_question_step" href="#" style="top: 2px; color : #777;" title = "Save the question step"><i class="fa fa-check fa-lg landing-icon fa"></i></a></li>-->
-                </ul>      
+                </ul>
                 <ul id = "question_step_navigator" class="nav navbar-nav navbar-right">
             		<li><a id="question_btn_prev" class="prev_btn question_control question_step_btn" href="#" style="top: 2px; color : #777;" title="Go to the previous step"><i class="fa fa-arrow-left fa-lg landing-icon fa"></i></a></li>
 					<li><a id="question_btn_next" class="next_btn question_control question_step_btn" href="#" style=" top: 2px; color : #777;" title="Go to the next step"><i class="fa fa-arrow-right fa-lg landing-icon fa"></i></a></li>
-				</ul>       
+				</ul>
             </div>
         </div>
     </div>
@@ -150,10 +161,10 @@ body {
 		        <div id = "new_text_panel">
 		        	<div id="new_text_textarea_panel" style = "position:fixed; width: 100%;"></div>
 		        	<textarea id="new_text_textarea" style = "width:100%;"></textarea>
-		        </div>  
-		        <div id="text_to_change_raw" style = "display:none"></div> 
+		        </div>
+		        <div id="text_to_change_raw" style = "display:none"></div>
             </div>
-            <div class="modal-footer">	
+            <div class="modal-footer">
                 <button id = "apply_changes_button" type="button" class="btn btn-default">OK</button>
             </div>
         </div>
@@ -173,7 +184,7 @@ body {
                 <div id="current_step_text" style = "border:1px solid black;"></div>
                 <label for = "text_to_change_textarea">Suggested step text:</label>
 		        <textarea id="text_to_change_textarea" style = "width:100%;"></textarea>
-		        <!--<div id="text_after_change"></div>--> 
+		        <!--<div id="text_after_change"></div>-->
 		        <div id="panel_id" style = "display:none;"></div>
             </div>
             <div class="modal-footer">
@@ -182,7 +193,7 @@ body {
                 <ul id = "step_editor_navigator">
 					<li style = "display: inline"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button></li>
 					<li style = "display: inline"><button id = "step_editor_confirmation_button" type="button" class="btn btn-default" data-dismiss="modal">OK</button></li>
-				</ul>	
+				</ul>
             </div>
         </div>
     </div>
