@@ -40,7 +40,7 @@
                 <table style="margin: 0 auto;">
                     <tr>
                         <td>
-                            <input placeholder="Search Example" id="example_search_box" type="text" style="margin:10px;"/>
+                            <input placeholder="Search Example" id="example_search_box" class="form-control" type="text" style="margin:10px;"/>
                         </td>
                     </tr>
                     <tr>
@@ -67,50 +67,49 @@
                 <tr id="teacher_details" class="details" style="display:none">
                     <td style="width: 40%; text-align: right; padding-right: 10px;">Teacher ID:</td>
                     <td style="text-align: left;">
-                        <input id = "teacher" type="text" name="TeacherId" style="margin-right: 5px; padding: 5px; font-size: 12pt; font-weight: bold; margin-left: 10px;width:200px;" /><i class="fa fa-question-circle" title="Enter the teacher id provided by your teacher. If you weren't given such an ID, click on <No teacher ID> button to proceed."></i>
-                    </td>
+                        <input id = "teacher" type="text" name="TeacherId" class="form-control" style="margin-right: 5px; padding: 5px; width:250px;" placeholder="Enter teacher ID"/>
+										</td>
                 </tr>
 
                 <tr id="year_details" class="details" style="display:none">
                     <td style="width: 40%; text-align: right; padding-right: 10px;">Academic Year:</td>
                     <td style="text-align: left;">
-                        <select id="academic_year_select" style="margin-right: 5px; padding: 5px; font-size: 12pt; font-weight: bold; margin-left: 10px;width:200px;">
+                        <select id="academic_year_select" class="form-control" style="margin-right: 5px; padding: 5px; font-size: 12pt; font-weight: bold; margin-left: 10px;width:200px;">
                             {% for year in academic_years %}
                                 <option value="{{year.start}}" >{{ year.start}}/{{ year.start|add:"1" }}</option>
                             {% endfor %}
                         </select>
-                        <i class="fa fa-question-circle" title="Choose the academic year your group belongs to. If you weren't given a group ID, click on the <No year> button to proceed."></i>
                     </td>
                 </tr>
 
                 <tr id="group_details" class="details" style="display:none">
                     <td style="width: 40%; text-align: right; padding-right: 10px;">Group ID:</td>
                     <td style="text-align: left;">
-                        <select id="group_list" style="margin-right: 5px; padding: 5px; font-size: 12pt; font-weight: bold; margin-left: 10px;width:200px;"></select><i class="fa fa-question-circle" title="Choose the group your teacher assigned you to or click on <No group ID> button to proceed."></i>
+                        <select id="group_list" class="form-control" style="margin-right: 5px; padding: 5px; font-size: 12pt; font-weight: bold; margin-left: 10px;width:200px;"></select>
                     </td>
                 </tr>
 
                 <tr id="student_details" class="details" style="display:none" >
                     <td style="width: 40%; text-align: right; padding-right: 10px;">Pupil ID: </td>
                     <td style="text-align: left;">
-                        <input id = "student" type="text" name="StudentId" style="margin-right: 5px; padding: 5px; font-size: 12pt; font-weight: bold; margin-left: 10px;width:200px;" /><i class="fa fa-question-circle" title="Enter the pupil ID your teacher assigned to you. If you weren't given such an ID, click on <No pupil ID> button to proceed."></i>
+                        <input id = "student" class="form-control" type="text" name="StudentId" style="margin-right: 5px; padding: 5px; font-size: 12pt; font-weight: bold; margin-left: 10px;width:200px;" placeholder="Enter student ID"/>
                     </td>
                 </tr>
 
                 <tr>
                     <td style="text-align: right;">
-                        <input  id = "back_button" type="button" value="Back" style="margin-top: 10px; font-size: 14pt; font-weight: bold;"/>&nbsp;
+                        <input  id="back_button" class="btn btn-secondary" type="button" value="Back" style="margin-top: 10px; font-size: 14pt; font-weight: bold;"/>&nbsp;
                     </td>
                     <td style="text-align: left">
-                        <input  id = "submit_button" class="save_teacher details" type="submit" value="Next" style="margin-top: 10px; font-size: 14pt; font-weight: bold;" onclick="saveTeacher()"/>&nbsp;
-                        <input id = "no_id" class="details" type="submit" value="No teacher ID" onclick="storeDetails()" style="margin-top: 10px; font-size: 14pt; font-weight: bold;"/>
+                        <input  id = "submit_button" class="btn btn-info save_teacher details" type="submit" value="Next" style="margin-top: 10px; font-size: 14pt; font-weight: bold;" onclick="saveTeacher()"/>&nbsp;
+                        <input id = "no_id" class="btn btn-info details" type="submit" value="No teacher ID" onclick="storeDetails()" style="margin-top: 10px; font-size: 14pt; font-weight: bold;"/>
                     </td>
                 </tr>
 
             </table>
 
         </form>
-        <strong> You may view worked examples without logging in, in which case press the ‘No teacher ID’ button, or you may have been given login details by your teacher - in which case, enter his/her teacher ID below, press Next and follow the instructions. </strong>
+        <strong><br/> You may view worked examples without logging in, in which case press the ‘No teacher ID’ button, or you may have been given login details by your teacher - in which case, enter his/her teacher ID below, press Next and follow the instructions. </strong>
         <br>
         <strong id="unsuccess_message" style = "color:red"></strong>
     {% endif %}
