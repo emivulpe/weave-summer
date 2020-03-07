@@ -7,15 +7,15 @@
 </a>
 {% endblock %}
 
-{% block logout %} 
+{% block logout %}
     {% if user.is_authenticated %}
         <li>
             <a href="/weave/logout/"><i class="fa fa-lock fa-lg landing-icon fa-2x"></i><class="landing-text">&nbspLogout</span></a>
-        </li>       
+        </li>
     {% endif %}
 {% endblock %}
 
-{% block links %} 
+{% block links %}
 	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/teacher_interface.css' %}" />
 {% endblock %}
@@ -48,7 +48,7 @@
 								<label for="year">Academic Year:</label>
 							</td>
 							<td colspan="3">
-								<select id="year" class="year choice_selector" style="width:100%;">
+								<select id="year" class="form-control year choice_selector" style="width:100%;">
 									{% for year in academic_years %}
 										<option value="{{year.start}}" >{{ year.start}}/{{ year.start|add:"1" }}</option>
 									{% endfor %}
@@ -63,7 +63,7 @@
 								<label>Group ID:</label>
 							</td>
 							<td colspan="3">
-								<input id="group_id_entry" type="text" name="group_id_entry">
+								<input id="group_id_entry" class="form-control" type="text" name="group_id_entry">
 							</td>
 							<td style="padding-left:10px;">
 								<i class="fa fa-question-circle" title="Choose a name for the group."></i>
@@ -93,16 +93,16 @@
 								<label for="num_students">Number of pupils:</label>
 							</td>
 							<td colspan="3">
-								<input id="num_students" type="number" min="0" name="num_students" onkeypress="return isNumber(event)">
-							</td> 
+								<input id="num_students" class="form-control" type="number" min="0" name="num_students" onkeypress="return isNumber(event)">
+							</td>
 							<td style="padding-left:10px;">
 								<i class="fa fa-question-circle" title="Enter the number of pupils you would like to add ids for in the selected group."></i>
 							</td>
 						</tr>
 						<tr>
 							<td></td>
-							<td colspan="4">	
-								<input id="save_group_button" type="reset" value="Register">
+							<td colspan="4">
+								<input id="save_group_button" class="btn btn-info" style="margin-top: 10px; font-size: 14pt; font-weight: bold;" type="reset" value="Register">
 							</td>
 						</tr>
 					</table>
@@ -118,10 +118,10 @@
 						<table class = "choice_selector" style="margin: 0 auto;">
 							<tr>
 								<td style="text-align:right;padding-right:10px;">
-									<label for="year">Academic Year:</label> 
+									<label for="year">Academic Year:</label>
 								</td>
 								<td style="text-align:left;">
-									<select id="group_year" class="year">
+									<select id="group_year" class="year form-control" style="margin-bottom:15px">
 									{% for year in academic_years %}
 										<option value="{{year.start}}" >{{ year.start}}/{{ year.start|add:"1" }}</option>
 									{% endfor %}
@@ -136,7 +136,7 @@
 									<label for="group">Group ID:</label>
 								</td>
 								<td style="text-align:left;">
-									<select id="group" class="group" style="width:100%;"></select>
+									<select id="group" class="group form-control" style="width:100%;"></select>
 								</td>
 								<td style="padding-left:10px;">
 									<i class="fa fa-question-circle" title="Select the group you would like to see ids for."></i>
@@ -144,7 +144,7 @@
 							</tr>
 							<tr>
 								<td colspan="3" style="padding-top:10px;">
-									<input id="view_group_list" type="reset" value="View">
+									<input id="view_group_list" class="btn btn-info" style="margin-top: 10px; font-size: 14pt; font-weight: bold;"  type="reset" value="View">
 								</td>
 							</tr>
 						</table>
@@ -176,14 +176,14 @@
 				<div class="col-md-6 text-center">
 					{% if request.session.registered = True %}
 						<br/><br/><br/><br/><br/>
-						<div style="font-size: 12pt; font-weight: bold;"> 
+						<div style="font-size: 12pt; font-weight: bold;">
 							<i class="fa fa-check success" style="color:green;"></i>
 							<strong class="success" style="color:green;">Thank you for registering! Please log in</strong>
 						</div>
 					{% elif request.session.registered = False %}
 
 						<h1>Register here!</h1><br />
-						
+
 						<form id="user_form" method="post" action="/weave/register/" enctype="multipart/form-data">
 							{% csrf_token %}
 
@@ -209,20 +209,20 @@
 							<!-- Provide a button to click to submit the form. -->
 							<input id="register_user_button" type="submit" value="Register" />
 						</form><br/>
-						<div style="font-size: 12pt; font-weight: bold;"> 
+						<div style="font-size: 12pt; font-weight: bold;">
 							<i class="fa fa-close success" style="color:red;"></i>
 							<strong class="success" style="color:red;">Your registration was unsuccessful.You might have not entered the same password. If you are sure you have, please try again with a different username!</strong>
 						</div>
 					{% else %}
 						<h1>Register here!</h1><br />
-						
+
 						<form id="user_form" method="post" action="/weave/register/" enctype="multipart/form-data">
 							{% csrf_token %}
 
 							<!-- Display each form. The as_p method wraps each element in a paragraph
 							(<p>) element. This ensures each element appears on a new line,
 							making everything look neater. -->
-							
+
 							<table style="margin-left:auto; margin-right:auto;">
 								{% for field in user_form %}
 									<tr>
@@ -237,7 +237,7 @@
 									</tr>
 								{% endfor %}
 							</table>
-							
+
 							<input type="hidden" name="can_analyse" id="consent_value" value="-1" />
 
 							<!-- Provide a button to click to submit the form. -->
@@ -255,7 +255,7 @@
 					</form>
 					{% if request.session.successful_login = False %}
 						<br/>
-						<div style="font-size: 12pt; font-weight: bold;"> 
+						<div style="font-size: 12pt; font-weight: bold;">
 							<i class="fa fa-close success" style="color:red;"></i>
 							<strong class="success" style="color:red;">Sorry but your attempt to login was unsuccessful! Please try again!</strong>
 						</div>
@@ -265,7 +265,7 @@
 		</div>
 
 	{% endif %}
-	
+
 	<div id="success_dialog" title="Success message" style="display:none;">
 	<span id = "success_message"></span>
 	</div>
@@ -297,7 +297,7 @@
 			<p>This study adheres to the BPS ethical guidelines.</p>
 		</div>
 	</div>
- 
+
 {% endblock %}
 
 {% block javascripts %}
@@ -316,7 +316,7 @@
 			var variables="?group="+chosen_group+"&teacher={{ user.username }}&year="+selected_year;
 			window.location="/weave/get_group_list"+variables;
 		});
-		
+
 		$(function () {
 			{% if user.is_authenticated %}
 				populateGroupList("group_year","group");
@@ -324,7 +324,7 @@
 				setGroupChoice();
 			{% endif %}
 		});
-		
+
 		// A function for deleting a group
 		function deleteGroup(chosenYear){
 			var chosenGroup = $('#group_entry').val(); //Get the chosen group
