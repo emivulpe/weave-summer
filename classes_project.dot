@@ -1,0 +1,37 @@
+digraph "classes_project" {
+charset="utf-8"
+rankdir=BT
+"0" [label="{AcademicYear|start : IntegerField\l|}", shape="record"];
+"1" [label="{Application|name : CharField\l|}", shape="record"];
+"2" [label="{Change|document : ForeignKey\lfragment : ForeignKey\loperation : CharField\lquestion : ForeignKey\lstep : ForeignKey\l|getChanges()\l}", shape="record"];
+"3" [label="{Document|document_type : ForeignKey\lid : CharField\lname : CharField\l|}", shape="record"];
+"4" [label="{DocumentType|kind : CharField\lname : CharField\l|}", shape="record"];
+"5" [label="{Example|name : CharField\lnumber_of_panels : IntegerField\l|}", shape="record"];
+"6" [label="{ExampleOption|correct : BooleanField\lnumber : IntegerField\loption_text : TextField\lquestion : ForeignKey\l|}", shape="record"];
+"7" [label="{ExampleQuestion|kind : CharField\lmultiple_choice : BooleanField\lquestion_text : TextField\l|}", shape="record"];
+"8" [label="{ExampleQuestionRecord|answer_text : TextField\lgroup : ForeignKey\lquestion : ForeignKey\lsession_id : CharField\lstudent : ForeignKey\lteacher : ForeignKey\l|}", shape="record"];
+"9" [label="{ExampleStep|example : ForeignKey\lstep_number : IntegerField\l|}", shape="record"];
+"10" [label="{ExampleUsageRecord|direction : CharField\lexample : ForeignKey\lgroup : ForeignKey\lsession_id : CharField\lstep : ForeignKey\lstep_number\lstep_number : IntegerField\lstudent : ForeignKey\lteacher : ForeignKey\ltime_on_step : FloatField\l|save()\l}", shape="record"];
+"11" [label="{Explanation|step : ForeignKey\ltext : TextField\l|}", shape="record"];
+"12" [label="{Fragment|document : ForeignKey\lid : CharField\lorder : IntegerField\lstyle : ForeignKey\ltext : TextField\ltype : ForeignKey\l|}", shape="record"];
+"13" [label="{FragmentStyle|bold : BooleanField\lfont : CharField\lfont_size : SmallIntegerField\litalic : BooleanField\ltype : ForeignKey\lunderlined : BooleanField\l|}", shape="record"];
+"14" [label="{FragmentType|document_type : ForeignKey\lkind : CharField\lname : CharField\l|}", shape="record"];
+"15" [label="{Group|academic_year : ForeignKey\lname : CharField\lteacher : ForeignKey\l|}", shape="record"];
+"16" [label="{HTMLExplanation|html : TextField\l|}", shape="record"];
+"17" [label="{HTMLStep|html : TextField\lpanel_id : CharField\l|}", shape="record"];
+"18" [label="{Meta|ordering : list\l|}", shape="record"];
+"19" [label="{Meta|unique_together : tuple\l|}", shape="record"];
+"20" [label="{Option|content : CharField\lnumber : IntegerField\lquestion : ForeignKey\l|}", shape="record"];
+"21" [label="{OptionComment|comment : TextField\loption : ForeignKey\l|}", shape="record"];
+"22" [label="{Panel|application : ForeignKey\ldocument : ForeignKey\lfragment_operation_mapping : list\lnumber : IntegerField\ltype : CharField\l|getFragments()\linitialise_fragment_operation_mappings()\l}", shape="record"];
+"23" [label="{PupilAnswer|question : ForeignKey\lstudent : ForeignKey\l|}", shape="record"];
+"24" [label="{Question|application : ForeignKey\lquestion_text : TextField\lstep : ForeignKey\l|}", shape="record"];
+"25" [label="{QuestionRecord|answer : ForeignKey\lanswer_text : TextField\lapplication : ForeignKey\lgroup : ForeignKey\lquestion : ForeignKey\lsession_id : CharField\lstudent : ForeignKey\lteacher : ForeignKey\l|}", shape="record"];
+"26" [label="{Step|application : ForeignKey\lorder : IntegerField\l|}", shape="record"];
+"27" [label="{Student|group : ForeignKey\lstudent_id : CharField\lteacher : ForeignKey\l|}", shape="record"];
+"28" [label="{Teacher|can_analyse : BooleanField\luser : OneToOneField\l|}", shape="record"];
+"29" [label="{UsageRecord|application : ForeignKey\ldirection : CharField\lgroup : ForeignKey\lsession_id : CharField\lstep : ForeignKey\lstep_number\lstep_number : IntegerField\lstudent : ForeignKey\lteacher : ForeignKey\ltime_on_step : FloatField\l|save()\l}", shape="record"];
+"7" -> "9" [arrowhead="empty", arrowtail="none"];
+"16" -> "9" [arrowhead="empty", arrowtail="none"];
+"17" -> "9" [arrowhead="empty", arrowtail="none"];
+}

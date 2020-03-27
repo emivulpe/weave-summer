@@ -148,44 +148,10 @@ $(function() {
             }
         }
     });
-	
-	// Define the actions for the consent dialog
-    $("#consent_dialog").dialog({
-        width: $(window).width() * 0.9,
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "I agree": function() {
-                $(this).dialog("close");
-                $("#consent_value").val("true");
-                $("#user_form").submit();
-            },
-            "Don't record data": function() {
-                $(this).dialog("close");
-                $("#consent_value").val("");
-                $("#user_form").submit();
-            }
-        }
-    });
 
 });
 
-
-$(document).ready(function() {
-	// Submit the consent form
-    $('#user_form').submit(function(e) {
-        var consent_value = $('#consent_value').val();
-
-        if (consent_value == '-1') {
-            e.preventDefault();
-            $('#consent_dialog').dialog('open');
-        }
-    });
-
-});
-
-
-// A function to ensure that only numbers are accepted when entering the number of students to add to a group 
+// A function to ensure that only numbers are accepted when entering the number of students to add to a group
 function isNumber(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode
     if (charCode > 31 && (charCode < 48 || charCode > 57))
@@ -223,5 +189,5 @@ function searchFor(_selector, _subject) {
         });
         return found;
     }
-    return null; 
+    return null;
 }

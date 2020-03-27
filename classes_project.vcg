@@ -1,0 +1,109 @@
+graph:{
+  late_edge_labels:yes
+  layoutalgorithm:dfs
+  title:"classes_project"
+  port_sharing:no
+  manhattan_edges:yes
+  node: {title:"0"  shape:box
+  label:"\fbAcademicYear\fn\n\f______________________\n\f08start : IntegerField\n\f______________________"
+}
+  node: {title:"1"  shape:box
+  label:"\fbApplication\fn\n\f__________________\n\f08name : CharField\n\f__________________"
+}
+  node: {title:"2"  shape:box
+  label:"\fbChange\fn\n\f_______________________\n\f08document : ForeignKey\n\f08fragment : ForeignKey\n\f08operation : CharField\n\f08question : ForeignKey\n\f08step : ForeignKey\n\f_______________________\n\f10getChanges()"
+}
+  node: {title:"3"  shape:box
+  label:"\fbDocument\fn\n\f____________________________\n\f08document_type : ForeignKey\n\f08id : CharField\n\f08name : CharField\n\f____________________________"
+}
+  node: {title:"4"  shape:box
+  label:"\fbDocumentType\fn\n\f__________________\n\f08kind : CharField\n\f08name : CharField\n\f__________________"
+}
+  node: {title:"5"  shape:box
+  label:"\fbExample\fn\n\f_________________________________\n\f08name : CharField\n\f08number_of_panels : IntegerField\n\f_________________________________"
+}
+  node: {title:"6"  shape:box
+  label:"\fbExampleOption\fn\n\f_________________________\n\f08correct : BooleanField\n\f08number : IntegerField\n\f08option_text : TextField\n\f08question : ForeignKey\n\f_________________________"
+}
+  node: {title:"7"  shape:box
+  label:"\fbExampleQuestion\fn\n\f________________________________\n\f08kind : CharField\n\f08multiple_choice : BooleanField\n\f08question_text : TextField\n\f________________________________"
+}
+  node: {title:"8"  shape:box
+  label:"\fbExampleQuestionRecord\fn\n\f_________________________\n\f08answer_text : TextField\n\f08group : ForeignKey\n\f08question : ForeignKey\n\f08session_id : CharField\n\f08student : ForeignKey\n\f08teacher : ForeignKey\n\f_________________________"
+}
+  node: {title:"9"  shape:box
+  label:"\fbExampleStep\fn\n\f____________________________\n\f08example : ForeignKey\n\f08step_number : IntegerField\n\f____________________________"
+}
+  node: {title:"10"  shape:box
+  label:"\fbExampleUsageRecord\fn\n\f____________________________\n\f08direction : CharField\n\f08example : ForeignKey\n\f08group : ForeignKey\n\f08session_id : CharField\n\f08step : ForeignKey\n\f08step_number\n\f08step_number : IntegerField\n\f08student : ForeignKey\n\f08teacher : ForeignKey\n\f08time_on_step : FloatField\n\f____________________________\n\f10save()"
+}
+  node: {title:"11"  shape:box
+  label:"\fbExplanation\fn\n\f___________________\n\f08step : ForeignKey\n\f08text : TextField\n\f___________________"
+}
+  node: {title:"12"  shape:box
+  label:"\fbFragment\fn\n\f_______________________\n\f08document : ForeignKey\n\f08id : CharField\n\f08order : IntegerField\n\f08style : ForeignKey\n\f08text : TextField\n\f08type : ForeignKey\n\f_______________________"
+}
+  node: {title:"13"  shape:box
+  label:"\fbFragmentStyle\fn\n\f_______________________________\n\f08bold : BooleanField\n\f08font : CharField\n\f08font_size : SmallIntegerField\n\f08italic : BooleanField\n\f08type : ForeignKey\n\f08underlined : BooleanField\n\f_______________________________"
+}
+  node: {title:"14"  shape:box
+  label:"\fbFragmentType\fn\n\f____________________________\n\f08document_type : ForeignKey\n\f08kind : CharField\n\f08name : CharField\n\f____________________________"
+}
+  node: {title:"15"  shape:box
+  label:"\fbGroup\fn\n\f____________________________\n\f08academic_year : ForeignKey\n\f08name : CharField\n\f08teacher : ForeignKey\n\f____________________________"
+}
+  node: {title:"16"  shape:box
+  label:"\fbHTMLExplanation\fn\n\f__________________\n\f08html : TextField\n\f__________________"
+}
+  node: {title:"17"  shape:box
+  label:"\fbHTMLStep\fn\n\f______________________\n\f08html : TextField\n\f08panel_id : CharField\n\f______________________"
+}
+  node: {title:"18"  shape:box
+  label:"\fbMeta\fn\n\f_________________________\n\f08unique_together : tuple\n\f_________________________"
+}
+  node: {title:"19"  shape:box
+  label:"\fbMeta\fn\n\f_________________\n\f08ordering : list\n\f_________________"
+}
+  node: {title:"20"  shape:box
+  label:"\fbOption\fn\n\f_______________________\n\f08content : CharField\n\f08number : IntegerField\n\f08question : ForeignKey\n\f_______________________"
+}
+  node: {title:"21"  shape:box
+  label:"\fbOptionComment\fn\n\f_____________________\n\f08comment : TextField\n\f08option : ForeignKey\n\f_____________________"
+}
+  node: {title:"22"  shape:box
+  label:"\fbPanel\fn\n\f________________________________________\n\f08application : ForeignKey\n\f08document : ForeignKey\n\f08fragment_operation_mapping : list\n\f08number : IntegerField\n\f08type : CharField\n\f________________________________________\n\f10getFragments()\n\f10initialise_fragment_operation_mappings()"
+}
+  node: {title:"23"  shape:box
+  label:"\fbPupilAnswer\fn\n\f_______________________\n\f08question : ForeignKey\n\f08student : ForeignKey\n\f_______________________"
+}
+  node: {title:"24"  shape:box
+  label:"\fbQuestion\fn\n\f___________________________\n\f08application : ForeignKey\n\f08question_text : TextField\n\f08step : ForeignKey\n\f___________________________"
+}
+  node: {title:"25"  shape:box
+  label:"\fbQuestionRecord\fn\n\f__________________________\n\f08answer : ForeignKey\n\f08answer_text : TextField\n\f08application : ForeignKey\n\f08group : ForeignKey\n\f08question : ForeignKey\n\f08session_id : CharField\n\f08student : ForeignKey\n\f08teacher : ForeignKey\n\f__________________________"
+}
+  node: {title:"26"  shape:box
+  label:"\fbStep\fn\n\f__________________________\n\f08application : ForeignKey\n\f08order : IntegerField\n\f__________________________"
+}
+  node: {title:"27"  shape:box
+  label:"\fbStudent\fn\n\f________________________\n\f08group : ForeignKey\n\f08student_id : CharField\n\f08teacher : ForeignKey\n\f________________________"
+}
+  node: {title:"28"  shape:box
+  label:"\fbTeacher\fn\n\f____________________________\n\f08can_analyse : BooleanField\n\f08user : OneToOneField\n\f____________________________"
+}
+  node: {title:"29"  shape:box
+  label:"\fbUsageRecord\fn\n\f____________________________\n\f08application : ForeignKey\n\f08direction : CharField\n\f08group : ForeignKey\n\f08session_id : CharField\n\f08step : ForeignKey\n\f08step_number\n\f08step_number : IntegerField\n\f08student : ForeignKey\n\f08teacher : ForeignKey\n\f08time_on_step : FloatField\n\f____________________________\n\f10save()"
+}
+  edge: {sourcename:"7" targetname:"9"  backarrowsize:10
+  backarrowstyle:none
+  arrowstyle:solid
+}
+  edge: {sourcename:"16" targetname:"9"  backarrowsize:10
+  backarrowstyle:none
+  arrowstyle:solid
+}
+  edge: {sourcename:"17" targetname:"9"  backarrowsize:10
+  backarrowstyle:none
+  arrowstyle:solid
+}
+}
