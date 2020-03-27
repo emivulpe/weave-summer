@@ -251,11 +251,31 @@
 				<div class="col-md-6 text-center">
 					<h1>Login to WEAVE</h1>
 					<form id="login_form" method="post" action="/weave/login/"><br>
+            <table style="margin-left:auto; margin-right:auto;">
 						{% csrf_token %}
-						<p><label for="id_username">Username:</label> <input id="id_username" maxlength="30" name="username" type="text"></p>
-						<p><label for="id_password">Password:</label> <input id="id_password" name="password" type="password"></p>
-						<input id="login_button" class="btn btn-info" type="submit" value="Log in"/>
-					</form>
+            <tr>
+              <td style="vertical-align:top;text-align:right;">
+                <label for="id_username">Username:</label>
+              </td>
+              <td style="padding-left:5px;">
+                <p>
+                  <input id="id_username" class="form-control" maxlength="30" name="username" type="text">
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="vertical-align:top;text-align:right;">
+                <label for="id_password">Password:</label>
+              </td>
+              <td style="padding-left:5px;">
+                <p>
+                  <input id="id_password" class="form-control" name="password" type="password">
+                </p>
+              </td>
+            </tr>
+            </table>
+            <input id="login_button" class="btn btn-info" type="submit" value="Log in"/>
+          </form>
 					{% if request.session.successful_login = False %}
 						<br/>
 						<div style="font-size: 12pt; font-weight: bold;">
@@ -279,6 +299,10 @@
 
 	<script type="text/javascript" src="{% static 'js/teacherInterface.js' %}"></script>
 	<script>
+
+    document.getElementById("id_username").className += " form-control";
+    document.getElementById("id_password").className += " form-control";
+    document.getElementById("id_password2").className += " form-control";
 
 		{% autoescape off %}
 		var year_group_dict = {{groups}}; // Mapping between the academic years and the groups for each
