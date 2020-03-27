@@ -17,6 +17,7 @@
 
 {% block links %}
 	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/teacher_interface.css' %}" />
 {% endblock %}
 
@@ -25,7 +26,7 @@
 	{% if user.is_authenticated %}
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4 text-center">
+				<div class="col-md-6 text-center action-card">
 					<h1>Register/Update a group</h1><br>
 					<form id="register_or_update_group_form">
 					<table class = "choice_selector" >
@@ -41,7 +42,6 @@
 							<td>
 								<input id = "delete_group"type="radio" name="action" value="delete"><label for="delete_group">Delete</label>
 							</td>
-
 						</tr>
 						<tr>
 							<td style="text-align:right;padding:10px;">
@@ -59,18 +59,18 @@
 							</td>
 						</tr>
 						<tr class="register_group_specific" style="display:none;">
-							<td style="text-align:right;padding-right:10px;">
+							<td style="text-align:right;padding:10px;">
 								<label>Group ID:</label>
 							</td>
 							<td colspan="3">
 								<input id="group_id_entry" class="form-control" type="text" name="group_id_entry">
 							</td>
-							<td style="padding-left:10px;">
+							<td style="padding:10px;">
 								<i class="fa fa-question-circle" title="Choose a name for the group."></i>
 							</td>
 						</tr>
 						<tr class="register_group_specific">
-							<td style="text-align:right; padding-right:10px;">
+							<td style="text-align:right; padding:10px;">
 								<span id="existing_groups">Existing groups: </span>
 							</td>
 							<td colspan="4"class="existing_groups_list" style="text-align:left;">
@@ -82,14 +82,14 @@
 								<label for="group_id">Group ID:</label>
 							</td>
 							<td colspan="3" >
-								<select id="group_entry" class="group" style = "width:100%;"></select>
+								<select id="group_entry" class="group form-control" style = "width:100%;"></select>
 							</td>
 							<td style="padding-left:10px;">
 								<i class="fa fa-question-circle" title="Choose the name of the group you want to update/delete."></i>
 							</td>
 						</tr>
 						<tr class="update_group_specific">
-							<td style="text-align:right;padding-right:10px;">
+							<td style="text-align:right;padding:10px;">
 								<label for="num_students">Number of pupils:</label>
 							</td>
 							<td colspan="3">
@@ -110,63 +110,69 @@
 					</form>
 					<br>
 					<strong id="group_success_message"></strong>
-				</div>
 
-				<div class="col-md-4 text-center">
-					<h1>View group list</h1><br>
+          <h1>View group list</h1><br>
 					<form id="register_or_update_group_form" style="text-align:center;">
-						<table class = "choice_selector" style="margin: 0 auto;">
+						<table class = "choice_selector">
 							<tr>
-								<td style="text-align:right;padding-right:10px;">
+								<td style="text-align:right;padding:10px;">
 									<label for="year">Academic Year:</label>
 								</td>
 								<td style="text-align:left;">
-									<select id="group_year" class="year form-control" style="margin-bottom:15px">
+									<select id="group_year" class="year form-control">
 									{% for year in academic_years %}
 										<option value="{{year.start}}" >{{ year.start}}/{{ year.start|add:"1" }}</option>
 									{% endfor %}
 									</select>
 								</td>
-								<td style="padding-left:10px;">
+								<td style="padding:10px;">
 									<i class="fa fa-question-circle" title="Select the academic year for the group."></i>
 								</td>
-							</tr>
-							<tr>
-								<td style="text-align:right;padding-right:10px;">
+
+                <td style="text-align:right;padding:10px;">
 									<label for="group">Group ID:</label>
 								</td>
 								<td style="text-align:left;">
 									<select id="group" class="group form-control" style="width:100%;"></select>
 								</td>
-								<td style="padding-left:10px;">
+								<td style="padding:10px;">
 									<i class="fa fa-question-circle" title="Select the group you would like to see ids for."></i>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="3" style="padding-top:10px;">
-									<input id="view_group_list" class="btn btn-info" style="margin-top: 10px; font-size: 14pt; font-weight: bold;"  type="reset" value="View">
+								<td colspan="6" style="padding-top:10px;">
+									<input id="view_group_list" class="btn btn-info" style="font-size: 14pt; font-weight: bold;"  type="reset" value="View Group">
 								</td>
 							</tr>
 						</table>
 					</form>
 					<br>
 					<strong id="student_success_message"></strong>
+
 				</div>
-				<div class="col-md-4 text-center">
-					<h1 class="brand-heading"><a href="/weave/statistics/"><i class="fa fa-bar-chart landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">View Progress</span></a></h1>
-				</div>
+
+
+
+        <div class="col-md-4 action-card">
+          <div class="row">
+            <div class="col-md-4 text-center" style="margin:20px">
+    					<h3><a href="/weave/statistics/"><i class="fa fa-bar-chart landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">View Progress</span></a></h3>
+    				</div>
+    				<div class="col-md-4 text-center" style="margin:20px">
+    					<h3><a href="/weave/teacher_interface_examples_viewer/"><i class="fa fa-eye landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">View Example</span></a></h3>
+    				</div>
+          </div>
+          <div class="row">
+    				<div class="col-md-4 text-center" style="margin:20px">
+    					<h3><a href="/weave/example_creator/"><i class="fa fa-pencil-square-o landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">Create Example</span></a></h3>
+    				</div>
+    				<div class="col-md-4 text-center" style="margin:20px">
+    					<h3><a href="/weave/example_editor/"><i class="fa fa-wrench landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">Edit Example</span></a></h3>
+    				</div>
+          </div>
+  			</div>
 			</div>
-			<div class="row">
-				<div class="col-md-4 text-center">
-					<h1 class="brand-heading"><a href="/weave/teacher_interface_examples_viewer/"><i class="fa fa-eye landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">View Example</span></a></h1>
-				</div>
-				<div class="col-md-4 text-center">
-					<h1 class="brand-heading"><a href="/weave/example_creator/"><i class="fa fa-pencil-square-o landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">Create Example</span></a></h1>
-				</div>
-				<div class="col-md-4 text-center">
-					<h1 class="brand-heading"><a href="/weave/example_editor/"><i class="fa fa-wrench landing-icon fa-lg fa-5x"></i><br><br><span class="landing-text">Edit Example</span></a></h1>
-				</div>
-			</div>
+
 		</div>
 
 
