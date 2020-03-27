@@ -300,9 +300,6 @@
 	<script type="text/javascript" src="{% static 'js/teacherInterface.js' %}"></script>
 	<script>
 
-    document.getElementById("id_username").className += " form-control";
-    document.getElementById("id_password").className += " form-control";
-    document.getElementById("id_password2").className += " form-control";
 
 		{% autoescape off %}
 		var year_group_dict = {{groups}}; // Mapping between the academic years and the groups for each
@@ -377,6 +374,11 @@
 				showSuccessMessage(success,chosenGroup);
 			});
 		}
+
+
+        document.getElementById("id_username").className += " form-control";
+        document.getElementById("id_password").className += " form-control";
+        document.getElementById("id_password2").className += " form-control";
 
 	</script>
 
