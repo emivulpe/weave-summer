@@ -206,7 +206,7 @@
 							</table>
 
 							<!-- Provide a button to click to submit the form. -->
-							<input id="register_user_button" type="submit" value="Register" />
+							<input id="register_user_button" class="btn btn-info" type="submit" value="Register" />
 						</form><br/>
 						<div style="font-size: 12pt; font-weight: bold;">
 							<i class="fa fa-close success" style="color:red;"></i>
@@ -238,7 +238,7 @@
 							</table>
 
 							<!-- Provide a button to click to submit the form. -->
-							<input id="register_user_button" type="submit" value="Register" />
+							<input id="register_user_button" class="btn btn-info" type="submit" value="Register" />
 						</form>
 					{% endif %}
 				</div>
@@ -248,7 +248,7 @@
 						{% csrf_token %}
 						<p><label for="id_username">Username:</label> <input id="id_username" maxlength="30" name="username" type="text"></p>
 						<p><label for="id_password">Password:</label> <input id="id_password" name="password" type="password"></p>
-						<input id="login_button" type="submit" value="Log in"/>
+						<input id="login_button" class="btn btn-info" type="submit" value="Log in"/>
 					</form>
 					{% if request.session.successful_login = False %}
 						<br/>
